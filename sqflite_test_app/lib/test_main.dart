@@ -31,7 +31,8 @@ void main() {
               ['Some \' test \n', [1,2,3,4]]);
           var statements = await dbExportSql(db);
           var sql = statements.join('\n');
-          print('#### $sql');
+          write(sql);
+          // print('#### $sql');
           expect(sql, '''
 CREATE TABLE test (column_1 INTEGER, column_2 TEXT, column_3 BLOB);
 INSERT INTO test VALUES (11,'Some '' test 
@@ -45,7 +46,7 @@ CREATE VIEW my_view AS SELECT * from test;
 CREATE INDEX [test_index] ON "test" (column_2);
 CREATE TRIGGER my_trigger AFTER INSERT ON test BEGIN INSERT INTO test_2(column_2) VALUES (new.column_2); END;''');
 
-          print('#### $sql');
+          // print('#### $sql');
           await db.close();
           path = await initEmptyDb("import.db");
           db = await openDatabase(path);
