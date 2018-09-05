@@ -5,7 +5,7 @@ import 'package:tekartik_test_menu_flutter/test.dart';
 
 void main() {
   mainMenu(() {
-    //dumpSetPrint(write);
+    dumpSetPrint(write);
     group('export/import', () {
       test('export_import', () async {
         String path = await initEmptyDb("export.db");

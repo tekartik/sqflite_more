@@ -74,7 +74,7 @@ Future dumpTable(Database db, String table,
 Future dumpTables(Database db, {Function(dynamic message) print}) async {
   for (var row in await db.query("sqlite_master", columns: ["name"])) {
     var table = row.values.first as String;
-    await dumpTable(db, table);
+    await dumpTable(db, table, print: print);
   }
 }
 

@@ -27,7 +27,7 @@ dependencies:
       url: git://github.com/tekartik/test_menu_flutter
       ref: dart2
       path: test_menu_flutter
-    version: '>=0.2.3'
+    version: '>=0.2.4'
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
