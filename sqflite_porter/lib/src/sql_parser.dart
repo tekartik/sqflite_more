@@ -50,6 +50,11 @@ String unescapeText(String name) {
 
 class SqlParserIndex {
   int position;
+
+  @override
+  String toString() {
+    return "pos: $position";
+  }
 }
 
 class SqlParser {
@@ -60,10 +65,11 @@ class SqlParser {
 
   void skipWhitespaces({bool skip, SqlParserIndex index}) {
     int position = index?.position ?? this.position;
-    if (atEnd(position)) {
-      return;
-    }
+
     while (true) {
+      if (atEnd(position)) {
+        break;
+      }
       int codeUnit = sql.codeUnitAt(position);
       if (isWhitespace(codeUnit)) {
         position++;
@@ -118,9 +124,6 @@ class SqlParser {
           codeUnit = sql.codeUnitAt(index.position);
           if (startCodeUnit != null) {
             sb.writeCharCode(codeUnit);
-            if (codeUnit == startCodeUnit) {
-              break;
-            }
           } else {
             if (isWhitespace(codeUnit) || isSeparator(codeUnit)) {
               break;
@@ -129,6 +132,9 @@ class SqlParser {
             }
           }
           index.position++;
+          if (codeUnit == startCodeUnit) {
+            break;
+          }
         }
       }
       if (skip == true) {
@@ -165,7 +171,8 @@ class SqlParser {
   }
 
   String getNextStatement({bool skip, SqlParserIndex index}) {
-    index = SqlParserIndex()..position = position;
+    skipWhitespaces(skip: skip, index: index);
+    index ??= SqlParserIndex()..position = position;
     int startPosition = index.position;
     var sb = StringBuffer();
     String currentTriggerStatement;

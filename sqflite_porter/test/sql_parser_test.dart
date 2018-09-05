@@ -79,13 +79,48 @@ void main() {
       expect(parser.parseTokens(['test', '2']), isTrue);
     });
 
-    test('parseStatements', () {
+    test('parseStatements1', () {
       var statements = parseStatements('SELECT;');
       expect(statements, ['SELECT;']);
-/*
-      statements = parseStatements('SELECT;CREATE ;');
-      expect(statements, ['SELECT;', 'CREATE ;']);
-      */
+    });
+
+    test('parseStatements1nl', () {
+      var statements = parseStatements('SELECT;\n');
+      expect(statements, ['SELECT;']);
+    });
+
+    test('parseStatements1emptytext', () {
+      var statements = parseStatements("'';\n");
+      expect(statements, ["'';"]);
+    });
+
+    test('parseStatements2', () {
+      var statements = parseStatements('SELECT;SELECT;');
+      expect(statements, ['SELECT;', 'SELECT;']);
+    });
+
+    test('parseStatements4', () {
+      var statements = parseStatements('SELECT;\nSELECT;');
+      expect(statements, ['SELECT;', 'SELECT;']);
+    });
+
+    test('parseStatements6', () {
+      var statements = parseStatements('SELECT;\nSELECT;\n');
+      expect(statements, ['SELECT;', 'SELECT;']);
+    });
+
+    test('parseStatements5', () {
+      var statements = parseStatements('SELECT;\nSELECT;\nSELECT;');
+      expect(statements, ['SELECT;', 'SELECT;', 'SELECT;']);
+    });
+
+    test('parseStatements3', () {
+      var sql = '''
+S;
+'';
+''';
+      var statements = parseStatements(sql);
+      expect(statements, ['S;', "'';"]);
     });
   });
 }
