@@ -2,10 +2,12 @@ import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_porter/src/utils.dart';
 import 'package:sqflite_porter/sqflite_porter.dart';
 import 'package:tekartik_test_menu_flutter/test.dart';
+import 'src/server_main.dart' as server;
 
 void main() {
   mainMenu(() {
     dumpSetPrint(write);
+    server.main();
     group('export/import', () {
       test('export_import', () async {
         String path = await initEmptyDb("export.db");

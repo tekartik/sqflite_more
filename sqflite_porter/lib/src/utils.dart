@@ -93,6 +93,6 @@ Future<Database> importSqlDatabase(String dbName,
 }
 
 String bookshelfSql = '''
-CREATE TABLE book (id INTEGER PRIMAR YKEY AUTOINCREMENT, title TEXT);
+CREATE TABLE book (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT);
 INSERT INTO book(title) VALUES ('Le petit prince');
 INSERT INTO book(title) VALUES ('Harry Potter');''';
