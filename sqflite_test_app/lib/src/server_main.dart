@@ -2,7 +2,7 @@ import 'package:tekartik_test_menu/test.dart';
 import 'package:sqflite_server/sqflite_server.dart';
 
 int defaultPort = 8501;
-void main() {
+void serverMain() {
   menu('server', () {
     SqfliteServer server;
     item('start', () async {

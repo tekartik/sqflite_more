@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:json_rpc_2/json_rpc_2.dart' as json_rpc;
 import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_server/sqflite_context.dart';
 import 'package:sqflite_server/src/constant.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';
 import 'package:tekartik_web_socket_io/web_socket_io.dart';
@@ -52,12 +53,19 @@ class SqfliteServerChannel {
         keyVersion: serverInfoVersion.toString()
       };
     });
-    // Specific method for getting server info upon start
+    // Specific method for deleting a database
     _rpcServer.registerMethod(methodDeleteDatabase,
         (json_rpc.Parameters parameters) async {
       await databaseFactory
           .deleteDatabase((parameters.value as Map)[keyPath] as String);
       return null;
+    });
+    // Specific method for creating a directory
+    _rpcServer.registerMethod(methodCreateDirectory,
+        (json_rpc.Parameters parameters) async {
+      var path = await sqfliteContext
+          .createDirectory((parameters.value as Map)[keyPath] as String);
+      return path;
     });
     // Generic method
     _rpcServer.registerMethod(methodSqflite, (json_rpc.Parameters parameters) {

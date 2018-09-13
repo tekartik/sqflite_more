@@ -4,11 +4,13 @@ import 'package:tekartik_common_utils/common_utils_import.dart';
 const methodGetServerInfo = 'sqfliteGetServerInfo';
 // delete a database (param is map with 'path' key)
 const methodDeleteDatabase = 'sqfliteDeleteDatabase';
+// Create a directory if it does not exists (param is map with 'path' key, if null or relative, assumes getDatabasesPath)
+const methodCreateDirectory = 'sqfliteCreateDirectory';
 // Generic method to forward to sqlite (open, insert...)
 const methodSqflite = 'sqfliteMethod';
 
 const serverInfoName = 'sqflite_server';
-final serverInfoVersion1 = Version(0, 1, 0);
+final serverInfoVersion1 = Version(0, 3, 0);
 
 // server version
 final serverInfoVersion = serverInfoVersion1;

@@ -1,18 +1,25 @@
-import 'package:test/test.dart';
+import 'dart:async';
+
+import 'package:flutter_test/flutter_test.dart';
 
 import 'package:sqflite_test/sqflite_test.dart';
 
-void main() {
-  var context = SqliteServerTestContext();
+Future main() async {
   group('test_context', () {
     test('factory', () async {
-      await context.init();
+      var context = SqfliteServerTestContext();
+      await context.connectClientPort();
+      await context.close();
     });
     test('factory_dummy', () async {
-      await context.init(port: 8500);
+      var context = SqfliteServerTestContext();
+      await context.connectClientPort(port: 8500);
+      await context.close();
     });
     test('factory_invalid', () async {
-      await context.init(port: 85000);
+      var context = SqfliteServerTestContext();
+      await context.connectClientPort(port: 85000);
+      await context.close();
     });
   });
 }

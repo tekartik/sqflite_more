@@ -28,6 +28,12 @@ dependencies:
       ref: dart2
       path: sqflite_server
     version: '>=0.1.0'
+  sqflite_test:
+    git:
+      url: git://github.com/tekartik/sqflite_more
+      ref: dart2
+      path: sqflite_test
+    version: '>=0.1.0'
   tekartik_test_menu_flutter:
     git:
       url: git://github.com/tekartik/test_menu_flutter
@@ -91,5 +97,7 @@ dependency_overrides:
     path: ../sqflite_porter
   sqflite_server:
     path: ../sqflite_server
+  sqflite_test:
+    path: ../sqflite_test
 #  tekartik_test_menu_flutter:
 #    path: ../../test_menu_flutter/test_menu_flutter
