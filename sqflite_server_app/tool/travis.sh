@@ -4,5 +4,5 @@
 # and print line as they are read
 set -ev
 
-flutter analyze --no-current-package lib
-# flutter test
+flutter analyze --no-current-package lib test
+flutter test

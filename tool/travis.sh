@@ -16,8 +16,17 @@ flutter packages get
 tool/travis.sh
 popd
 
+pushd sqflite_test
+flutter packages get
+tool/travis.sh
+popd
 
 pushd sqflite_test_app
+flutter packages get
+tool/travis.sh
+popd
+
+pushd sqflite_server_app
 flutter packages get
 tool/travis.sh
 popd

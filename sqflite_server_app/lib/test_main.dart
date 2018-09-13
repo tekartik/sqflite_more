@@ -12,12 +12,12 @@ void main() {
     dumpSetPrint(write);
     menu('run', () {
       item('go home', () {
-        Navigator.of(buildContext).push(homePageRoute);
+        Navigator.of(buildContext).push<dynamic>(homePageRoute);
       });
       item('go home (restart app)', () async {
         //Sqflite.devSetDebugModeOn(true);
         clearApp();
-        Navigator.of(buildContext).push(homePageRoute);
+        Navigator.of(buildContext).push<dynamic>(homePageRoute);
       });
       item('app', () {
         run();

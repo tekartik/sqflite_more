@@ -16,6 +16,11 @@ class Prefs {
   bool autoStart = false;
 
   Database _db;
+
+  Prefs({DatabaseFactory databaseFactory, String dbName})
+      : _databaseFactory = databaseFactory ?? sqflite.databaseFactory,
+        dbName = dbName ?? defaultDbName;
+
   Future<Database> get db async {
     if (_db == null) {
       return await _openLock.synchronized(() async {
@@ -36,20 +41,16 @@ class Prefs {
     return _db;
   }
 
-  Prefs({DatabaseFactory databaseFactory, String dbName})
-      : _databaseFactory = databaseFactory ?? sqflite.databaseFactory,
-        dbName = dbName ?? defaultDbName;
-
   Future<List<Map<String, dynamic>>> load() async {
     var db = await this.db;
     var list =
         await db.query('Pref', columns: ['name', 'textValue', 'intValue']);
     //devPrint(list);
     for (Map<String, dynamic> item in list) {
-      var prefName = item['name'];
+      var prefName = item['name'] as String;
       switch (prefName) {
         case 'port':
-          port = item['intValue'];
+          port = item['intValue'] as int;
           break;
         case 'showConsole':
           showConsole = item['intValue'] == 1;
@@ -103,6 +104,6 @@ class Prefs {
   Future _setIntValue(String name, int intValue) async {
     await _db.execute(
         'INSERT OR REPLACE INTO Pref(name, intValue) VALUES (?, ?)',
-        [name, intValue]);
+        <dynamic>[name, intValue]);
   }
 }

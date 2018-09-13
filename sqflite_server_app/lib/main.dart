@@ -22,7 +22,7 @@ class SqfliteServerApp extends StatelessWidget {
   }
 }
 
-MaterialPageRoute get homePageRoute =>
-    MaterialPageRoute(builder: (BuildContext context) {
+MaterialPageRoute<dynamic> get homePageRoute =>
+    MaterialPageRoute<dynamic>(builder: (BuildContext context) {
       return SqfliteServerHomePage(title: 'SQFlite server page');
     });
