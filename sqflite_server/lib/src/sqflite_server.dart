@@ -7,6 +7,8 @@ import 'package:tekartik_web_socket_io/web_socket_io.dart';
 import 'package:tekartik_web_socket/web_socket.dart';
 import 'package:sqflite/src/sqflite_impl.dart';
 
+int defaultPort = 8501;
+
 /// Web socket server
 class SqfliteServer {
   final List<SqfliteServerChannel> _channels = [];

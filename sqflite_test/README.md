@@ -1,14 +1,8 @@
-# sqflite_server
+# sqflite_test
 
-Sqflite server component
+SQFlite test package
 
 ## Getting Started
-
-### Use in your app
-
-````yaml
-dependencies:
-  
 
 For help getting started with Flutter, view our online [documentation](https://flutter.io/).
 

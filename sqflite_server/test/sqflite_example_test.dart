@@ -15,6 +15,11 @@ void main() {
       await databaseFactory?.close();
     });
 
+    test('factory', () async {
+      var factory = await initSqfliteServerDatabaseFactory();
+      await factory?.close();
+    });
+
     test('simple', () async {
       // Always test if the factory is available before each test
       if (databaseFactory != null) {
