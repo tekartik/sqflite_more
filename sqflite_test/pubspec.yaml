@@ -14,7 +14,12 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
+  sqflite_server:
+    git:
+      url: git://github.com/tekartik/sqflite_more
+      ref: dart2
+      path: sqflite_server
+    version: '>=0.1.0'
 # For information on the generic Dart part of this file, see the
 # following page: https://www.dartlang.org/tools/pub/pubspec
 
