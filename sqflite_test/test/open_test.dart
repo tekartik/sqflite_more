@@ -154,6 +154,28 @@ Future main() async {
       await db.close();
     });
 
+    test('open in sub directory', () async {
+      // await context.devSetDebugModeOn(true);
+      String path =
+          await context.deleteDirectory(join('sub_that_should_not_exists'));
+      var dbPath = join(path, 'open.db');
+      var db = await factory.openDatabase(dbPath);
+      try {} finally {
+        await db.close();
+      }
+    });
+
+    test('open in sub sub directory', () async {
+      // await context.devSetDebugModeOn(true);
+      String path = await context
+          .deleteDirectory(join('sub2_that_should_not_exists', 'sub_sub'));
+      var dbPath = join(path, 'open.db');
+      var db = await factory.openDatabase(dbPath);
+      try {} finally {
+        await db.close();
+      }
+    });
+
     test("isOpen", () async {
       //await Sqflite.devSetDebugModeOn(true);
       String path = await context.initDeleteDb("is_open.db");
@@ -285,7 +307,8 @@ Future main() async {
         await factory.openDatabase("/invalid_path");
         fail('should fail');
       } on DatabaseException catch (e) {
-        verify(e.isOpenFailedError());
+        expect(e.toString(), contains('open_failed'));
+        // expect(e.isOpenFailedError(), isTrue, reason: e.toString());
       }
     });
 

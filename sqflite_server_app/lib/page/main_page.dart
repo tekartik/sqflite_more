@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sqflite_server/sqflite_server.dart';
+import 'package:sqflite_server/src/constant.dart';
+import 'package:sqflite/src/constant.dart';
 import 'package:sqflite_server_app/src/app.dart';
 import 'package:sqflite_server_app/src/prefs.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';
@@ -115,6 +117,7 @@ class _SqfliteServerHomePageState extends State<SqfliteServerHomePage> {
                 if (app.prefs.showConsole) {
                   widgets.add(Expanded(
                       child: ListView.builder(
+                          reverse: true,
                           itemCount: logs.length,
                           itemBuilder: (BuildContext context, int index) {
                             return Padding(
@@ -125,6 +128,9 @@ class _SqfliteServerHomePageState extends State<SqfliteServerHomePage> {
                                 ));
                           })));
                 }
+                widgets.add(SizedBox(
+                  height: 8.0,
+                ));
                 startApp();
                 return Center(
                   // Center is a layout widget. It takes a single child and positions it
@@ -184,7 +190,30 @@ class _SqfliteServerHomePageState extends State<SqfliteServerHomePage> {
       _startPending = true;
     });
     try {
-      await app.startServer(port);
+      await app.startServer(port,
+          notifyCallback: (bool response, String method, dynamic param) {
+        if (response == false) {
+          if (method == methodSqflite) {
+            var sqfliteMethod = param['method'] as String;
+            dynamic sqfliteParam = param['param'];
+            if (sqfliteMethod == methodOpenDatabase) {
+              log('open ${(sqfliteParam as Map)['path']}');
+            } else {
+              var _methodParam = sqfliteParam as Map;
+              var sql = _methodParam['sql'] as String;
+              if (sql != null) {
+                var args = _methodParam['arguments'] as List;
+                if (args != null && args.length > 0) {
+                  sql += ' $args';
+                }
+                log(sql);
+              }
+            }
+          }
+        }
+        print('$response $method $param');
+        // log('$response $method $param');
+      });
       // Save port in prefs upon success
       app.prefs.setPort(port);
       app.prefs.setAutoStart(true);

@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:sqflite_server/src/constant.dart';
 import 'package:sqflite/src/exception.dart';
+import 'package:sqflite/src/constant.dart';
 
 import 'package:tekartik_common_utils/common_utils_import.dart';
 import 'package:tekartik_web_socket_io/web_socket_io.dart';
@@ -44,14 +45,13 @@ class SqfliteClient {
     try {
       t = await _client.sendRequest(method, param) as T;
     } on json_rpc.RpcException catch (e) {
-      // devPrint('ERROR ${e.runtimeType} $e');
+      // devPrint('ERROR ${e.runtimeType} $e ${e.message} ${e.data}');
       throw SqfliteDatabaseException(e.message, e.data);
     }
-    t = fixResult(t);
     return t;
   }
 
-  static T fixResult<T>(T result) {
+  static void fixResult<T>(T result) {
     bool shouldFix(dynamic value) {
       return value is List && (!(value is Uint8List));
     }
@@ -97,13 +97,22 @@ class SqfliteClient {
       //col
       //for (var column )
     }
-    // print('result2: $result');
-    return result;
+    // devPrint('result2: $result');
   }
 
   Future<T> invoke<T>(String method, dynamic param) async {
     var map = <String, dynamic>{keyMethod: method, keyParam: param};
     var result = await sendRequest<T>(methodSqflite, map);
+
+    if (method == methodBatch) {
+      if (result is List) {
+        for (var line in result) {
+          fixResult<dynamic>(line);
+        }
+      }
+    } else {
+      fixResult(result);
+    }
     // return result;
 
     return result;

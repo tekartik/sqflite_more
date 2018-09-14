@@ -72,8 +72,8 @@ class SqfliteServerContext implements SqfliteContext {
   }
 
   Future<T> invoke<T>(String method, dynamic param) async {
-    var map = <String, dynamic>{keyMethod: method, keyParam: param};
-    var result = await sendRequest<T>(methodSqflite, map);
+    //var map = <String, dynamic>{keyMethod: method, keyParam: param};
+    var result = await _client.invoke<T>(method, param);
     return result;
   }
 
@@ -131,6 +131,12 @@ Android:
   Future<String> createDirectory(String path) async {
     return await _client.sendRequest<String>(
         methodCreateDirectory, <String, dynamic>{keyPath: path});
+  }
+
+  @override
+  Future<String> deleteDirectory(String path) async {
+    return await _client.sendRequest<String>(
+        methodDeleteDirectory, <String, dynamic>{keyPath: path});
   }
 
   static Future<SqfliteServerContext> connect(String url,

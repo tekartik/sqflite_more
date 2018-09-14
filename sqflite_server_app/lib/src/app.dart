@@ -10,9 +10,11 @@ class App {
 
   bool get sqfliteServerStarted => _sqfliteServer != null;
 
-  Future<SqfliteServer> startServer(int port) async {
+  Future<SqfliteServer> startServer(int port,
+      {SqfliteServerNotifyCallback notifyCallback}) async {
     await _closeServer();
-    _sqfliteServer = await SqfliteServer.serve(port: port);
+    _sqfliteServer =
+        await SqfliteServer.serve(port: port, notifyCallback: notifyCallback);
     return _sqfliteServer;
   }
 

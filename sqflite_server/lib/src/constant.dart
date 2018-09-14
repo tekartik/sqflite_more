@@ -6,11 +6,13 @@ const methodGetServerInfo = 'sqfliteGetServerInfo';
 const methodDeleteDatabase = 'sqfliteDeleteDatabase';
 // Create a directory if it does not exists (param is map with 'path' key, if null or relative, assumes getDatabasesPath)
 const methodCreateDirectory = 'sqfliteCreateDirectory';
+// Create a directory and its sub directory
+const methodDeleteDirectory = 'sqfliteDeleteDirectory';
 // Generic method to forward to sqlite (open, insert...)
 const methodSqflite = 'sqfliteMethod';
 
 const serverInfoName = 'sqflite_server';
-final serverInfoVersion1 = Version(0, 3, 0);
+final serverInfoVersion1 = Version(0, 4, 0);
 
 // server version
 final serverInfoVersion = serverInfoVersion1;

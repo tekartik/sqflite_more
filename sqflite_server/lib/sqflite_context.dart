@@ -8,6 +8,7 @@ import 'package:sqflite/sqflite.dart' as sqflite;
 abstract class SqfliteContext {
   DatabaseFactory get databaseFactory;
   Future<String> createDirectory(String path);
+  Future<String> deleteDirectory(String path);
 }
 
 class _SqfliteContext implements SqfliteContext {
@@ -19,6 +20,17 @@ class _SqfliteContext implements SqfliteContext {
     try {
       path = await fixPath(path);
       await Directory(path).create(recursive: true);
+    } catch (_e) {
+      // print(e);
+    }
+    return path;
+  }
+
+  @override
+  Future<String> deleteDirectory(String path) async {
+    try {
+      path = await fixPath(path);
+      await Directory(path).delete(recursive: true);
     } catch (_e) {
       // print(e);
     }
