@@ -10,7 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  sqflite: '>=0.11.2+3'
+  sqflite: '>=0.12.0'
   tekartik_web_socket_io:
     git:
       url: git://github.com/tekartik/web_socket.dart
@@ -61,6 +61,6 @@ flutter:
   # For details regarding fonts in packages, see
   # https://flutter.io/custom-fonts/#from-packages
 
-dependency_overrides:
+#dependency_overrides:
 #  sqflite:
 #    path: ../../sqflite

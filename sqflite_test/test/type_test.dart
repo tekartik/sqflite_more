@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
 
@@ -186,7 +187,12 @@ Future main() async {
           // try blob lookup - does work
           var rows = await data.db.rawQuery(
               'SELECT * FROM Test WHERE value = ?', <dynamic>[blob1234]);
-          expect(rows.length, 0);
+          if (Platform.isIOS || Platform.isAndroid) {
+            print(Platform());
+            expect(rows.length, 0);
+          } else {
+            expect(rows.length, 1); // to verify
+          }
 
           // try blob lookup using hex
           rows = await data.db.rawQuery(

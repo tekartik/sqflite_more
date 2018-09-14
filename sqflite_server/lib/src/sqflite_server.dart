@@ -59,7 +59,8 @@ class SqfliteServerChannel {
       }
       var result = <String, dynamic>{
         keyName: serverInfoName,
-        keyVersion: serverInfoVersion.toString()
+        keyVersion: serverInfoVersion.toString(),
+        keySupportsWithoutRowId: sqfliteContext.supportsWithoutRowId,
       };
       if (_notifyCallback != null) {
         _notifyCallback(true, methodGetServerInfo, result);

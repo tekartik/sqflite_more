@@ -200,13 +200,15 @@ class _SqfliteServerHomePageState extends State<SqfliteServerHomePage> {
               log('open ${(sqfliteParam as Map)['path']}');
             } else {
               var _methodParam = sqfliteParam as Map;
-              var sql = _methodParam['sql'] as String;
-              if (sql != null) {
-                var args = _methodParam['arguments'] as List;
-                if (args != null && args.length > 0) {
-                  sql += ' $args';
+              if (_methodParam != null) {
+                var sql = _methodParam['sql'] as String;
+                if (sql != null) {
+                  var args = _methodParam['arguments'] as List;
+                  if (args != null && args.length > 0) {
+                    sql += ' $args';
+                  }
+                  log(sql);
                 }
-                log(sql);
               }
             }
           }
