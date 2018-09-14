@@ -36,7 +36,9 @@ class SqfliteServerTestContext extends SqfliteServerContext {
             port ?? parseSqfliteServerUrlPort(url, defaultValue: 0);
         print('''
 sqflite server not running on $url
-Check that the sqflite_server_app is running on the proper port
+Check that the sqflite_server_app is running on the proper port on a connected
+iOS device/simulator, Android device/emulator
+
 Android: 
   check that you have forwarded tcp ip on Android
   \$ adb forward tcp:$displayPort tcp:$displayPort

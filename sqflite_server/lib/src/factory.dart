@@ -1,3 +1,5 @@
+import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
 import 'package:sqflite/src/database_factory.dart' show SqfliteDatabaseFactory;
 import 'package:sqflite_server/sqflite.dart';
 import 'package:sqflite_server/src/constant.dart';
@@ -31,5 +33,17 @@ class SqfliteServerDatabaseFactory extends SqfliteDatabaseFactory {
   Future deleteDatabase(String path) async {
     return await context.sendRequest<String>(
         methodDeleteDatabase, <String, dynamic>{keyPath: path});
+  }
+
+  @override
+  Future createParentDirectory(String path) async {
+    if (_isPath(path)) {
+      path = dirname(path);
+      return await context.createDirectory(path);
+    }
+  }
+
+  bool _isPath(String path) {
+    return (path != null) && (path != inMemoryDatabasePath);
   }
 }

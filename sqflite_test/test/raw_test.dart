@@ -636,15 +636,21 @@ Future main() async {
           // it seems to always return 1 on Android, 0 on iOS...
           if (Platform.isIOS) {
             expect(id, 0);
-          } else {
+          } else if (Platform.isAndroid) {
             expect(id, 1);
+          } else if (context.supportsWithoutRowId) {
+            expect(id, 1);
+          } else {
+            expect(id, 0);
           }
           id = await db.insert("Test", <String, dynamic>{"name": "other"});
           // it seems to always return 1
           if (Platform.isIOS) {
             expect(id, 0);
-          } else {
+          } else if (Platform.isAndroid) {
             expect(id, 1);
+          } else {
+            expect(id, 0);
           }
           // notice the order is based on the primary key
           var list = await db.query("Test");

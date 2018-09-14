@@ -12,7 +12,7 @@ const methodDeleteDirectory = 'sqfliteDeleteDirectory';
 const methodSqflite = 'sqfliteMethod';
 
 const serverInfoName = 'sqflite_server';
-final serverInfoVersion1 = Version(0, 4, 0);
+final serverInfoVersion1 = Version(0, 5, 0);
 
 // server version
 final serverInfoVersion = serverInfoVersion1;
@@ -29,3 +29,4 @@ const keyPath = 'path';
 // server info
 const keyName = 'name';
 const keyVersion = 'version';
+const keySupportsWithoutRowId = 'supportsWithoutRowId';

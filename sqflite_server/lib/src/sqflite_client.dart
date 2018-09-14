@@ -10,11 +10,15 @@ import 'package:tekartik_web_socket_io/web_socket_io.dart';
 import 'package:tekartik_web_socket/web_socket.dart';
 import 'package:json_rpc_2/json_rpc_2.dart' as json_rpc;
 
+class ServerInfo {
+  bool supportsWithoutRowId;
+}
+
 /// Instance of a server
 class SqfliteClient {
   json_rpc.Client _client;
-
-  SqfliteClient._(this._client);
+  final ServerInfo serverInfo;
+  SqfliteClient._(this._client, this.serverInfo);
 
   static Future<SqfliteClient> connect(
     String url, {
@@ -23,6 +27,7 @@ class SqfliteClient {
     webSocketChannelClientFactory ??= webSocketChannelClientFactoryIo;
     var webSocketChannel = webSocketChannelClientFactory.connect<String>(url);
     var rpcClient = json_rpc.Client(webSocketChannel);
+    ServerInfo _serverInfo;
     rpcClient.listen();
     try {
       var serverInfo = await rpcClient.sendRequest(methodGetServerInfo) as Map;
@@ -33,11 +38,13 @@ class SqfliteClient {
       if (version < serverInfoMinVersion) {
         throw 'SQFlite server version $version not supported, >=$serverInfoMinVersion expected';
       }
+      _serverInfo = ServerInfo()
+        ..supportsWithoutRowId = parseBool(serverInfo[keySupportsWithoutRowId]);
     } catch (e) {
       await rpcClient.close();
       rethrow;
     }
-    return SqfliteClient._(rpcClient);
+    return SqfliteClient._(rpcClient, _serverInfo);
   }
 
   Future<T> sendRequest<T>(String method, dynamic param) async {

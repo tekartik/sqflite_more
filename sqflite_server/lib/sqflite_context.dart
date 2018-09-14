@@ -9,6 +9,7 @@ abstract class SqfliteContext {
   DatabaseFactory get databaseFactory;
   Future<String> createDirectory(String path);
   Future<String> deleteDirectory(String path);
+  bool get supportsWithoutRowId;
 }
 
 class _SqfliteContext implements SqfliteContext {
@@ -50,6 +51,9 @@ class _SqfliteContext implements SqfliteContext {
     }
     return path;
   }
+
+  @override
+  bool get supportsWithoutRowId => !Platform.isIOS;
 }
 
 SqfliteContext _sqfliteContext;

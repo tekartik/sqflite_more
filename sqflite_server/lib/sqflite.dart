@@ -67,6 +67,10 @@ class SqfliteServerContext implements SqfliteContext {
   SqfliteClient _client;
   SqfliteClient get client => _client;
 
+  @override
+  bool get supportsWithoutRowId =>
+      client.serverInfo?.supportsWithoutRowId == true;
+
   Future<T> sendRequest<T>(String method, dynamic param) async {
     return await _client.sendRequest<T>(method, param);
   }
