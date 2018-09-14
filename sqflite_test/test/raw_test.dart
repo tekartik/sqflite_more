@@ -649,6 +649,8 @@ Future main() async {
             expect(id, 0);
           } else if (Platform.isAndroid) {
             expect(id, 1);
+          } else if (context.supportsWithoutRowId) {
+            expect(id, 1);
           } else {
             expect(id, 0);
           }

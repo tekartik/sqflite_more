@@ -42,6 +42,7 @@ class _SqfliteServerHomePageState extends State<SqfliteServerHomePage> {
   }
 
   void log(String message) {
+    print(message);
     setState(() {
       logs.add(message);
       if (logs.length > 200) {
@@ -213,7 +214,7 @@ class _SqfliteServerHomePageState extends State<SqfliteServerHomePage> {
             }
           }
         }
-        print('$response $method $param');
+        // print('$response $method $param');
         // log('$response $method $param');
       });
       // Save port in prefs upon success
