@@ -124,7 +124,7 @@ class _SqfliteServerHomePageState extends State<SqfliteServerHomePage> {
                             return Padding(
                                 padding: EdgeInsets.only(left: 8.0, right: 8.0),
                                 child: Text(
-                                  logs[index],
+                                  logs[logs.length - index - 1],
                                   style: TextStyle(fontSize: 10.0),
                                 ));
                           })));
