@@ -21,5 +21,11 @@ Future main() async {
       await context.connectClientPort(port: 85000);
       await context.close();
     });
+    // to display the warning last if any
+    test('factory_default', () async {
+      var context = SqfliteServerTestContext();
+      await context.connectClientPort();
+      await context.close();
+    });
   });
 }
