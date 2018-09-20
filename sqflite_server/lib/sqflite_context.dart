@@ -4,12 +4,16 @@ import 'dart:io';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite/sqflite.dart' as sqflite;
+import 'package:path/path.dart' as path;
 
 abstract class SqfliteContext {
   DatabaseFactory get databaseFactory;
   Future<String> createDirectory(String path);
   Future<String> deleteDirectory(String path);
   bool get supportsWithoutRowId;
+  bool get isAndroid;
+  bool get isIOS;
+  path.Context get pathContext;
 }
 
 class _SqfliteContext implements SqfliteContext {
@@ -45,15 +49,24 @@ class _SqfliteContext implements SqfliteContext {
       // nothing
     } else {
       if (isRelative(path)) {
-        path = join(await databaseFactory.getDatabasesPath(), path);
+        path = pathContext.join(await databaseFactory.getDatabasesPath(), path);
       }
-      path = absolute(normalize(path));
+      path = pathContext.absolute(pathContext.normalize(path));
     }
     return path;
   }
 
   @override
   bool get supportsWithoutRowId => !Platform.isIOS;
+
+  @override
+  bool get isAndroid => Platform.isAndroid;
+
+  @override
+  bool get isIOS => Platform.isIOS;
+
+  @override
+  Context get pathContext => path.context;
 }
 
 SqfliteContext _sqfliteContext;

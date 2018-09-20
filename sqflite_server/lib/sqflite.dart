@@ -1,6 +1,7 @@
 export 'src/factory.dart' show SqfliteServerDatabaseFactory;
 import 'dart:async';
 
+import 'package:path/path.dart' as path;
 import 'package:sqflite/src/database_factory.dart';
 import 'package:sqflite_server/sqflite.dart';
 import 'package:sqflite_server/sqflite_context.dart';
@@ -168,4 +169,14 @@ Android:
     await _client?.close();
     _client = null;
   }
+
+  @override
+  bool get isAndroid => client.serverInfo.isAndroid;
+
+  @override
+  bool get isIOS => client.serverInfo.isIOS;
+
+  // Force posix
+  @override
+  path.Context get pathContext => path.posix;
 }

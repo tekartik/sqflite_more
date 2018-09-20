@@ -111,7 +111,8 @@ Future main() async {
       } else if (Platform.isIOS) {
         expect(basename(databasesPath), "Documents");
       }
-      String path = join(databasesPath, "in_default_directory.db");
+      String path =
+          context.pathContext.join(databasesPath, "in_default_directory.db");
       await factory.deleteDatabase(path);
       Database db = await factory.openDatabase(path);
       await db.close();

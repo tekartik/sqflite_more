@@ -30,3 +30,5 @@ const keyPath = 'path';
 const keyName = 'name';
 const keyVersion = 'version';
 const keySupportsWithoutRowId = 'supportsWithoutRowId';
+const keyIsIOS = 'isIOS';
+const keyIsAndroid = 'isAndroid';
