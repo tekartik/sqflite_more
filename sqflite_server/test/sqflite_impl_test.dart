@@ -6,7 +6,7 @@ import 'package:tekartik_web_socket/web_socket.dart';
 
 void main() {
   group("sqflite", () {
-    const MethodChannel channel = const MethodChannel('com.tekartik.sqflite');
+    const MethodChannel channel = MethodChannel('com.tekartik.sqflite');
 
     final List<MethodCall> log = <MethodCall>[];
     String response;

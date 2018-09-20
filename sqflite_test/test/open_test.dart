@@ -87,7 +87,7 @@ class OpenCallbacks {
   Future<Database> open(String path, {int version}) async {
     reset();
     return await databaseFactory.openDatabase(path,
-        options: new OpenDatabaseOptions(
+        options: OpenDatabaseOptions(
             version: version,
             onCreate: onCreate,
             onConfigure: onConfigure,
@@ -191,7 +191,7 @@ Future main() async {
     test("Open no version onCreate", () async {
       // should fail
       String path = await context.initDeleteDb("open_no_version_on_create.db");
-      verify(!(await new File(path).exists()));
+      verify(!(await File(path).exists()));
       Database db;
       try {
         db = await factory.openDatabase(path,
@@ -201,7 +201,7 @@ Future main() async {
         }));
         verify(false);
       } on ArgumentError catch (_) {}
-      verify(!await new File(path).exists());
+      verify(!await File(path).exists());
       expect(db, null);
     });
 
@@ -325,7 +325,7 @@ Future main() async {
       ByteData data = await rootBundle.load(join("assets", "example.db"));
       List<int> bytes =
           data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
-      await new File(path).writeAsBytes(bytes);
+      await File(path).writeAsBytes(bytes);
 
       // open the database
       Database db = await factory.openDatabase(path);
@@ -432,7 +432,7 @@ Future main() async {
       String path = await context.initDeleteDb("open_all_callbacks.db");
 
       int step = 1;
-      OpenCallbacks openCallbacks = new OpenCallbacks(factory);
+      OpenCallbacks openCallbacks = OpenCallbacks(factory);
       var db = await openCallbacks.open(path, version: 1);
       verify(openCallbacks.onConfigureCalled, "onConfiguredCalled $step");
       verify(openCallbacks.onCreateCalled, "onCreateCalled $step");
@@ -650,7 +650,7 @@ Future main() async {
     test('Database locked (doc)', () async {
       // await Sqflite.devSetDebugModeOn(true);
       String path = await context.initDeleteDb("open_locked.db");
-      var helper = new Helper(factory, path);
+      var helper = Helper(factory, path);
 
       // without the synchronized fix, this could faild
       for (int i = 0; i < 100; i++) {
@@ -664,11 +664,11 @@ Future main() async {
       // await Sqflite.devSetDebugModeOn(true);
       String path = await context.initDeleteDb("instances_test.db");
       var db1 = await factory.openDatabase(path,
-          options: new OpenDatabaseOptions(singleInstance: false));
+          options: OpenDatabaseOptions(singleInstance: false));
       var db2 = await factory.openDatabase(path,
-          options: new OpenDatabaseOptions(singleInstance: true));
+          options: OpenDatabaseOptions(singleInstance: true));
       var db3 = await factory.openDatabase(path,
-          options: new OpenDatabaseOptions(singleInstance: true));
+          options: OpenDatabaseOptions(singleInstance: true));
       verify(db1 != db2);
       verify(db2 == db3);
       await db1.close();
@@ -750,7 +750,7 @@ class Helper {
   final String path;
   Helper(this.databaseFactory, this.path);
   Database _db;
-  final _lock = new Lock();
+  final _lock = Lock();
 
   Future<Database> getDb() async {
     if (_db == null) {

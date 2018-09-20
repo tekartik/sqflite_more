@@ -21,8 +21,7 @@ class SqfliteServerHomePage extends StatefulWidget {
   final String title;
 
   @override
-  _SqfliteServerHomePageState createState() =>
-      new _SqfliteServerHomePageState();
+  _SqfliteServerHomePageState createState() => _SqfliteServerHomePageState();
 }
 
 class _SqfliteServerHomePageState extends State<SqfliteServerHomePage> {
@@ -62,11 +61,11 @@ class _SqfliteServerHomePageState extends State<SqfliteServerHomePage> {
     // The Flutter framework has been optimized to make rerunning build methods
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
-    return new Scaffold(
-        appBar: new AppBar(
+    return Scaffold(
+        appBar: AppBar(
           // Here we take the value from the MyHomePage object that was created by
           // the App.build method, and use it to set our appbar title.
-          title: new Text(widget.title),
+          title: Text(widget.title),
         ),
         body: FutureBuilder(
             future: _loadPrefs(),
@@ -84,12 +83,12 @@ class _SqfliteServerHomePageState extends State<SqfliteServerHomePage> {
                                 ? 'Starting listening on $port'
                                 : 'Press START to start SQFlite server'),
                       )),
-                  new Container(
+                  Container(
                       width: 240.0,
                       padding: const EdgeInsets.only(bottom: 16.0),
                       child: TextField(
                         controller: portInputController,
-                        decoration: new InputDecoration(
+                        decoration: InputDecoration(
                             labelText: "Port number (0 for any)"),
                         keyboardType: TextInputType.number,
                       )),
@@ -136,7 +135,7 @@ class _SqfliteServerHomePageState extends State<SqfliteServerHomePage> {
                 return Center(
                   // Center is a layout widget. It takes a single child and positions it
                   // in the middle of the parent.
-                  child: new Column(
+                  child: Column(
                     // Column is also layout widget. It takes a list of children and
                     // arranges them vertically. By default, it sizes itself to fit its
                     // children horizontally, and tries to be as tall as its parent.

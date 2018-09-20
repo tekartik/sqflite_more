@@ -87,7 +87,7 @@ Future main() async {
             await db.transaction((txn) async {
               int count = Sqflite.firstIntValue(
                   await txn.rawQuery("SELECT COUNT(*) FROM Test"));
-              await new Future<dynamic>.delayed(new Duration(milliseconds: 40));
+              await Future<dynamic>.delayed(Duration(milliseconds: 40));
               await txn.rawInsert(
                   "INSERT INTO Test (name) VALUES (?)", <dynamic>["item $i"]);
               //print(await db.query("SELECT COUNT(*) FROM Test"));
@@ -111,9 +111,9 @@ Future main() async {
         // Sqflite.devSetDebugModeOn(true);
         String path = await context.initDeleteDb("simple_concurrency_1.db");
         Database db = await factory.openDatabase(path);
-        var step1 = new Completer<dynamic>();
-        var step2 = new Completer<dynamic>();
-        var step3 = new Completer<dynamic>();
+        var step1 = Completer<dynamic>();
+        var step2 = Completer<dynamic>();
+        var step3 = Completer<dynamic>();
 
         Future action1() async {
           await db
@@ -124,7 +124,7 @@ Future main() async {
           try {
             await db
                 .rawQuery("SELECT COUNT(*) FROM Test")
-                .timeout(new Duration(seconds: 1));
+                .timeout(Duration(seconds: 1));
             throw "should fail";
           } catch (e) {
             expect(e is TimeoutException, true);
@@ -165,9 +165,9 @@ Future main() async {
         // Sqflite.devSetDebugModeOn(true);
         String path = await context.initDeleteDb("simple_concurrency_1.db");
         Database db = await factory.openDatabase(path);
-        var step1 = new Completer<dynamic>();
-        var step2 = new Completer<dynamic>();
-        var step3 = new Completer<dynamic>();
+        var step1 = Completer<dynamic>();
+        var step2 = Completer<dynamic>();
+        var step3 = Completer<dynamic>();
 
         Future action1() async {
           await db
@@ -178,7 +178,7 @@ Future main() async {
           try {
             await db
                 .rawQuery("SELECT COUNT(*) FROM Test")
-                .timeout(new Duration(seconds: 1));
+                .timeout(Duration(seconds: 1));
             throw "should fail";
           } catch (e) {
             expect(e is TimeoutException, true);
@@ -371,7 +371,7 @@ Future main() async {
 
         // Make sure the directory exists
         try {
-          await new Directory(databasesPath).create(recursive: true);
+          await Directory(databasesPath).create(recursive: true);
         } catch (_) {}
 
         String path = join(databasesPath, "demo.db");

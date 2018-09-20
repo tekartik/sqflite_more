@@ -22,7 +22,8 @@ Future main() async {
       bool hasFailed = false;
       try {
         await db.transaction((txn) async {
-          await txn.rawInsert("INSERT INTO Test (name) VALUES (?)", <dynamic>["item"]);
+          await txn.rawInsert(
+              "INSERT INTO Test (name) VALUES (?)", <dynamic>["item"]);
           int afterCount = Sqflite.firstIntValue(
               await txn.rawQuery("SELECT COUNT(*) FROM Test"));
           expect(afterCount, 1);
@@ -103,9 +104,7 @@ Future main() async {
       } on DatabaseException catch (e) {
         verify(e.isSyntaxError());
         print(e);
-        verify(e
-            .toString()
-            .contains("malformed query with args ?"));
+        verify(e.toString().contains("malformed query with args ?"));
       }
 
       try {
@@ -139,10 +138,12 @@ Future main() async {
     test("Sqlite constraint Exception", () async {
       // await Sqflite.devSetDebugModeOn(true);
       String path = await context.initDeleteDb("constraint_exception.db");
-      Database db =
-          await factory.openDatabase(path, options:OpenDatabaseOptions(version: 1, onCreate: (db, version) {
-        db.execute("CREATE TABLE Test (name TEXT UNIQUE)");
-      }));
+      Database db = await factory.openDatabase(path,
+          options: OpenDatabaseOptions(
+              version: 1,
+              onCreate: (db, version) {
+                db.execute("CREATE TABLE Test (name TEXT UNIQUE)");
+              }));
       await db.insert("Test", <String, dynamic>{"name": "test1"});
 
       try {
@@ -160,11 +161,14 @@ Future main() async {
 
     test("Sqlite constraint primary key", () async {
       // await Sqflite.devSetDebugModeOn(true);
-      String path = await context.initDeleteDb("constraint_primary_key_exception.db");
-      Database db =
-          await factory.openDatabase(path, options:OpenDatabaseOptions(version: 1, onCreate: (db, version) {
-        db.execute("CREATE TABLE Test (name TEXT PRIMARY KEY)");
-      }));
+      String path =
+          await context.initDeleteDb("constraint_primary_key_exception.db");
+      Database db = await factory.openDatabase(path,
+          options: OpenDatabaseOptions(
+              version: 1,
+              onCreate: (db, version) {
+                db.execute("CREATE TABLE Test (name TEXT PRIMARY KEY)");
+              }));
       await db.insert("Test", <String, dynamic>{"name": "test1"});
 
       try {
@@ -216,9 +220,7 @@ Future main() async {
       } on DatabaseException catch (e) {
         verify(e.isSyntaxError());
         print(e);
-        verify(e
-            .toString()
-            .contains("malformed query with args ?"));
+        verify(e.toString().contains("malformed query with args ?"));
       }
 
       try {
@@ -258,17 +260,20 @@ Future main() async {
 
     test("Open onDowngrade fail", () async {
       String path = await context.initDeleteDb("open_on_downgrade_fail.db");
-      Database database = await factory.openDatabase(path, options: OpenDatabaseOptions(version: 2,
-          onCreate: (Database db, int version) async {
-        await db.execute("CREATE TABLE Test(id INTEGER PRIMARY KEY)");
-      }));
+      Database database = await factory.openDatabase(path,
+          options: OpenDatabaseOptions(
+              version: 2,
+              onCreate: (Database db, int version) async {
+                await db.execute("CREATE TABLE Test(id INTEGER PRIMARY KEY)");
+              }));
       await database.close();
 
       // currently this is crashing...
       // should fail going back in versions
       try {
-        database = await factory.openDatabase(path, options: OpenDatabaseOptions(
-            version: 1, onDowngrade: onDatabaseVersionChangeError));
+        database = await factory.openDatabase(path,
+            options: OpenDatabaseOptions(
+                version: 1, onDowngrade: onDatabaseVersionChangeError));
         verify(false);
       } catch (e) {
         print(e);
@@ -276,7 +281,8 @@ Future main() async {
 
       // should work
       database = await factory.openDatabase(path,
-          options: OpenDatabaseOptions(version: 2, onDowngrade: onDatabaseVersionChangeError));
+          options: OpenDatabaseOptions(
+              version: 2, onDowngrade: onDatabaseVersionChangeError));
       print(database);
       await database.close();
     });
@@ -284,10 +290,12 @@ Future main() async {
     test("Access after close", () async {
       // await Sqflite.devSetDebugModeOn(true);
       String path = await context.initDeleteDb("access_after_close.db");
-      Database database = await factory.openDatabase(path, options: OpenDatabaseOptions(version: 3,
-          onCreate: (Database db, int version) async {
-        await db.execute("CREATE TABLE Test(id INTEGER PRIMARY KEY)");
-      }));
+      Database database = await factory.openDatabase(path,
+          options: OpenDatabaseOptions(
+              version: 3,
+              onCreate: (Database db, int version) async {
+                await db.execute("CREATE TABLE Test(id INTEGER PRIMARY KEY)");
+              }));
       await database.close();
       try {
         await database.getVersion();
@@ -365,7 +373,8 @@ Future main() async {
 
         await db.execute("CREATE TABLE Test (name TEXT)");
 
-        await db.rawInsert("INSERT INTO Test (name) VALUES (\"?\")", <dynamic>[]);
+        await db
+            .rawInsert("INSERT INTO Test (name) VALUES (\"?\")", <dynamic>[]);
 
         await db.rawQuery("SELECT * FROM Test WHERE name = ?", <dynamic>[]);
 
@@ -385,7 +394,8 @@ Future main() async {
 
         await db.execute("CREATE TABLE Test (name TEXT)");
 
-        await db.rawInsert("INSERT INTO Test (name) VALUES (\"?\")", <dynamic>[]);
+        await db
+            .rawInsert("INSERT INTO Test (name) VALUES (\"?\")", <dynamic>[]);
 
         await db.rawQuery("SELECT * FROM Test WHERE name = ?", <dynamic>[]);
 
@@ -402,7 +412,8 @@ Future main() async {
 
       //await db.rawInsert("INSERT INTO Test (name) VALUES (\"?\")", [null]);
       try {
-        await db.rawInsert("INSERT INTO Test (name) VALUES (?)", <dynamic>[null]);
+        await db
+            .rawInsert("INSERT INTO Test (name) VALUES (?)", <dynamic>[null]);
       } on DatabaseException catch (e) {
         print("ERR: $e");
         expect(e.toString().contains("sql 'INSERT"), true);
@@ -441,16 +452,16 @@ Future main() async {
       }
 
       try {
-        await db
-            .rawQuery("SELECT * FROM Test WHERE name = \"value\"", <dynamic>["value2"]);
+        await db.rawQuery(
+            "SELECT * FROM Test WHERE name = \"value\"", <dynamic>["value2"]);
       } on DatabaseException catch (e) {
         print("ERR: $e");
         expect(e.toString().contains("SELECT * FROM Test"), true);
       }
 
       try {
-        await db
-            .rawDelete("DELETE FROM Test WHERE name = \"value\"", <dynamic>["value2"]);
+        await db.rawDelete(
+            "DELETE FROM Test WHERE name = \"value\"", <dynamic>["value2"]);
       } on DatabaseException catch (e) {
         print("ERR: $e");
         expect(e.toString().contains("DELETE FROM Test"), true);
@@ -467,7 +478,7 @@ Future main() async {
       bool hasTimedOut = false;
       int callbackCount = 0;
       Sqflite.setLockWarningInfo(
-          duration: new Duration(milliseconds: 200),
+          duration: Duration(milliseconds: 200),
           callback: () {
             callbackCount++;
           });
@@ -475,7 +486,7 @@ Future main() async {
         await db.transaction((txn) async {
           await db.getVersion();
           fail("should fail");
-        }).timeout(new Duration(milliseconds: 1500));
+        }).timeout(Duration(milliseconds: 1500));
       } on TimeoutException catch (_) {
         hasTimedOut = true;
       }

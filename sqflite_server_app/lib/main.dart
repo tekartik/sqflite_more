@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:sqflite_server_app/page/main_page.dart';
 
-void main() => runApp(new SqfliteServerApp());
+void main() => runApp(SqfliteServerApp());
 
 void run() {
-  runApp(new SqfliteServerApp());
+  runApp(SqfliteServerApp());
 }
 
 class SqfliteServerApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return new MaterialApp(
+    return MaterialApp(
       title: 'Flutter Demo',
-      theme: new ThemeData(
+      theme: ThemeData(
         // This is the theme of your application.
         primarySwatch: Colors.blue,
       ),

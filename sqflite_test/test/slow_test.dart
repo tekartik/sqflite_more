@@ -38,7 +38,7 @@ Future main() async {
       Database db = await factory.openDatabase(path);
       await db.execute("CREATE TABLE Test (id INTEGER PRIMARY KEY, name TEXT)");
 
-      Stopwatch sw = new Stopwatch()..start();
+      Stopwatch sw = Stopwatch()..start();
       await db.transaction((txn) async {
         for (int i = 0; i < 1000; i++) {
           await txn.rawInsert(
@@ -54,7 +54,7 @@ Future main() async {
       Database db = await factory.openDatabase(path);
       await db.execute("CREATE TABLE Test (id INTEGER PRIMARY KEY, name TEXT)");
 
-      Stopwatch sw = new Stopwatch()..start();
+      Stopwatch sw = Stopwatch()..start();
       Batch batch = db.batch();
 
       for (int i = 0; i < 1000; i++) {
@@ -72,7 +72,7 @@ Future main() async {
       Database db = await factory.openDatabase(path);
       await db.execute("CREATE TABLE Test (id INTEGER PRIMARY KEY, name TEXT)");
 
-      Stopwatch sw = new Stopwatch()..start();
+      Stopwatch sw = Stopwatch()..start();
       Batch batch = db.batch();
 
       for (int i = 0; i < 1000; i++) {

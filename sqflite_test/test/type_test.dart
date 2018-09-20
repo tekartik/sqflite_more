@@ -11,7 +11,7 @@ class _Data {
   Database db;
 }
 
-final _Data data = new _Data();
+final _Data data = _Data();
 
 // Get the value field from a given
 Future<dynamic> getValue(int id) async {
@@ -155,7 +155,7 @@ Future main() async {
           expect(await getValue(id), "simple text");
 
           // UInt8List - default
-          ByteData byteData = new ByteData(1);
+          ByteData byteData = ByteData(1);
           byteData.setInt8(0, 1);
           var blob = byteData.buffer.asUint8List();
           id = await insertValue(blob);
@@ -244,8 +244,7 @@ Future main() async {
         try {
           bool failed = false;
           try {
-            await insertValue(
-                new DateTime.fromMillisecondsSinceEpoch(1234567890));
+            await insertValue(DateTime.fromMillisecondsSinceEpoch(1234567890));
           } catch (_) {
             // } on ArgumentError catch (_) { not throwing the same exception
             failed = true;
