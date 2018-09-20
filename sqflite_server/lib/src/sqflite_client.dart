@@ -9,7 +9,6 @@ import 'package:tekartik_common_utils/common_utils_import.dart';
 import 'package:tekartik_web_socket_io/web_socket_io.dart';
 import 'package:tekartik_web_socket/web_socket.dart';
 import 'package:json_rpc_2/json_rpc_2.dart' as json_rpc;
-import 'package:path/path.dart' as path;
 
 class ServerInfo {
   bool supportsWithoutRowId;

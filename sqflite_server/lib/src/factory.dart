@@ -8,7 +8,6 @@ import 'package:tekartik_web_socket/web_socket.dart';
 
 class SqfliteServerDatabaseFactory extends SqfliteDatabaseFactory {
   final SqfliteServerContext context;
-  path.Context get pathContext => context.pathContext;
 
   // SqfliteClient get _sqfliteClient
   SqfliteServerDatabaseFactory(this.context);
@@ -22,6 +21,8 @@ class SqfliteServerDatabaseFactory extends SqfliteDatabaseFactory {
     }
     return null;
   }
+
+  path.Context get pathContext => context.pathContext;
 
   Future close() async {
     await context.close();
