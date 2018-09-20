@@ -10,7 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  sqflite: '>=0.11.2'
+  sqflite: '>=0.12.1'
   path: any
 
 dev_dependencies:

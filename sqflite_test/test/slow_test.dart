@@ -21,6 +21,7 @@ Future main() async {
       await db.close();
     });
 
+    // Bigger timeout when using sqflite_server
     test("Perf 100 insert no txn", () async {
       String path = await context.initDeleteDb("slow_100_insert.db");
       Database db = await factory.openDatabase(path);
@@ -30,7 +31,7 @@ Future main() async {
             "INSERT INTO Test (name) VALUES (?)", <dynamic>["item $i"]);
       }
       await db.close();
-    });
+    }, timeout: Timeout(Duration(minutes: 2)));
 
     test("Perf 1000 insert", () async {
       String path = await context.initDeleteDb("slow_txn_1000_insert.db");
