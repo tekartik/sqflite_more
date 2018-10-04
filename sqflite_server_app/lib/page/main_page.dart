@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:sqflite_server/sqflite_server.dart';
 import 'package:sqflite_server/src/constant.dart';
@@ -222,6 +224,9 @@ class _SqfliteServerHomePageState extends State<SqfliteServerHomePage> {
       logs.clear();
       log('Listening on port $port');
       log('WebSocket url: ${app.sqfliteServer.url}');
+      if (Platform.isAndroid) {
+        log('Make sure you have ran at least once: adb forward tcp:8501 tcp:8501');
+      }
     } catch (e, st) {
       setState(() {
         log(e.toString());

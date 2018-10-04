@@ -5,7 +5,9 @@ SQFlite server
 ## Getting Started
 
 Tested on Android only
-Build and run the app to start a SQFlite server that can be used for unit testing your app sqlite usafe
+Build and run the app to start a SQFlite server that can be used for unit testing your app sqlite usage
+
+
 
 
 ## dev
