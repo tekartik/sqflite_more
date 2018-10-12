@@ -11,31 +11,10 @@ import 'package:sqflite_test/sqflite_test.dart';
 bool verify(bool condition, [String message]) {
   message ??= "verify failed";
   expect(condition, true, reason: message);
-  /*
-  if (condition == null) {
-    throw new Exception('"$message" null condition');
-  }
-  if (!condition) {
-    throw new Exception('"$message"');
-  }
-  */
   return condition;
 }
 
 class OpenCallbacks {
-  final DatabaseFactory databaseFactory;
-  bool onConfigureCalled;
-  bool onOpenCalled;
-  bool onCreateCalled;
-  bool onDowngradeCalled;
-  bool onUpgradeCalled;
-
-  OnDatabaseCreateFn onCreate;
-  OnDatabaseConfigureFn onConfigure;
-  OnDatabaseVersionChangeFn onDowngrade;
-  OnDatabaseVersionChangeFn onUpgrade;
-  OnDatabaseOpenFn onOpen;
-
   OpenCallbacks(this.databaseFactory) {
     onConfigure = (Database db) {
       //print("onConfigure");
@@ -75,6 +54,19 @@ class OpenCallbacks {
 
     reset();
   }
+
+  final DatabaseFactory databaseFactory;
+  bool onConfigureCalled;
+  bool onOpenCalled;
+  bool onCreateCalled;
+  bool onDowngradeCalled;
+  bool onUpgradeCalled;
+
+  OnDatabaseCreateFn onCreate;
+  OnDatabaseConfigureFn onConfigure;
+  OnDatabaseVersionChangeFn onDowngrade;
+  OnDatabaseVersionChangeFn onUpgrade;
+  OnDatabaseOpenFn onOpen;
 
   void reset() {
     onConfigureCalled = false;
@@ -746,9 +738,10 @@ Future main() async {
 }
 
 class Helper {
+  Helper(this.databaseFactory, this.path);
+
   final DatabaseFactory databaseFactory;
   final String path;
-  Helper(this.databaseFactory, this.path);
   Database _db;
   final _lock = Lock();
 

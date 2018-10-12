@@ -18,9 +18,10 @@ class ServerInfo {
 
 /// Instance of a server
 class SqfliteClient {
+  SqfliteClient._(this._client, this.serverInfo);
+
   json_rpc.Client _client;
   final ServerInfo serverInfo;
-  SqfliteClient._(this._client, this.serverInfo);
 
   static Future<SqfliteClient> connect(
     String url, {

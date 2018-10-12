@@ -446,6 +446,6 @@ INSERT INTO test (value) VALUES (10);
       } finally {
         await db?.close();
       }
-    }, solo: true);
+    });
   }
 }

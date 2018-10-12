@@ -15,15 +15,15 @@ typedef void SqfliteServerNotifyCallback(
 
 /// Web socket server
 class SqfliteServer {
-  final SqfliteServerNotifyCallback _notifyCallback;
-  final List<SqfliteServerChannel> _channels = [];
-  final WebSocketChannelServer<String> _webSocketChannelServer;
-
   SqfliteServer._(this._webSocketChannelServer, this._notifyCallback) {
     _webSocketChannelServer.stream.listen((WebSocketChannel<String> channel) {
       _channels.add(SqfliteServerChannel(this, channel));
     });
   }
+
+  final SqfliteServerNotifyCallback _notifyCallback;
+  final List<SqfliteServerChannel> _channels = [];
+  final WebSocketChannelServer<String> _webSocketChannelServer;
 
   static Future<SqfliteServer> serve(
       {WebSocketChannelServerFactory webSocketChannelServerFactory,
@@ -46,9 +46,6 @@ class SqfliteServer {
 }
 
 class SqfliteServerChannel {
-  final SqfliteServer _sqfliteServer;
-  final json_rpc.Server _rpcServer;
-
   SqfliteServerChannel(this._sqfliteServer, WebSocketChannel<String> channel)
       : _rpcServer = json_rpc.Server(channel) {
     // Specific method for getting server info upon start
@@ -123,6 +120,8 @@ class SqfliteServerChannel {
     _rpcServer.listen();
   }
 
+  final SqfliteServer _sqfliteServer;
+  final json_rpc.Server _rpcServer;
   SqfliteServerNotifyCallback get _notifyCallback =>
       _sqfliteServer._notifyCallback;
 }

@@ -1,4 +1,4 @@
-export 'src/factory.dart' show SqfliteServerDatabaseFactory;
+export 'package:sqflite_server/src/factory.dart' show SqfliteServerDatabaseFactory;
 import 'dart:async';
 
 import 'package:path/path.dart' as path;
@@ -81,36 +81,6 @@ class SqfliteServerContext implements SqfliteContext {
     var result = await _client.invoke<T>(method, param);
     return result;
   }
-
-  /*
-  Future init({int port}) async {
-    port ??= sqfliteServerDefaultPort;
-    if (_client == null) {
-      await _initLock.synchronized(() async {
-        if (_client == null) {
-          var url = getSqfliteServerUrl(port: port);
-
-          try {
-              _client =
-            _databaseFactory = await SqfliteServerDatabaseFactory.connect(url);
-          } catch (e) {
-            print(e);
-          }
-          if (databaseFactory == null) {
-            print('''
-sqflite server not running on $url
-Check that the sqflite_server_app is running on the proper port
-Android:
-  check that you have forwarded tcp ip on Android
-  \$ adb forward tcp:$port tcp:$port
-
-''');
-          }
-        }
-      });
-    }
-  }
-  */
 
   Future<SqfliteClient> connectClient(String url,
       {WebSocketChannelClientFactory webSocketChannelClientFactory}) async {

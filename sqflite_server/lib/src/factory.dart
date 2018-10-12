@@ -7,10 +7,9 @@ import 'package:tekartik_common_utils/common_utils_import.dart';
 import 'package:tekartik_web_socket/web_socket.dart';
 
 class SqfliteServerDatabaseFactory extends SqfliteDatabaseFactory {
-  final SqfliteServerContext context;
-
-  // SqfliteClient get _sqfliteClient
   SqfliteServerDatabaseFactory(this.context);
+
+  final SqfliteServerContext context;
 
   static Future<SqfliteServerDatabaseFactory> connect(String url,
       {WebSocketChannelClientFactory webSocketChannelClientFactory}) async {
