@@ -58,10 +58,10 @@ class SqlParserIndex {
 }
 
 class SqlParser {
+  SqlParser(this.sql);
+
   final String sql;
   int position = 0;
-
-  SqlParser(this.sql);
 
   void skipWhitespaces({bool skip, SqlParserIndex index}) {
     int position = index?.position ?? this.position;

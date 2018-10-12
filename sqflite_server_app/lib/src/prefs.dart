@@ -5,6 +5,10 @@ import 'package:sqflite_server/sqflite_server.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';
 
 class Prefs {
+  Prefs({DatabaseFactory databaseFactory, String dbName})
+      : _databaseFactory = databaseFactory ?? sqflite.databaseFactory,
+        dbName = dbName ?? defaultDbName;
+
   static const defaultDbName = 'sqlflite_server_app_prefs.db';
   final DatabaseFactory _databaseFactory;
   final String dbName;
@@ -16,10 +20,6 @@ class Prefs {
   bool autoStart = false;
 
   Database _db;
-
-  Prefs({DatabaseFactory databaseFactory, String dbName})
-      : _databaseFactory = databaseFactory ?? sqflite.databaseFactory,
-        dbName = dbName ?? defaultDbName;
 
   Future<Database> get db async {
     if (_db == null) {

@@ -1,3 +1,9 @@
 # ide
 *.iml
 .idea/
+
+# dart
+.dart_tool/
+.packages
+pubspec.lock
+build/

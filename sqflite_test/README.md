@@ -4,6 +4,13 @@ SQFlite test package
 
 ## Getting Started
 
-For help getting started with Flutter, view our online [documentation](https://flutter.io/).
+dependencies:
 
-For help on editing package code, view the [documentation](https://flutter.io/developing-packages/).
+````
+  sqflite_test:
+    git:
+      url: git://github.com/tekartik/sqflite_more
+      ref: dart2
+      path: sqflite_test
+    version: '>=0.1.0'
+```
