@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_test/sqflite_test.dart';
@@ -15,6 +16,7 @@ Future main() async {
   var context = await SqfliteServerTestContext.connect();
   if (context != null) {
     var factory = context.databaseFactory;
+
     test("order_by", () async {
       //await Sqflite.setDebugModeOn(true);
       String path = await context.initDeleteDb("order_by_exp.db");
@@ -409,5 +411,41 @@ INSERT INTO test (value) VALUES (10);
         await db.close();
       }
     });
+
+    test("Issue#107", () async {
+      // Sqflite.devSetDebugModeOn(true);
+      // Try to insert string with quote
+      String path = await context.initDeleteDb("exp_issue_107.db");
+      Database db = await factory.openDatabase(path);
+      try {
+        print('0');
+        await db.execute(
+          "CREATE TABLE `groups` (`id`	INTEGER NOT NULL UNIQUE, `service_id`	INTEGER, `official`	BOOLEAN, `type`	TEXT, `access`	TEXT, `ads`	BOOLEAN, `mute`	BOOLEAN, `read`	INTEGER, `background`	TEXT, `last_message_time`	INTEGER, `last_message_id`	INTEGER, `deleted_to`	INTEGER, `is_admin`	BOOLEAN, `is_owner`	BOOLEAN, `description`	TEXT, `pin`	BOOLEAN, `name`	TEXT, `opposite_id`	INTEGER, `badge`	INTEGER, `member_count`	INTEGER, `identifier`	TEXT, `join_link`	TEXT, `hash`	TEXT, `service_info`	TEXT, `seen`	INTEGER, `pinned_message`	INTEGER, `delivery`	INTEGER, PRIMARY KEY(`id`) ) WITHOUT ROWID;",
+        );
+        print('1');
+        await db.execute(
+          "CREATE INDEX groups_id ON groups ( service_id )",
+        );
+      } finally {
+        await db?.close();
+      }
+    }, skip: "5.0 crashes");
+
+    test("Issue#107_alt", () async {
+      // Sqflite.devSetDebugModeOn(true);
+      // Try to insert string with quote
+      String path = await context.initDeleteDb("exp_issue_107_alt.db");
+      Database db = await factory.openDatabase(path);
+      try {
+        await db.execute(
+          "CREATE TABLE `groups` (`id` INTEGER PRIMARY KEY, `service_id`INTEGER, `official`	BOOLEAN, `type`	TEXT, `access`	TEXT, `ads`	BOOLEAN, `mute`	BOOLEAN, `read`	INTEGER, `background`	TEXT, `last_message_time`	INTEGER, `last_message_id`	INTEGER, `deleted_to`	INTEGER, `is_admin`	BOOLEAN, `is_owner`	BOOLEAN, `description`	TEXT, `pin`	BOOLEAN, `name`	TEXT, `opposite_id`	INTEGER, `badge`	INTEGER, `member_count`	INTEGER, `identifier`	TEXT, `join_link`	TEXT, `hash`	TEXT, `service_info`	TEXT, `seen`	INTEGER, `pinned_message`	INTEGER, `delivery`	INTEGER) WITHOUT ROWID",
+        );
+        await db.execute(
+          "CREATE INDEX `groups_id` ON groups ( `id` ASC )",
+        );
+      } finally {
+        await db?.close();
+      }
+    }, solo: true);
   }
 }
