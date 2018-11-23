@@ -1,4 +1,5 @@
-export 'package:sqflite_server/src/factory.dart' show SqfliteServerDatabaseFactory;
+export 'package:sqflite_server/src/factory.dart'
+    show SqfliteServerDatabaseFactory;
 import 'dart:async';
 
 import 'package:path/path.dart' as path;
