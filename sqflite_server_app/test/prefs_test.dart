@@ -7,7 +7,7 @@
 import 'package:sqflite_server/sqflite.dart';
 import 'package:sqflite_server/sqflite_server.dart';
 import 'package:sqflite_server_app/src/prefs.dart';
-import 'package:test/test.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('prefs', () {
