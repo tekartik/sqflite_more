@@ -8,6 +8,12 @@ const methodDeleteDatabase = 'sqfliteDeleteDatabase';
 const methodCreateDirectory = 'sqfliteCreateDirectory';
 // Create a directory and its sub directory
 const methodDeleteDirectory = 'sqfliteDeleteDirectory';
+
+// Write a file (Unit8List)
+const methodWriteFile = 'sqfliteWriteFile';
+// Read a file (Unit8List)
+const methodReadFile = 'sqfliteReadFile';
+
 // Generic method to forward to sqlite (open, insert...)
 const methodSqflite = 'sqfliteMethod';
 
@@ -25,6 +31,8 @@ const keyParam = 'param';
 
 // delete database
 const keyPath = 'path';
+// binary content (unoptimized List<int>)
+const keyContent = 'content';
 
 // server info
 const keyName = 'name';

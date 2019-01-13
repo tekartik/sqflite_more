@@ -150,4 +150,17 @@ Android:
   // Force posix
   @override
   path.Context get pathContext => path.posix;
+
+  @override
+  Future<List<int>> readFile(String path) async {
+    return (await _client.sendRequest<List>(
+            methodReadFile, <String, dynamic>{keyPath: path}))
+        ?.cast<int>();
+  }
+
+  @override
+  Future<String> writeFile(String path, List<int> data) async {
+    return await _client.sendRequest<String>(
+        methodWriteFile, <String, dynamic>{keyPath: path, keyContent: data});
+  }
 }

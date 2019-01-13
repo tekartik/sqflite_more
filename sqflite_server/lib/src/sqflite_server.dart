@@ -90,7 +90,7 @@ class SqfliteServerChannel {
       }
       return path;
     });
-    // Specific method for creating a directory
+    // Specific method for deleting a directory
     _rpcServer.registerMethod(methodDeleteDirectory,
         (json_rpc.Parameters parameters) async {
       if (_notifyCallback != null) {
@@ -102,6 +102,36 @@ class SqfliteServerChannel {
         _notifyCallback(true, methodDeleteDirectory, path);
       }
       return path;
+    });
+    // Specific method for writing a file
+    _rpcServer.registerMethod(methodWriteFile,
+        (json_rpc.Parameters parameters) async {
+      if (_notifyCallback != null) {
+        _notifyCallback(false, methodWriteFile, parameters.value);
+      }
+      Map map = parameters.value;
+      String path = map[keyPath];
+      List<int> content = (map[keyContent] as List)?.cast<int>();
+      path = await sqfliteContext.writeFile(path, content);
+      if (_notifyCallback != null) {
+        _notifyCallback(true, methodWriteFile, path);
+      }
+      return path;
+    });
+    // Specific method for deleting a directory
+    _rpcServer.registerMethod(methodReadFile,
+        (json_rpc.Parameters parameters) async {
+      if (_notifyCallback != null) {
+        _notifyCallback(false, methodReadFile, parameters.value);
+      }
+      Map map = parameters.value;
+      String path = map[keyPath];
+
+      var content = await sqfliteContext.readFile(path);
+      if (_notifyCallback != null) {
+        _notifyCallback(true, methodReadFile, content);
+      }
+      return content;
     });
     // Generic method
     _rpcServer.registerMethod(methodSqflite,

@@ -10,6 +10,8 @@ abstract class SqfliteContext {
   DatabaseFactory get databaseFactory;
   Future<String> createDirectory(String path);
   Future<String> deleteDirectory(String path);
+  Future<String> writeFile(String path, List<int> data);
+  Future<List<int>> readFile(String path);
   bool get supportsWithoutRowId;
   bool get isAndroid;
   bool get isIOS;
@@ -67,6 +69,17 @@ class _SqfliteContext implements SqfliteContext {
 
   @override
   Context get pathContext => path.context;
+
+  @override
+  Future<List<int>> readFile(String path) async =>
+      File(await fixPath(path)).readAsBytes();
+
+  @override
+  Future<String> writeFile(String path, List<int> data) async {
+    path = await fixPath(path);
+    await File(await fixPath(path)).writeAsBytes(data, flush: true);
+    return path;
+  }
 }
 
 SqfliteContext _sqfliteContext;

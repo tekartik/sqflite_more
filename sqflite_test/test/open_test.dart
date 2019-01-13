@@ -3,7 +3,7 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:sqflite/sqflite.dart';
 import 'package:synchronized/synchronized.dart';
-import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter/services.dart' show CachingAssetBundle;
 import 'package:path/path.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqflite_test/sqflite_test.dart';
@@ -86,6 +86,16 @@ class OpenCallbacks {
             onDowngrade: onDowngrade,
             onUpgrade: onUpgrade,
             onOpen: onOpen));
+  }
+}
+
+class TestAssetBundle extends CachingAssetBundle {
+  @override
+  Future<ByteData> load(String key) async {
+    //if (key == 'resources/test')
+    return ByteData.view(
+        Uint8List.fromList(await File(join('test', key)).readAsBytes()).buffer);
+    // return null;
   }
 }
 
@@ -307,6 +317,7 @@ Future main() async {
 
     test("Open asset database", () async {
       // await Sqflite.devSetDebugModeOn(false);
+      var rootBundle = TestAssetBundle();
       var databasesPath = await factory.getDatabasesPath();
       String path = join(databasesPath, "asset_example.db");
 
@@ -317,7 +328,7 @@ Future main() async {
       ByteData data = await rootBundle.load(join("assets", "example.db"));
       List<int> bytes =
           data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
-      await File(path).writeAsBytes(bytes);
+      await context.writeFile(path, bytes);
 
       // open the database
       Database db = await factory.openDatabase(path);
@@ -325,10 +336,11 @@ Future main() async {
       // Our database as a single table with a single element
       List<Map<String, dynamic>> list = await db.rawQuery("SELECT * FROM Test");
       print("list $list");
+      // list [{id: 1, name: simple value}]
       expect(list.first["name"], "simple value");
 
       await db.close();
-    }, skip: true);
+    });
 
     test("Open on configure", () async {
       String path = await context.initDeleteDb("open_on_configure.db");
@@ -553,6 +565,7 @@ Future main() async {
 
     test('Open demo (doc)', () async {
       // await Sqflite.devSetDebugModeOn(true);
+      var rootBundle = TestAssetBundle();
       String path = await context.initDeleteDb("open_read_only.db");
 
       {
@@ -601,8 +614,7 @@ Future main() async {
         await db.close();
       }
 
-      /* skip
-      // asset (use existing copy if any
+      // asset (use existing copy if any)
       {
         // Check if we have an existing copy first
         var databasesPath = await factory.getDatabasesPath();
@@ -625,7 +637,7 @@ Future main() async {
           ByteData data = await rootBundle.load(join("assets", "example.db"));
           List<int> bytes =
               data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
-          await new File(path).writeAsBytes(bytes);
+          await context.writeFile(path, bytes);
 
           // open the database
           db = await factory.openDatabase(path,
@@ -636,7 +648,6 @@ Future main() async {
 
         await db.close();
       }
-      */
     });
 
     test('Database locked (doc)', () async {
