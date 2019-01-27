@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_test/sqflite_test.dart';
+import 'package:tekartik_common_utils/common_utils_import.dart';
 
 class TestAssetBundle extends CachingAssetBundle {
   @override
@@ -105,5 +106,137 @@ Future main() async {
         await db?.close();
       }
     });
+
+    test('Issue#146', () => issue146(context));
+  }
+}
+
+/// Issue 146
+
+/* original
+class ClassroomProvider {
+  Future<Classroom> insert(Classroom room) async {
+    return database.transaction((txn) async {
+      room.id = await db.insert(tableClassroom, room.toMap());
+      await _teacherProvider.insert(room.getTeacher());
+      await _studentProvider.bulkInsert(
+          room.getStudents()); // nest transaction here
+      return room;
+    }
+        }
+
+  );
+}}
+
+class TeacherProvider {
+  Future<Teacher> insert(Teacher teacher) async {
+    teacher.id = await db.insert(tableTeacher, teacher.toMap());
+    return teacher;
+  }
+}
+
+class StudentProvider {
+  Future<List<Student>> bulkInsert(List<Student> students) async {
+    // use database object in a transaction here !!!
+    return database.transaction((txn) async {
+      for (var s in students) {
+        s.id = await db.insert(tableStudent, student.toMap());
+      }
+      return students;
+    });
+  }
+}
+*/
+
+String tableItem = 'Test';
+String tableClassroom = tableItem;
+String tableTeacher = tableItem;
+String tableStudent = tableItem;
+
+class Item {
+  int id;
+  String name;
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{'name': name};
+  }
+}
+
+class Classroom extends Item {
+  Teacher _teacher;
+  List<Student> _students;
+
+  Teacher getTeacher() => _teacher;
+
+  List<Student> getStudents() => _students;
+}
+
+class Teacher extends Item {}
+
+class Student extends Item {}
+
+TeacherProvider _teacherProvider;
+StudentProvider _studentProvider;
+
+Future issue146(SqfliteServerTestContext context) async {
+  //context.devSetDebugModeOn(true);
+  try {
+    String path = await context.initDeleteDb("exp_issue_146.db");
+    database = await context.databaseFactory.openDatabase(path,
+        options: OpenDatabaseOptions(
+            version: 1,
+            onCreate: (Database db, int version) {
+              db.execute(
+                  'CREATE TABLE Test (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT)');
+            }));
+
+    _teacherProvider = TeacherProvider();
+    _studentProvider = StudentProvider();
+    var _classroomProvider = ClassroomProvider();
+    var room = Classroom()..name = 'room1';
+    room._teacher = Teacher()..name = 'teacher1';
+    room._students = [Student()..name = 'student1'];
+    await _classroomProvider.insert(room);
+  } finally {
+    database?.close();
+    database = null;
+  }
+}
+
+Database database;
+
+class ClassroomProvider {
+  Future<Classroom> insert(Classroom room) async {
+    return database.transaction((txn) async {
+      await _teacherProvider.txnInsert(txn, room.getTeacher());
+      await _studentProvider.txnBulkInsert(
+          txn, room.getStudents()); // nest transaction here
+      // Insert room last to save the teacher and students ids
+      room.id = await txn.insert(tableClassroom, room.toMap());
+      return room;
+    });
+  }
+}
+
+class TeacherProvider {
+  Future<Teacher> insert(Teacher teacher) =>
+      database.transaction((txn) => txnInsert(txn, teacher));
+
+  Future<Teacher> txnInsert(Transaction txn, Teacher teacher) async {
+    teacher.id = await txn.insert(tableTeacher, teacher.toMap());
+    return teacher;
+  }
+}
+
+class StudentProvider {
+  Future<List<Student>> bulkInsert(List<Student> students) =>
+      database.transaction((txn) => txnBulkInsert(txn, students));
+
+  Future<List<Student>> txnBulkInsert(
+      Transaction txn, List<Student> students) async {
+    for (var student in students) {
+      student.id = await txn.insert(tableStudent, student.toMap());
+    }
+    return students;
   }
 }

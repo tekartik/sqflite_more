@@ -2,6 +2,8 @@ import 'package:sqflite_server/sqflite_server.dart';
 import 'package:sqflite_server_app/src/prefs.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';
 
+Version _appVersion = Version(0, 1, 0);
+
 class App {
   bool started = false;
   Prefs prefs;
@@ -9,6 +11,8 @@ class App {
   SqfliteServer get sqfliteServer => _sqfliteServer;
 
   bool get sqfliteServerStarted => _sqfliteServer != null;
+
+  Version get version => _appVersion;
 
   Future<SqfliteServer> startServer(int port,
       {SqfliteServerNotifyCallback notifyCallback}) async {

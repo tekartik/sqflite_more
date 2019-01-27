@@ -222,6 +222,7 @@ class _SqfliteServerHomePageState extends State<SqfliteServerHomePage> {
       app.prefs.setPort(port);
       app.prefs.setAutoStart(true);
       logs.clear();
+      log('Version: ${app.version}');
       log('Listening on port $port');
       log('WebSocket url: ${app.sqfliteServer.url}');
       if (Platform.isAndroid) {
