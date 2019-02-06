@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
+
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart';
@@ -108,6 +109,34 @@ Future main() async {
     });
 
     test('Issue#146', () => issue146(context));
+
+    test('Issue#159', () async {
+      var db = DbHelper(context);
+      User user1 = User("User1");
+      int insertResult = await db.saveUser(user1);
+      print("insert result is " + insertResult.toString());
+      User searchResult = await db.retrieveUser(insertResult);
+      print(searchResult.toString());
+    });
+    test('primary key', () async {
+      String path = await context.initDeleteDb("primary_key.db");
+      Database db = await factory.openDatabase(path);
+      try {
+        String table = "test";
+        await db
+            .execute("CREATE TABLE $table (id INTEGER PRIMARY KEY, name TEXT)");
+        var id = await db.insert(table, <String, dynamic>{'name': 'test'});
+        var id2 = await db.insert(table, <String, dynamic>{'name': 'test'});
+
+        print('inserted $id, $id2');
+        // inserted in a wrong order to check ASC/DESC
+
+        print(await db.query(table));
+        //await db
+      } finally {
+        db.close();
+      }
+    });
   }
 }
 
@@ -238,5 +267,104 @@ class StudentProvider {
       student.id = await txn.insert(tableStudent, student.toMap());
     }
     return students;
+  }
+}
+
+// Issue 159
+
+class DbHelper {
+  final SqfliteServerTestContext context;
+  static Database _db;
+
+  DbHelper(this.context);
+
+  void _onCreate(Database _db, int newVersion) async {
+    await _db.execute(
+        "CREATE TABLE MYTABLE(ID INTEGER PRIMARY KEY, userName TEXT NOT NULL)");
+  }
+
+  Future<Database> initDB() async {
+    //Directory documentDirectory = await contextgetApplicationDocumentsDirectory();
+    // String path = join(documentDirectory.path, "appdb.db");
+    String path = await context.initDeleteDb('issue159.db');
+    Database newDB = await context.databaseFactory.openDatabase(path,
+        options: OpenDatabaseOptions(version: 1, onCreate: _onCreate));
+    return newDB;
+  }
+
+  Future<Database> get db async {
+    if (_db != null) {
+      return _db;
+    } else {
+      _db = await initDB();
+      return _db;
+    }
+  }
+
+  Future<int> saveUser(User user) async {
+    var dbClient = await db;
+    int result;
+    var userMap = user.toMap();
+    result = await dbClient.insert("MYTABLE", userMap);
+    return result;
+  }
+
+  Future<User> retrieveUser(int id) async {
+    var dbClient = await db;
+    if (id == null) {
+      print("The ID is null, cannot find user with Id null");
+      var nullResult =
+          await dbClient.rawQuery("SELECT * FROM MYTABLE WHERE ID is null");
+      return User.fromMap(nullResult.first);
+    }
+    String sql = "SELECT * FROM MYTABLE WHERE ID = $id";
+    var result = await dbClient.rawQuery(sql);
+    print(result);
+    if (result.length != 0) {
+      return User.fromMap(result.first);
+    } else {
+      return null;
+    }
+  }
+}
+
+class User {
+  String _userName;
+  int _id;
+
+  String get userName => _userName;
+
+  int get id => _id;
+
+  User(this._userName, [this._id]);
+
+  User.map(dynamic obj) {
+    this._userName = obj['userName'] as String;
+    this._id = obj['id'] as int;
+  }
+
+  User.fromMap(Map<String, dynamic> map) {
+    this._userName = map["userName"] as String;
+    if (map["id"] != null) {
+      this._id = map["id"] as int;
+    } else {
+      print("in fromMap, Id is null");
+    }
+  }
+
+  Map<String, dynamic> toMap() {
+    var map = Map<String, dynamic>();
+    map["userName"] = this._userName;
+    if (_id != null) {
+      map["id"] = _id;
+    } else {
+      print("in toMap, id is null");
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return "ID is ${this._id} , Username is ${this._userName} }";
   }
 }
