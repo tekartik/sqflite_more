@@ -7,7 +7,7 @@ Future main() async {
   var factory = await initSqfliteServerDatabaseFactory();
 
   tearDownAll(() async {
-    await factory.close();
+    await factory?.close();
   });
 
   group('client', () {
