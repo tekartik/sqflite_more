@@ -5,4 +5,4 @@
 set -ev
 
 dartanalyzer --fatal-infos --fatal-warnings .
-pub run test
+# pub run test

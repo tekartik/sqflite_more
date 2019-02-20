@@ -32,6 +32,6 @@ tool/travis.sh
 popd
 
 pushd alt/sqflite_github_test
-pub get
+flutter packages get
 tool/travis.sh
 popd
