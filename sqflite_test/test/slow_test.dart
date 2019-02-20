@@ -33,7 +33,7 @@ void run(SqfliteServerTestContext context) {
           "INSERT INTO Test (name) VALUES (?)", <dynamic>["item $i"]);
     }
     await db.close();
-  }, timeout: Timeout(Duration(minutes: 2)));
+  }, timeout: const Timeout(Duration(minutes: 2)));
 
   test("Perf 1000 insert", () async {
     String path = await context.initDeleteDb("slow_txn_1000_insert.db");
