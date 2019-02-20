@@ -2,7 +2,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:sqflite_server/sqflite_server.dart';
+// ignore: implementation_imports
 import 'package:sqflite_server/src/constant.dart';
+// ignore: implementation_imports
 import 'package:sqflite/src/constant.dart';
 import 'package:sqflite_server_app/src/app.dart';
 import 'package:sqflite_server_app/src/prefs.dart';
@@ -77,7 +79,7 @@ class _SqfliteServerHomePageState extends State<SqfliteServerHomePage> {
               } else {
                 var widgets = <Widget>[
                   Padding(
-                      padding: EdgeInsets.only(top: 16.0),
+                      padding: const EdgeInsets.only(top: 16.0),
                       child: Text(
                         app.sqfliteServerStarted
                             ? 'SQFlite server listening on ${app.sqfliteServer.port}'
@@ -90,7 +92,7 @@ class _SqfliteServerHomePageState extends State<SqfliteServerHomePage> {
                       padding: const EdgeInsets.only(bottom: 16.0),
                       child: TextField(
                         controller: portInputController,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                             labelText: "Port number (0 for any)"),
                         keyboardType: TextInputType.number,
                       )),
@@ -123,14 +125,15 @@ class _SqfliteServerHomePageState extends State<SqfliteServerHomePage> {
                           itemCount: logs.length,
                           itemBuilder: (BuildContext context, int index) {
                             return Padding(
-                                padding: EdgeInsets.only(left: 8.0, right: 8.0),
+                                padding: const EdgeInsets.only(
+                                    left: 8.0, right: 8.0),
                                 child: Text(
                                   logs[logs.length - index - 1],
-                                  style: TextStyle(fontSize: 10.0),
+                                  style: const TextStyle(fontSize: 10.0),
                                 ));
                           })));
                 }
-                widgets.add(SizedBox(
+                widgets.add(const SizedBox(
                   height: 8.0,
                 ));
                 startApp();
@@ -163,7 +166,7 @@ class _SqfliteServerHomePageState extends State<SqfliteServerHomePage> {
   }
 
   Future stopServer() async {
-    app.prefs.setAutoStart(false);
+    await app.prefs.setAutoStart(false);
     setState(() {
       _startPending = true;
     });
@@ -206,7 +209,7 @@ class _SqfliteServerHomePageState extends State<SqfliteServerHomePage> {
                 var sql = _methodParam['sql'] as String;
                 if (sql != null) {
                   var args = _methodParam['arguments'] as List;
-                  if (args != null && args.length > 0) {
+                  if (args != null && args.isNotEmpty) {
                     sql += ' $args';
                   }
                   log(sql);
@@ -219,8 +222,8 @@ class _SqfliteServerHomePageState extends State<SqfliteServerHomePage> {
         // log('$response $method $param');
       });
       // Save port in prefs upon success
-      app.prefs.setPort(port);
-      app.prefs.setAutoStart(true);
+      await app.prefs.setPort(port);
+      await app.prefs.setAutoStart(true);
       logs.clear();
       log('Version: ${app.version}');
       log('Listening on port $port');

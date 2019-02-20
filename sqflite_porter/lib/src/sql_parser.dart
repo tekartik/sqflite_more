@@ -32,7 +32,7 @@ bool isSeparator(int codeUnit) {
 }
 
 String unescapeText(String name) {
-  if (name.length > 0) {
+  if (name.isNotEmpty) {
     var startCodeUnit = name.codeUnitAt(0);
     if (isStringWrapper(startCodeUnit)) {
       if (name.length > 1) {

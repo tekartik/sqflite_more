@@ -1,17 +1,22 @@
 name: sqflite_porter
 description: Sqflite import and export
-version: 0.1.0
+version: 0.2.0
 author:
 homepage:
 
 environment:
-  sdk: ">=2.0.0-dev.68.0 <3.0.0"
+  sdk: ">=2.1.0-dev <3.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
-  sqflite: '>=0.12.1'
+  sqflite: '>=1.1.1'
   path: any
+  tekartik_common_utils:
+    git:
+      url: git://github.com/tekartik/common_utils.dart
+      ref: dart2
+    version: '>=0.9.7+1'
 
 dev_dependencies:
   flutter_test:

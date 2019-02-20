@@ -1,20 +1,22 @@
 import 'dart:async';
 
-import 'package:flutter_test/flutter_test.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:test/test.dart';
+import 'package:sqflite/sqlite_api.dart';
 import 'package:sqflite_test/sqflite_test.dart';
 
-Future main() async {
-  var context = await SqfliteServerTestContext.connect();
-  if (context != null) {
-    var factory = context.databaseFactory;
+Future main() {
+  return testMain(run);
+}
 
-    test("with_sudoku_solver", () async {
-      //await Sqflite.setDebugModeOn(true);
-      String path = await context.initDeleteDb("with_sudoku_solver.db");
-      Database db = await factory.openDatabase(path);
-      try {
-        var result = await db.rawQuery('''
+void run(SqfliteServerTestContext context) {
+  var factory = context.databaseFactory;
+
+  test("with_sudoku_solver", () async {
+    //await Sqflite.setDebugModeOn(true);
+    String path = await context.initDeleteDb("with_sudoku_solver.db");
+    Database db = await factory.openDatabase(path);
+    try {
+      var result = await db.rawQuery('''
 WITH RECURSIVE
   input(sud) AS (
     VALUES('53..7....6..195....98....6.8...6...34..8.3..17...2...6.6....28....419..5....8..79')
@@ -44,16 +46,15 @@ WITH RECURSIVE
   )
 SELECT s FROM x WHERE ind=0;
             ''');
-        //print(result);
-        expect(result, [
-          {
-            's':
-                '534678912672195348198342567859761423426853791713924856961537284287419635345286179'
-          }
-        ]);
-      } finally {
-        await db.close();
-      }
-    });
-  }
+      //print(result);
+      expect(result, [
+        {
+          's':
+              '534678912672195348198342567859761423426853791713924856961537284287419635345286179'
+        }
+      ]);
+    } finally {
+      await db.close();
+    }
+  });
 }

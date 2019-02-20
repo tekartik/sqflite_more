@@ -10,7 +10,7 @@ description: Sqflite testing app
 version: 0.1.0
 
 environment:
-  sdk: ">=2.0.0-dev.68.0 <3.0.0"
+  sdk: ">=2.1.0-dev <3.0.0"
 
 dependencies:
   flutter:
@@ -103,3 +103,5 @@ dependency_overrides:
     path: ../sqflite_test
 #  tekartik_test_menu_flutter:
 #    path: ../../test_menu_flutter/test_menu_flutter
+  sqflite:
+    path: ../../sqflite

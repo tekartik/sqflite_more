@@ -30,3 +30,8 @@ pushd sqflite_server_app
 flutter packages get
 tool/travis.sh
 popd
+
+pushd alt/sqflite_github_test
+flutter packages get
+tool/travis.sh
+popd

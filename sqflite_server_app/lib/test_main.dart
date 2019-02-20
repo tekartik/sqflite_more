@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
+// ignore: implementation_imports
 import 'package:sqflite_porter/src/utils.dart';
 import 'package:sqflite_porter/sqflite_porter.dart';
 import 'package:sqflite_server_app/main.dart';
@@ -16,8 +17,8 @@ void main() {
       });
       item('go home (restart app)', () async {
         //Sqflite.devSetDebugModeOn(true);
-        clearApp();
-        Navigator.of(buildContext).push<dynamic>(homePageRoute);
+        await clearApp();
+        await Navigator.of(buildContext).push<dynamic>(homePageRoute);
       });
       item('app', () {
         run();

@@ -1,17 +1,17 @@
 name: sqflite_server
 description: Sqflite server component
-version: 0.2.1
+version: 0.3.0
 author:
 homepage:
 
 environment:
-  sdk: ">=2.0.0-dev.68.0 <3.0.0"
+  sdk: ">=2.1.0-dev <3.0.0"
 
 dependencies:
   path:
   flutter:
     sdk: flutter
-  sqflite: '>=1.1.0-dev.1'
+  sqflite: '>=1.1.1'
   tekartik_web_socket_io:
     git:
       url: git://github.com/tekartik/web_socket.dart
@@ -19,11 +19,17 @@ dependencies:
       path: web_socket_io
     version: '>=0.2.0'
   json_rpc_2:
+  tekartik_common_utils:
+    git:
+      url: git://github.com/tekartik/common_utils.dart
+      ref: dart2
+    version: '>=0.9.7+1'
 
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  test:
 
 # For information on the generic Dart part of this file, see the
 # following page: https://www.dartlang.org/tools/pub/pubspec
@@ -62,6 +68,6 @@ flutter:
   # For details regarding fonts in packages, see
   # https://flutter.io/custom-fonts/#from-packages
 
-#dependency_overrides:
-#  sqflite:
-#    path: ../../sqflite
+# dependency_overrides:
+#   sqflite:
+#     path: ../../sqflite

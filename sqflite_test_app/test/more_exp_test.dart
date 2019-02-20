@@ -5,7 +5,7 @@ import 'dart:typed_data';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:sqflite/sqlite_api.dart';
 import 'package:sqflite_test/sqflite_test.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';
 
@@ -134,7 +134,7 @@ Future main() async {
         print(await db.query(table));
         //await db
       } finally {
-        db.close();
+        await db.close();
       }
     });
   }
@@ -227,7 +227,7 @@ Future issue146(SqfliteServerTestContext context) async {
     room._students = [Student()..name = 'student1'];
     await _classroomProvider.insert(room);
   } finally {
-    database?.close();
+    await database?.close();
     database = null;
   }
 }
@@ -320,7 +320,7 @@ class DbHelper {
     String sql = "SELECT * FROM MYTABLE WHERE ID = $id";
     var result = await dbClient.rawQuery(sql);
     print(result);
-    if (result.length != 0) {
+    if (result.isNotEmpty) {
       return User.fromMap(result.first);
     } else {
       return null;
@@ -353,7 +353,7 @@ class User {
   }
 
   Map<String, dynamic> toMap() {
-    var map = Map<String, dynamic>();
+    var map = <String, dynamic>{};
     map["userName"] = this._userName;
     if (_id != null) {
       map["id"] = _id;

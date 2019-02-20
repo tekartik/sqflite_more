@@ -1,11 +1,16 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:json_rpc_2/json_rpc_2.dart' as json_rpc;
+import 'package:path/path.dart' as path;
+import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:sqflite/sqflite.dart' as sqflite;
 import 'package:sqflite_server/sqflite_context.dart';
 import 'package:sqflite_server/src/constant.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';
 import 'package:tekartik_web_socket_io/web_socket_io.dart';
 import 'package:tekartik_web_socket/web_socket.dart';
+// ignore: implementation_imports
 import 'package:sqflite/src/sqflite_impl.dart';
 
 int defaultPort = 8501;
@@ -109,8 +114,8 @@ class SqfliteServerChannel {
       if (_notifyCallback != null) {
         _notifyCallback(false, methodWriteFile, parameters.value);
       }
-      Map map = parameters.value;
-      String path = map[keyPath];
+      final map = parameters.value as Map;
+      String path = map[keyPath]?.toString();
       List<int> content = (map[keyContent] as List)?.cast<int>();
       path = await sqfliteContext.writeFile(path, content);
       if (_notifyCallback != null) {
@@ -124,8 +129,8 @@ class SqfliteServerChannel {
       if (_notifyCallback != null) {
         _notifyCallback(false, methodReadFile, parameters.value);
       }
-      Map map = parameters.value;
-      String path = map[keyPath];
+      final map = parameters.value as Map;
+      final path = map[keyPath] as String;
 
       var content = await sqfliteContext.readFile(path);
       if (_notifyCallback != null) {
@@ -155,3 +160,70 @@ class SqfliteServerChannel {
   SqfliteServerNotifyCallback get _notifyCallback =>
       _sqfliteServer._notifyCallback;
 }
+
+class _SqfliteContext implements SqfliteContext {
+  @override
+  DatabaseFactory get databaseFactory => sqflite.databaseFactory;
+
+  @override
+  Future<String> createDirectory(String path) async {
+    try {
+      path = await fixPath(path);
+      await Directory(path).create(recursive: true);
+    } catch (_e) {
+      // print(e);
+    }
+    return path;
+  }
+
+  @override
+  Future<String> deleteDirectory(String path) async {
+    try {
+      path = await fixPath(path);
+      await Directory(path).delete(recursive: true);
+    } catch (_e) {
+      // print(e);
+    }
+    return path;
+  }
+
+  Future<String> fixPath(String path) async {
+    if (path == null) {
+      path = await databaseFactory.getDatabasesPath();
+    } else if (path == inMemoryDatabasePath) {
+      // nothing
+    } else {
+      if (isRelative(path)) {
+        path = pathContext.join(await databaseFactory.getDatabasesPath(), path);
+      }
+      path = pathContext.absolute(pathContext.normalize(path));
+    }
+    return path;
+  }
+
+  @override
+  bool get supportsWithoutRowId => !Platform.isIOS;
+
+  @override
+  bool get isAndroid => Platform.isAndroid;
+
+  @override
+  bool get isIOS => Platform.isIOS;
+
+  @override
+  Context get pathContext => path.context;
+
+  @override
+  Future<List<int>> readFile(String path) async =>
+      File(await fixPath(path)).readAsBytes();
+
+  @override
+  Future<String> writeFile(String path, List<int> data) async {
+    path = await fixPath(path);
+    await File(await fixPath(path)).writeAsBytes(data, flush: true);
+    return path;
+  }
+}
+
+SqfliteContext _sqfliteContext;
+SqfliteContext get sqfliteContext => _sqfliteContext ??= _SqfliteContext();

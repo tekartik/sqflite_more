@@ -10,7 +10,7 @@ description: SQFlite server
 version: 0.1.0
 
 environment:
-  sdk: ">=2.0.0-dev.68.0 <3.0.0"
+  sdk: ">=2.1.0-dev <3.0.0"
 
 dependencies:
   flutter:
@@ -19,6 +19,18 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2
+  sqflite_server:
+    git:
+      url: git://github.com/tekartik/sqflite_more
+      ref: dart2
+      path: sqflite_server
+    version: '>=0.3.0'
+  sqflite_porter:
+    git:
+      url: git://github.com/tekartik/sqflite_more
+      ref: dart2
+      path: sqflite_porter
+    version: '>=0.2.0'
 
 dev_dependencies:
   flutter_test:
@@ -81,5 +93,3 @@ dependency_overrides:
     path: ../sqflite_porter
   sqflite_server:
     path: ../sqflite_server
-#  sqflite:
-#    path: ../../sqflite

@@ -40,3 +40,5 @@ const keyVersion = 'version';
 const keySupportsWithoutRowId = 'supportsWithoutRowId';
 const keyIsIOS = 'isIOS';
 const keyIsAndroid = 'isAndroid';
+
+const sqfliteServerDefaultPort = 8501;

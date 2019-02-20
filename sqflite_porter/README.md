@@ -13,5 +13,5 @@ dependencies:
       url: git://github.com/tekartik/sqflite_more
       ref: dart2
       path: sqflite_porter
-    version: '>=0.1.0'
+    version: '>=0.2.0'
 ````
