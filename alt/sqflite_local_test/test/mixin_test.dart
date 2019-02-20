@@ -1,5 +1,9 @@
-import '../../../sqflite_test/test/mixin_test.dart' as mixin_text;
+@TestOn('vm')
+import 'package:test/test.dart';
+import '../../../../sqflite/test/src_mixin_test_.dart' as mixin_text;
 
 void main() {
-  mixin_text.main();
+  group('vm', () {
+    mixin_text.run();
+  });
 }

@@ -9,3 +9,8 @@ build/
 
 # Directory created by dartdoc
 doc/api/
+
+# flutter
+.flutter-plugins
+ios/
+android/
