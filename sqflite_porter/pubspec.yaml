@@ -17,10 +17,22 @@ dependencies:
       url: git://github.com/tekartik/common_utils.dart
       ref: dart2
     version: '>=0.9.7+1'
+  sqflite_test:
+    git:
+      url: git://github.com/tekartik/sqflite_more
+      ref: dart2
+      path: sqflite_test
+    version: '>=0.1.0'
+  csv:
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  test:
+
+dependency_overrides:
+  sqflite_test:
+    path: ../sqflite_test
 
 # For information on the generic Dart part of this file, see the
 # following page: https://www.dartlang.org/tools/pub/pubspec
