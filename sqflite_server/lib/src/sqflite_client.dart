@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:typed_data';
 
+// ignore_for_file: implementation_imports
+import 'package:pedantic/pedantic.dart';
 import 'package:sqflite_server/src/constant.dart';
 import 'package:sqflite/src/exception.dart';
 import 'package:sqflite/src/constant.dart';
@@ -31,7 +33,7 @@ class SqfliteClient {
     var webSocketChannel = webSocketChannelClientFactory.connect<String>(url);
     var rpcClient = json_rpc.Client(webSocketChannel);
     ServerInfo _serverInfo;
-    rpcClient.listen();
+    unawaited(rpcClient.listen());
     try {
       var serverInfo = await rpcClient.sendRequest(methodGetServerInfo) as Map;
       if (serverInfo[keyName] != serverInfoName) {

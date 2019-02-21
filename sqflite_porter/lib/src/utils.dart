@@ -1,13 +1,12 @@
 // return the path
 import 'dart:async';
+import 'dart:core' as core;
+import 'dart:core';
 import 'dart:io';
 
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_porter/src/sql_parser.dart';
-import 'dart:core' as core;
-import 'dart:core';
-
 import 'package:sqflite_porter/src/sqlite_porter.dart';
 
 Future<String> initEmptyDb(String dbName) async {

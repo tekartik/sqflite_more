@@ -1,6 +1,7 @@
-import 'package:sqflite/sqflite.dart';
 import 'dart:async';
 
+import 'package:sqflite/sqlite_api.dart';
+import 'package:sqflite/utils/utils.dart' as utils;
 import 'package:sqflite_porter/src/sql_parser.dart';
 
 String fixStatement(String sql) {
@@ -43,7 +44,7 @@ Future<List<String>> dbExportSql(Database db) async {
           } else if (value is num) {
             values.add(value.toString());
           } else if (value is List<int>) {
-            values.add("x'${Sqflite.hex(value)}'");
+            values.add("x'${utils.hex(value)}'");
           } else {
             values.add("'${sanitizeText(value.toString())}'");
           }

@@ -30,12 +30,12 @@ you can run your test
 
 ````yaml
 dependencies:
-  sqflite_test:
+  sqflite_server:
     git:
       url: git://github.com/tekartik/sqflite_more
       ref: dart2
-      path: sqflite_test
-    version: '>=0.1.0'
+      path: sqflite_server
+    version: '>=0.3.0'
 ````
 
 Look at the sqflite_test package which has some unit tests
