@@ -1,6 +1,7 @@
 name: sqflite_more_repo
 description: sqflite more repo (tools)
 version: 0.1.0
+publish_to: none
 #homepage: https://www.example.com
 #author: alex <email@example.com>
 

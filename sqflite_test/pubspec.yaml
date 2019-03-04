@@ -1,8 +1,7 @@
 name: sqflite_test
 description: SQFlite test package
 version: 0.2.0
-author:
-homepage:
+publish_to: none
 
 environment:
   sdk: ">=2.1.0-dev <3.0.0"
