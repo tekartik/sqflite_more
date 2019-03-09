@@ -1,6 +1,7 @@
 name: sqflite_more_repo
 description: sqflite more repo (tools)
 version: 0.1.0
+publish_to: none
 #homepage: https://www.example.com
 #author: alex <email@example.com>
 
@@ -16,4 +17,8 @@ dev_dependencies:
       url: git://github.com/tekartik/build_utils.dart
       ref: dart2
     version: '>=0.3.4'
+  tekartik_travis_ci_flutter:
+    git:
+      url: git://github.com/tekartik/travis_ci_flutter.dart
+      ref: dart2
 

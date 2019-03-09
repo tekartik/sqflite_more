@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:test/test.dart';
 import 'package:sqflite/sqlite_api.dart';
 import 'package:sqflite_test/sqflite_test.dart';
+import 'package:sqflite/utils/utils.dart' as utils;
 
 import 'open_test.dart';
 
@@ -444,6 +445,41 @@ INSERT INTO test (value) VALUES (10);
       await db.execute(
         "CREATE INDEX `groups_id` ON groups ( `id` ASC )",
       );
+    } finally {
+      await db?.close();
+    }
+  });
+
+  test("Issue#107_alt", () async {
+    // Sqflite.devSetDebugModeOn(true);
+    // Try to insert string with quote
+    String path = await context.initDeleteDb("exp_issue_107_alt.db");
+    Database db = await factory.openDatabase(path);
+    try {
+      await db.execute(
+        "CREATE TABLE `groups` (`id` INTEGER PRIMARY KEY, `service_id`INTEGER, `official`	BOOLEAN, `type`	TEXT, `access`	TEXT, `ads`	BOOLEAN, `mute`	BOOLEAN, `read`	INTEGER, `background`	TEXT, `last_message_time`	INTEGER, `last_message_id`	INTEGER, `deleted_to`	INTEGER, `is_admin`	BOOLEAN, `is_owner`	BOOLEAN, `description`	TEXT, `pin`	BOOLEAN, `name`	TEXT, `opposite_id`	INTEGER, `badge`	INTEGER, `member_count`	INTEGER, `identifier`	TEXT, `join_link`	TEXT, `hash`	TEXT, `service_info`	TEXT, `seen`	INTEGER, `pinned_message`	INTEGER, `delivery`	INTEGER) WITHOUT ROWID",
+      );
+      await db.execute(
+        "CREATE INDEX `groups_id` ON groups ( `id` ASC )",
+      );
+    } finally {
+      await db?.close();
+    }
+  });
+
+  test("Issue#155", () async {
+    // Sqflite.devSetDebugModeOn(true);
+    // Try to insert string with quote
+    String path = await context.initDeleteDb("exp_issue_155.db");
+    Database db = await factory.openDatabase(path);
+    try {
+      await db.execute('CREATE TABLE test (value TEXT UNIQUE)');
+      String table = 'test';
+      var map = <String, dynamic>{'value': 'test'};
+      await db.insert(table, map, conflictAlgorithm: ConflictAlgorithm.replace);
+      await db.insert(table, map, conflictAlgorithm: ConflictAlgorithm.replace);
+      expect(
+          utils.firstIntValue(await db.query(table, columns: ['COUNT(*)'])), 1);
     } finally {
       await db?.close();
     }
