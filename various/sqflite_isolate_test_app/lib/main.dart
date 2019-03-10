@@ -1,3 +1,5 @@
+import 'dart:isolate';
+
 import 'package:path/path.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';
 
@@ -16,8 +18,8 @@ void main() {
     //devPrint('MAIN_');
     // Sqflite.devSetDebugModeOn(true);
 
-     item('Delete database', () async {
-     var path = await initDeleteDb(isolateDbName);
+    item('Delete database', () async {
+      var path = await initDeleteDb(isolateDbName);
       write('database $path deleted');
     });
     item('Create data in main', () async {
@@ -28,7 +30,15 @@ void main() {
     item('Create data in isolate', () async {
       write("starting isolate...don't expact any more information");
       var path = await initDeleteDb(isolateDbName);
-      await FlutterIsolate.spawn(simpleIsolate, path);
+      var receivePort = ReceivePort();
+      var param = <String, dynamic>{
+        'sendPort': receivePort.sendPort,
+        'path': path
+      };
+      await FlutterIsolate.spawn(simpleIsolate, param);
+
+      var results = json.decode(await receivePort.first);
+      write(results);
     });
     item('Read data', () async {
       var db = await openReadOnlyDatabase(isolateDbName);
@@ -50,8 +60,13 @@ Future insert(Database db, int id) async {
 }
 
 // Somehow it seems to expect a string for now...
-void simpleIsolate(String path) {
-  simpleTest(path);
+void simpleIsolate(Map<String, dynamic> param) {
+  var path = param['path'] as String;
+  var sendPort = param['sendPort'] as SendPort;
+  simpleTest(path).then((results) {
+    // Convert result to string until I figure out how to have something else...
+    sendPort.send(json.encode(results));
+  });
 }
 
 Future<List<Map<String, dynamic>>> simpleTest(String path) async {
