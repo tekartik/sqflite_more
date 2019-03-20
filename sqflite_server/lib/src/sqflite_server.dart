@@ -12,6 +12,8 @@ import 'package:tekartik_web_socket_io/web_socket_io.dart';
 import 'package:tekartik_web_socket/web_socket.dart';
 // ignore: implementation_imports
 import 'package:sqflite/src/sqflite_impl.dart';
+// ignore: implementation_imports
+import 'package:sqflite/src/constant.dart';
 
 int defaultPort = 8501;
 
@@ -50,7 +52,11 @@ class SqfliteServer {
   int get port => _webSocketChannelServer.port;
 }
 
+/// We have one channer per client
 class SqfliteServerChannel {
+  // Keep
+  List<int> _openDatabaseIds = [];
+
   SqfliteServerChannel(this._sqfliteServer, WebSocketChannel<String> channel)
       : _rpcServer = json_rpc.Server(channel) {
     // Specific method for getting server info upon start
@@ -70,15 +76,15 @@ class SqfliteServerChannel {
       return result;
     });
     // Specific method for deleting a database
-    _rpcServer.registerMethod(methodDeleteDatabase,
+    _rpcServer.registerMethod(methodSqfliteDeleteDatabase,
         (json_rpc.Parameters parameters) async {
       if (_notifyCallback != null) {
-        _notifyCallback(false, methodDeleteDatabase, parameters.value);
+        _notifyCallback(false, methodSqfliteDeleteDatabase, parameters.value);
       }
       await databaseFactory
           .deleteDatabase((parameters.value as Map)[keyPath] as String);
       if (_notifyCallback != null) {
-        _notifyCallback(true, methodDeleteDatabase, null);
+        _notifyCallback(true, methodSqfliteDeleteDatabase, null);
       }
       return null;
     });
@@ -144,15 +150,40 @@ class SqfliteServerChannel {
       if (_notifyCallback != null) {
         _notifyCallback(false, methodSqflite, parameters.value);
       }
+
       var map = parameters.value as Map;
-      dynamic result =
-          await invokeMethod<dynamic>(map[keyMethod] as String, map[keyParam]);
+
+      var sqfliteMethod = map[keyMethod] as String;
+      var sqfliteParam = map[keyParam];
+
+      dynamic result = await invokeMethod<dynamic>(sqfliteMethod, sqfliteParam);
       if (_notifyCallback != null) {
         _notifyCallback(true, methodSqflite, result);
       }
+
+      // Store opened database
+      if (sqfliteMethod == methodOpenDatabase) {
+        _openDatabaseIds.add(result as int);
+      } else if (sqfliteMethod == methodCloseDatabase) {
+        _openDatabaseIds.remove((sqfliteParam as Map)[paramId] as int);
+      }
+
       return result;
     });
     _rpcServer.listen();
+
+    // Cleanup
+    // close opened database
+    _rpcServer.done.then((_) async {
+      for (int databaseId in _openDatabaseIds) {
+        try {
+          await invokeMethod<dynamic>(
+              methodCloseDatabase, {paramId: databaseId});
+        } catch (e) {
+          print('error cleaning up database $databaseId');
+        }
+      }
+    });
   }
 
   final SqfliteServer _sqfliteServer;

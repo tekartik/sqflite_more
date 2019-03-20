@@ -198,22 +198,32 @@ class _SqfliteServerHomePageState extends State<SqfliteServerHomePage> {
       await app.startServer(port,
           notifyCallback: (bool response, String method, dynamic param) {
         if (response == false) {
+          void _logOperation(Map map) {
+            var sql = (map['sql'] as String)?.trim();
+            if (sql != null) {
+              var args = map['arguments'] as List;
+              if (args != null && args.isNotEmpty) {
+                sql += ' $args';
+              }
+              log(sql);
+            }
+          }
+
           if (method == methodSqflite) {
             var sqfliteMethod = param['method'] as String;
             dynamic sqfliteParam = param['param'];
             if (sqfliteMethod == methodOpenDatabase) {
               log('open ${(sqfliteParam as Map)['path']}');
+            } else if (sqfliteMethod == methodBatch) {
+              var operations = (sqfliteParam as Map)['operations'] as List;
+              for (var operation in operations) {
+                var operationMap = operation as Map;
+                _logOperation(operationMap);
+              }
             } else {
               var _methodParam = sqfliteParam as Map;
               if (_methodParam != null) {
-                var sql = _methodParam['sql'] as String;
-                if (sql != null) {
-                  var args = _methodParam['arguments'] as List;
-                  if (args != null && args.isNotEmpty) {
-                    sql += ' $args';
-                  }
-                  log(sql);
-                }
+                _logOperation(_methodParam);
               }
             }
           }

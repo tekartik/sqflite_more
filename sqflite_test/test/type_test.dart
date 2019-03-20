@@ -112,7 +112,7 @@ void run(SqfliteServerTestContext context) {
       } on TestFailure catch (_) {
         // we might still get the positive value
         // This happens when use the server app
-        expect(await getValue(id), - (pow(2, 63) + 0.1));
+        expect(await getValue(id), -(pow(2, 63) + 0.1));
       }
 
       // integer?
