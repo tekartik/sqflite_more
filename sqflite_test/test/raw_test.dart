@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:path/path.dart';
 import 'package:sqflite/sqlite_api.dart';
-import 'package:test/test.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:sqflite_test/sqflite_test.dart';
 import 'package:sqflite/utils/utils.dart' as utils;
 

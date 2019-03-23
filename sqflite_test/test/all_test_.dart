@@ -1,5 +1,5 @@
 import 'package:sqflite_test/sqflite_test.dart';
-import 'package:test/test.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 import 'exception_test.dart' as exception_test;
 import 'exp_test.dart' as exp_test;
