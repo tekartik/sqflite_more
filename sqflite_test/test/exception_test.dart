@@ -2,11 +2,11 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter_test/flutter_test.dart';
 import 'package:sqflite/sql.dart';
 import 'package:sqflite/sqlite_api.dart';
 import 'package:sqflite/utils/utils.dart' as utils;
 import 'package:sqflite_test/sqflite_test.dart';
-import 'package:flutter_test/flutter_test.dart';
 
 import 'open_test.dart';
 
@@ -504,13 +504,14 @@ void run(SqfliteServerTestContext context) {
         options: OpenDatabaseOptions(singleInstance: false));
     Database db2 = await factory.openDatabase(path,
         options: OpenDatabaseOptions(singleInstance: false));
+    expect(db1, isNot(db2));
     try {
-      await db1.execute('BEGIN IMMEDIATE TRANSACTION');
+      await db1.execute('BEGIN EXCLUSIVE TRANSACTION');
 
       try {
         // this should block the main thread
         await db2
-            .execute('BEGIN IMMEDIATE TRANSACTION')
+            .execute('BEGIN EXCLUSIVE TRANSACTION')
             .timeout(const Duration(milliseconds: 500));
         fail('should timeout');
       } on TimeoutException catch (e) {
