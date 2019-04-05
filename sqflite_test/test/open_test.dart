@@ -686,6 +686,23 @@ void run(SqfliteServerTestContext context) {
     ]);
     await db.close();
   });
+
+  test('close in transaction', () async {
+    //await utils.devSetDebugModeOn(true);
+    String path = await context.initDeleteDb("close_in_transaction.db");
+
+    var db = await factory.openDatabase(path,
+        options: OpenDatabaseOptions(version: 1));
+    try {
+      await db.execute("BEGIN TRANSACTION");
+      await db.close();
+
+      db = await factory.openDatabase(path,
+          options: OpenDatabaseOptions(version: 1));
+    } finally {
+      await db.close();
+    }
+  });
 }
 
 class Helper {

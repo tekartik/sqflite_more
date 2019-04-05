@@ -1,6 +1,6 @@
 name: sqflite_server
 description: Sqflite server component
-version: 0.3.0
+version: 0.3.0+1
 publish_to: none
 
 environment:
@@ -10,7 +10,7 @@ dependencies:
   path:
   flutter:
     sdk: flutter
-  sqflite: '<1.1.4-dev.1'
+  sqflite: '>=1.1.4-dev.1'
   tekartik_web_socket_io:
     git:
       url: git://github.com/tekartik/web_socket.dart
