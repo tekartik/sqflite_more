@@ -47,7 +47,19 @@ void run(SqfliteServerTestContext context) {
                 await db.execute(
                     "CREATE TABLE Test (_id INTEGER PRIMARY KEY, value INTEGER)");
               }));
-      int id = await insertValue(-1);
+
+      // text
+      int id = await insertValue('test');
+      expect(await getValue(id), 'test');
+
+      // null
+      id = await insertValue(null);
+      expect(await getValue(id), null);
+
+      id = await insertValue(1);
+      expect(await getValue(id), 1);
+
+      id = await insertValue(-1);
       expect(await getValue(id), -1);
 
       // less than 32 bits
@@ -101,7 +113,17 @@ void run(SqfliteServerTestContext context) {
                 await db.execute(
                     "CREATE TABLE Test (_id INTEGER PRIMARY KEY, value REAL)");
               }));
-      int id = await insertValue(-1.1);
+      // text
+      int id = await insertValue('test');
+      expect(await getValue(id), 'test');
+
+      // null
+      id = await insertValue(null);
+      expect(await getValue(id), null);
+
+      id = await insertValue(-1);
+      expect(await getValue(id), -1);
+      id = await insertValue(-1.1);
       expect(await getValue(id), -1.1);
       // big float
       id = await insertValue(1 / 3);
@@ -158,6 +180,10 @@ void run(SqfliteServerTestContext context) {
         // insert text in blob
         int id = await insertValue("simple text");
         expect(await getValue(id), "simple text");
+
+        // null
+        id = await insertValue(null);
+        expect(await getValue(id), null);
 
         // UInt8List - default
         ByteData byteData = ByteData(1);
@@ -286,6 +312,51 @@ void run(SqfliteServerTestContext context) {
         expect(dateTimeText, '2004-08-19 18:51:06');
         expect(DateTime.parse(dateTimeText).toIso8601String(),
             '2004-08-19T18:51:06.000');
+      } finally {
+        await data.db.close();
+      }
+    });
+
+    test('sql numeric', () async {
+      // await Sqflite.devSetDebugModeOn(true);
+      String path = await context.initDeleteDb("type_sql_numeric.db");
+      data.db = await factory.openDatabase(path,
+          options: OpenDatabaseOptions(
+              version: 1,
+              onCreate: (Database db, int version) async {
+                await db.execute("CREATE TABLE Test (_id INTEGER PRIMARY KEY,"
+                    " value NUMERIC)");
+              }));
+      try {
+        int id = await insertValue(1);
+        expect(await getValue(id), 1);
+        id = await insertValue(-1);
+        expect(await getValue(id), -1);
+        id = await insertValue(-1.1);
+        expect(await getValue(id), -1.1);
+        // big float
+        id = await insertValue(1 / 3);
+        expect(await getValue(id), 1 / 3);
+        id = await insertValue(pow(2, 63) + .1);
+        try {
+          expect(await getValue(id), pow(2, 63) + 0.1);
+        } on TestFailure catch (_) {
+          // we might still get the positive value
+          // This happens when use the server app
+          expect(await getValue(id), -(pow(2, 63) + 0.1));
+        }
+
+        // integer?
+        id = await insertValue(pow(2, 62));
+        expect(await getValue(id), pow(2, 62));
+
+        // text
+        id = await insertValue('test');
+        expect(await getValue(id), 'test');
+
+        // null
+        id = await insertValue(null);
+        expect(await getValue(id), null);
       } finally {
         await data.db.close();
       }
