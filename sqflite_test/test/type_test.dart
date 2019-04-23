@@ -330,10 +330,16 @@ void run(SqfliteServerTestContext context) {
       try {
         int id = await insertValue(1);
         expect(await getValue(id), 1);
+        var value = await getValue(id);
+        expect(value, isInstanceOf<int>());
+
         id = await insertValue(-1);
         expect(await getValue(id), -1);
         id = await insertValue(-1.1);
-        expect(await getValue(id), -1.1);
+        value = await getValue(id);
+        expect(value, isInstanceOf<double>());
+        expect(value, -1.1);
+
         // big float
         id = await insertValue(1 / 3);
         expect(await getValue(id), 1 / 3);
@@ -353,6 +359,18 @@ void run(SqfliteServerTestContext context) {
         // text
         id = await insertValue('test');
         expect(await getValue(id), 'test');
+
+        // int text
+        id = await insertValue('18');
+        expect(await getValue(id), 18);
+
+        // double text
+        id = await insertValue('18.1');
+        expect(await getValue(id), 18.1);
+
+        // empty text
+        id = await insertValue('');
+        expect(await getValue(id), '');
 
         // null
         id = await insertValue(null);
