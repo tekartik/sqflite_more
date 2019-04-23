@@ -3,9 +3,9 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
 
+import 'package:flutter_test/flutter_test.dart';
 import 'package:sqflite/sqlite_api.dart';
 import 'package:sqflite/utils/utils.dart' as utils;
-import 'package:flutter_test/flutter_test.dart';
 import 'package:sqflite_test/sqflite_test.dart';
 
 class _Data {
@@ -254,6 +254,38 @@ void run(SqfliteServerTestContext context) {
           failed = true;
         }
         expect(failed, true);
+      } finally {
+        await data.db.close();
+      }
+    });
+
+    test('sql timestamp', () async {
+      // await Sqflite.devSetDebugModeOn(true);
+      String path = await context.initDeleteDb("type_sql_timestamp.db");
+      data.db = await factory.openDatabase(path,
+          options: OpenDatabaseOptions(
+              version: 1,
+              onCreate: (Database db, int version) async {
+                await db.execute("CREATE TABLE Test (_id INTEGER PRIMARY KEY,"
+                    " value TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL)");
+              }));
+      try {
+        int id = await data.db.insert("Test", <String, dynamic>{"_id": 1});
+        expect(DateTime.parse(await getValue(id) as String), isNotNull);
+      } finally {
+        await data.db.close();
+      }
+
+      data.db = await factory.openDatabase(inMemoryDatabasePath);
+      try {
+        var dateTimeText =
+            (await data.db.rawQuery("SELECT datetime(1092941466, 'unixepoch')"))
+                .first
+                .values
+                .first as String;
+        expect(dateTimeText, '2004-08-19 18:51:06');
+        expect(DateTime.parse(dateTimeText).toIso8601String(),
+            '2004-08-19T18:51:06.000');
       } finally {
         await data.db.close();
       }
