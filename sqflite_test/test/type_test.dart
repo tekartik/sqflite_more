@@ -379,6 +379,20 @@ void run(SqfliteServerTestContext context) {
         await data.db.close();
       }
     });
-    // not working with sqlflite server yet
+    test("bool", () async {
+      //await Sqflite.devSetDebugModeOn(true);
+      String path = await context.initDeleteDb("type_bool.db");
+      data.db = await factory.openDatabase(path,
+          options: OpenDatabaseOptions(
+              version: 1,
+              onCreate: (Database db, int version) async {
+                await db.execute(
+                    "CREATE TABLE Test (_id INTEGER PRIMARY KEY, value BOOL)");
+              }));
+
+      // text
+      int id = await insertValue('test');
+      expect(await getValue(id), 'test');
+    });
   });
 }
