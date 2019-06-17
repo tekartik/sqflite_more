@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqflite/sqlite_api.dart';
@@ -178,6 +179,93 @@ void run(SqfliteServerTestContext context) {
         }
       } finally {
         await db?.close();
+      }
+    });
+
+    test('record map', () async {
+      Map<String, dynamic> map = <String, dynamic>{
+        "title": "Table",
+        "size": <String, dynamic>{"width": 80, "height": 80}
+      };
+
+      map = <String, dynamic>{"title": "Table", "width": 80, "height": 80};
+
+      map = <String, dynamic>{
+        "title": "Table",
+        "size": jsonEncode(<String, dynamic>{"width": 80, "height": 80})
+      };
+      final Map<String, dynamic> map2 = <String, dynamic>{
+        'title': 'Table',
+        'size': '{"width":80,"height":80}'
+      };
+      expect(map, map2);
+    });
+
+    test('data_types', () async {
+      var path = inMemoryDatabasePath;
+
+      {
+        /// Create tables
+        void _createTableCompanyV1(Batch batch) {
+          batch.execute('''
+CREATE TABLE Product (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  title TEXT,
+  width INTEGER,
+  height INTEGER
+)''');
+        }
+
+// First version of the database
+        var db = await factory.openDatabase(path,
+            options: OpenDatabaseOptions(
+                version: 1,
+                onCreate: (db, version) async {
+                  var batch = db.batch();
+                  _createTableCompanyV1(batch);
+                  await batch.commit();
+                },
+                onDowngrade: onDatabaseDowngradeDelete));
+
+        var map = <String, dynamic>{
+          "title": "Table",
+          "width": 80,
+          "height": 80
+        };
+        await db.insert('Product', map);
+        await db.close();
+        db = null;
+      }
+
+      {
+        /// Create tables
+        void _createProductTable(Batch batch) {
+          batch.execute('''
+CREATE TABLE Product (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  title TEXT,
+  size TEXT
+)''');
+        }
+
+// First version of the database
+        var db = await factory.openDatabase(path,
+            options: OpenDatabaseOptions(
+                version: 1,
+                onCreate: (db, version) async {
+                  var batch = db.batch();
+                  _createProductTable(batch);
+                  await batch.commit();
+                },
+                onDowngrade: onDatabaseDowngradeDelete));
+
+        var map = <String, dynamic>{
+          'title': 'Table',
+          'size': '{"width":80,"height":80}'
+        };
+        await db.insert('Product', map);
+        await db.close();
+        db = null;
       }
     });
   });
