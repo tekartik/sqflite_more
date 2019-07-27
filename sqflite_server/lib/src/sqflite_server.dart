@@ -1,19 +1,19 @@
+// ignore_for_file: implementation_imports
 import 'dart:async';
 import 'dart:io';
+
 import 'package:json_rpc_2/json_rpc_2.dart' as json_rpc;
 import 'package:path/path.dart' as path;
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite/sqflite.dart' as sqflite;
+import 'package:sqflite/src/constant.dart';
+import 'package:sqflite/src/sqflite_impl.dart';
 import 'package:sqflite_server/sqflite_context.dart';
 import 'package:sqflite_server/src/constant.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';
-import 'package:tekartik_web_socket_io/web_socket_io.dart';
 import 'package:tekartik_web_socket/web_socket.dart';
-// ignore: implementation_imports
-import 'package:sqflite/src/sqflite_impl.dart';
-// ignore: implementation_imports
-import 'package:sqflite/src/constant.dart';
+import 'package:tekartik_web_socket_io/web_socket_io.dart';
 
 int defaultPort = 8501;
 
@@ -163,7 +163,14 @@ class SqfliteServerChannel {
 
       // Store opened database
       if (sqfliteMethod == methodOpenDatabase) {
-        _openDatabaseIds.add(result as int);
+        if (result is Map) {
+          _openDatabaseIds.add(result[paramId] as int);
+        } else if (result is int) {
+          // Old
+          _openDatabaseIds.add(result);
+        } else {
+          throw 'invalid open result $result';
+        }
       } else if (sqfliteMethod == methodCloseDatabase) {
         _openDatabaseIds.remove((sqfliteParam as Map)[paramId] as int);
       }

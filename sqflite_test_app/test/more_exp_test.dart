@@ -137,6 +137,53 @@ Future main() async {
         await db.close();
       }
     });
+
+    test('Issue#246', () async {
+      String path = await context.initDeleteDb("primary_key.db");
+      Database db = await factory.openDatabase(path);
+      try {
+        String table = "test";
+        await db
+            .execute("CREATE TABLE $table (id INTEGER PRIMARY KEY, name TEXT)");
+        var id = await db.insert(table, <String, dynamic>{'name': 'test'});
+        var id2 = await db.insert(table, <String, dynamic>{'name': 'test'});
+
+        print('inserted $id, $id2');
+        // inserted in a wrong order to check ASC/DESC
+
+        print(await db.query(table));
+        //await db
+      } finally {
+        await db.close();
+      }
+    });
+
+    test('Issue#242', () async {
+      String path = await context.initDeleteDb("issue_242.db");
+      Database db = await factory.openDatabase(path);
+      try {
+        await db.execute('''
+      CREATE TABLE test (
+    f1 TEXT PRIMARY KEY NOT NULL,
+    f2 INTEGER NOT NULL); 
+      ''');
+        await db.execute('CREATE INDEX test_index ON test(f2);');
+        //await db
+      } finally {
+        await db.close();
+      }
+    });
+
+    test('Issue#246', () async {
+      String path = await context.initDeleteDb("databases.db");
+      Database db = await factory.openDatabase(path);
+      try {
+        print(await db.query('sqlite_master', columns: ['name']));
+        //await db
+      } finally {
+        await db.close();
+      }
+    });
   }
 }
 
