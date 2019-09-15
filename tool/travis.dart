@@ -4,14 +4,12 @@ Future main() async {
   var shell = Shell();
 
   for (var dir in [
-    /*
+
     'sqflite_porter',
     'sqflite_server',
     'sqflite_test',
     'sqflite_test_app',
     'sqflite_server_app',
-
-     */
     'alt/sqflite_github_test'
   ]) {
     shell = shell.pushd(dir);
