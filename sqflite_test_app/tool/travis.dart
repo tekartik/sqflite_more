@@ -5,7 +5,7 @@ Future main() async {
 
   await shell.run('''
 
-flutter analyze --no-current-package test tool
+flutter analyze --no-current-package lib test tool
 flutter test
   ''');
 }
