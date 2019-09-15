@@ -28,6 +28,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   test:
+  process_run: '>=0.10.3'
 
 dependency_overrides:
   sqflite_test:
