@@ -3,10 +3,10 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
 
-import 'package:flutter_test/flutter_test.dart';
 import 'package:sqflite/sqlite_api.dart';
 import 'package:sqflite/utils/utils.dart' as utils;
 import 'package:sqflite_test/sqflite_test.dart';
+import 'package:test_api/test_api.dart';
 
 class _Data {
   Database db;
@@ -230,7 +230,7 @@ void run(SqfliteServerTestContext context) {
         rows = await data.db.rawQuery('SELECT * FROM Test WHERE hex(value) = ?',
             <dynamic>[utils.hex(blob1234)]);
         expect(rows.length, 1);
-        expect(rows[0]['_id'], 3);
+        expect(rows[0]['_id'], id);
       } finally {
         await data.db.close();
       }
@@ -331,13 +331,13 @@ void run(SqfliteServerTestContext context) {
         int id = await insertValue(1);
         expect(await getValue(id), 1);
         var value = await getValue(id);
-        expect(value, isInstanceOf<int>());
+        expect(value, const TypeMatcher<int>());
 
         id = await insertValue(-1);
         expect(await getValue(id), -1);
         id = await insertValue(-1.1);
         value = await getValue(id);
-        expect(value, isInstanceOf<double>());
+        expect(value, const TypeMatcher<double>());
         expect(value, -1.1);
 
         // big float

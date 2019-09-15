@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter_test/flutter_test.dart';
+import 'package:test_api/test_api.dart';
 import 'package:sqflite/sqlite_api.dart';
 import 'package:sqflite_test/sqflite_test.dart';
 

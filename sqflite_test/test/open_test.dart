@@ -1,12 +1,13 @@
 import 'dart:async';
 import 'dart:io';
+
+import 'package:flutter_test/flutter_test.dart';
+import 'package:path/path.dart';
 import 'package:pedantic/pedantic.dart';
 import 'package:sqflite/sqlite_api.dart';
-import 'package:synchronized/synchronized.dart';
-import 'package:path/path.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:sqflite_test/sqflite_test.dart';
 import 'package:sqflite/utils/utils.dart' as utils;
+import 'package:sqflite_test/sqflite_test.dart';
+import 'package:synchronized/synchronized.dart';
 
 bool verify(bool condition, [String message]) {
   message ??= "verify failed";

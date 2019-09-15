@@ -15,8 +15,6 @@ import 'package:tekartik_common_utils/common_utils_import.dart';
 import 'package:tekartik_web_socket/web_socket.dart';
 import 'package:tekartik_web_socket_io/web_socket_io.dart';
 
-int defaultPort = 8501;
-
 typedef void SqfliteServerNotifyCallback(
     bool response, String method, dynamic params);
 
@@ -68,7 +66,7 @@ class SqfliteServerChannel {
       var result = <String, dynamic>{
         keyName: serverInfoName,
         keyVersion: serverInfoVersion.toString(),
-        keySupportsWithoutRowId: sqfliteContext.supportsWithoutRowId,
+        keySupportsWithoutRowId: sqfliteLocalContext.supportsWithoutRowId,
       };
       if (_notifyCallback != null) {
         _notifyCallback(true, methodGetServerInfo, result);
@@ -94,7 +92,7 @@ class SqfliteServerChannel {
       if (_notifyCallback != null) {
         _notifyCallback(false, methodCreateDirectory, parameters.value);
       }
-      var path = await sqfliteContext
+      var path = await sqfliteLocalContext
           .createDirectory((parameters.value as Map)[keyPath] as String);
       if (_notifyCallback != null) {
         _notifyCallback(true, methodCreateDirectory, path);
@@ -107,7 +105,7 @@ class SqfliteServerChannel {
       if (_notifyCallback != null) {
         _notifyCallback(false, methodDeleteDirectory, parameters.value);
       }
-      var path = await sqfliteContext
+      var path = await sqfliteLocalContext
           .deleteDirectory((parameters.value as Map)[keyPath] as String);
       if (_notifyCallback != null) {
         _notifyCallback(true, methodDeleteDirectory, path);
@@ -123,7 +121,7 @@ class SqfliteServerChannel {
       final map = parameters.value as Map;
       String path = map[keyPath]?.toString();
       List<int> content = (map[keyContent] as List)?.cast<int>();
-      path = await sqfliteContext.writeFile(path, content);
+      path = await sqfliteLocalContext.writeFile(path, content);
       if (_notifyCallback != null) {
         _notifyCallback(true, methodWriteFile, path);
       }
@@ -138,7 +136,7 @@ class SqfliteServerChannel {
       final map = parameters.value as Map;
       final path = map[keyPath] as String;
 
-      var content = await sqfliteContext.readFile(path);
+      var content = await sqfliteLocalContext.readFile(path);
       if (_notifyCallback != null) {
         _notifyCallback(true, methodReadFile, content);
       }
@@ -199,7 +197,7 @@ class SqfliteServerChannel {
       _sqfliteServer._notifyCallback;
 }
 
-class _SqfliteContext implements SqfliteContext {
+class SqfliteLocalContext implements SqfliteContext {
   @override
   DatabaseFactory get databaseFactory => sqflite.databaseFactory;
 
@@ -263,5 +261,6 @@ class _SqfliteContext implements SqfliteContext {
   }
 }
 
-SqfliteContext _sqfliteContext;
-SqfliteContext get sqfliteContext => _sqfliteContext ??= _SqfliteContext();
+SqfliteContext _sqfliteLocalContext;
+SqfliteContext get sqfliteLocalContext =>
+    _sqfliteLocalContext ??= SqfliteLocalContext();

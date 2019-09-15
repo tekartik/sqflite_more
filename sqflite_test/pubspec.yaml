@@ -18,6 +18,8 @@ dependencies:
     version: '>=0.3.0'
 
 dev_dependencies:
+  test:
+  pedantic:
   flutter_test:
     sdk: flutter
 

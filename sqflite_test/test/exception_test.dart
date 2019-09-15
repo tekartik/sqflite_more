@@ -2,11 +2,11 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter_test/flutter_test.dart';
 import 'package:sqflite/sql.dart';
 import 'package:sqflite/sqlite_api.dart';
 import 'package:sqflite/utils/utils.dart' as utils;
 import 'package:sqflite_test/sqflite_test.dart';
+import 'package:test_api/test_api.dart';
 
 import 'open_test.dart';
 

@@ -1,7 +1,3 @@
-# ide
-*.iml
-.idea/
-
 # dart
 .dart_tool/
 .packages
