@@ -179,7 +179,7 @@ class _SqfliteServerHomePageState extends State<SqfliteServerHomePage> {
   Future startApp() async {
     if (!app.started) {
       app.started = true;
-      await Future<dynamic>.delayed(Duration());
+      await Future<dynamic>.delayed(const Duration());
       //devPrint('startApp');
       portInputController.text = (app.prefs.port ?? 0).toString();
       if (app.prefs.autoStart) {
