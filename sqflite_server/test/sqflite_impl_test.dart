@@ -5,6 +5,8 @@ import 'package:sqflite_server/sqflite_server.dart';
 import 'package:tekartik_web_socket/web_socket.dart';
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
   group("sqflite", () {
     const MethodChannel channel = MethodChannel('com.tekartik.sqflite');
 
