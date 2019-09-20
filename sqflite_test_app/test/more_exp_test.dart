@@ -175,10 +175,47 @@ Future main() async {
     });
 
     test('Issue#246', () async {
-      String path = await context.initDeleteDb("databases.db");
+      String path = await context.initDeleteDb("Issue_246.db");
       Database db = await factory.openDatabase(path);
       try {
         print(await db.query('sqlite_master', columns: ['name']));
+        //await db
+      } finally {
+        await db.close();
+      }
+    });
+
+    test('Issue#268', () async {
+      String path = await context.initDeleteDb("Issue_268.db");
+      Database db = await factory.openDatabase(path);
+      try {
+        // print('like %meta%');
+        var result = await db.rawQuery(
+            'SELECT * FROM sqlite_master WHERE name LIKE ?', ['%meta%']);
+        // print(result);
+        expect(result.length, 1);
+        //await db
+      } finally {
+        await db.close();
+      }
+    });
+
+    test('Issue#270', () async {
+      String path = await context.initDeleteDb("Issue_270.db");
+      Database db = await factory.openDatabase(path);
+      try {
+        var batch = db.batch();
+        batch.execute('''CREATE TABLE konular (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT
+)''');
+
+        batch.execute('ALTER TABLE konular ADD COLUMN ks INTEGER');
+        await batch.commit();
+        var result = await db.rawQuery(
+            'SELECT * FROM sqlite_master WHERE name LIKE ?', ['konu%']);
+        print(result);
+        expect(result.length, 1);
         //await db
       } finally {
         await db.close();
