@@ -486,6 +486,14 @@ INSERT INTO test (value) VALUES (10);
     }
   });
 
+  test('Issue#272 indexed_param', () async {
+    final db = await factory.openDatabase(':memory:');
+    expect(await db.rawQuery('SELECT ?1 + ?2', [3, 4]), [
+      {'?1 + ?2': 7}
+    ]);
+    await db.close();
+  });
+
   test("open_close_transaction", () async {
     // Sqflite.devSetDebugModeOn(true);
     // Try to insert string with quote
