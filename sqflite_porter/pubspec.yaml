@@ -1,6 +1,6 @@
 name: sqflite_porter
 description: Sqflite import and export
-version: 0.2.0
+version: 0.2.0+1
 publish_to: none
 
 environment:
@@ -28,6 +28,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   test:
+  process_run: '>=0.10.3'
 
 dependency_overrides:
   sqflite_test:

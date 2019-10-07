@@ -1,11 +1,10 @@
+// ignore_for_file: implementation_imports
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:sqflite_server/sqflite_server.dart';
-// ignore: implementation_imports
-import 'package:sqflite_server/src/constant.dart';
-// ignore: implementation_imports
 import 'package:sqflite/src/constant.dart';
+import 'package:sqflite_server/sqflite_server.dart';
+import 'package:sqflite_server/src/constant.dart';
 import 'package:sqflite_server_app/src/app.dart';
 import 'package:sqflite_server_app/src/prefs.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';
@@ -180,7 +179,7 @@ class _SqfliteServerHomePageState extends State<SqfliteServerHomePage> {
   Future startApp() async {
     if (!app.started) {
       app.started = true;
-      await Future<dynamic>.delayed(Duration());
+      await Future<dynamic>.delayed(const Duration());
       //devPrint('startApp');
       portInputController.text = (app.prefs.port ?? 0).toString();
       if (app.prefs.autoStart) {
@@ -198,24 +197,36 @@ class _SqfliteServerHomePageState extends State<SqfliteServerHomePage> {
       await app.startServer(port,
           notifyCallback: (bool response, String method, dynamic param) {
         if (response == false) {
+          void _logOperation(Map map) {
+            var sql = (map['sql'] as String)?.trim();
+            if (sql != null) {
+              var args = map['arguments'] as List;
+              if (args != null && args.isNotEmpty) {
+                sql += ' $args';
+              }
+              log(sql);
+            }
+          }
+
           if (method == methodSqflite) {
             var sqfliteMethod = param['method'] as String;
             dynamic sqfliteParam = param['param'];
             if (sqfliteMethod == methodOpenDatabase) {
               log('open ${(sqfliteParam as Map)['path']}');
+            } else if (sqfliteMethod == methodBatch) {
+              var operations = (sqfliteParam as Map)['operations'] as List;
+              for (var operation in operations) {
+                var operationMap = operation as Map;
+                _logOperation(operationMap);
+              }
             } else {
               var _methodParam = sqfliteParam as Map;
               if (_methodParam != null) {
-                var sql = _methodParam['sql'] as String;
-                if (sql != null) {
-                  var args = _methodParam['arguments'] as List;
-                  if (args != null && args.isNotEmpty) {
-                    sql += ' $args';
-                  }
-                  log(sql);
-                }
+                _logOperation(_methodParam);
               }
             }
+          } else if (method == methodSqfliteDeleteDatabase) {
+            log('delete ${param}');
           }
         }
         // print('$response $method $param');

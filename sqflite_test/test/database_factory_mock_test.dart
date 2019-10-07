@@ -1,4 +1,4 @@
-import 'package:flutter_test/flutter_test.dart';
+import 'package:test_api/test_api.dart';
 import 'package:sqflite_test/database_factory_mock.dart';
 
 void main() {

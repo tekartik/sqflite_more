@@ -39,13 +39,14 @@ Future<SqfliteServerDatabaseFactory> initSqfliteServerDatabaseFactory() async {
   } catch (e) {
     print(e);
   }
+  var port = envPort ?? sqfliteServerDefaultPort;
   if (databaseFactory == null) {
     print('''
 sqflite server not running on $url
 Check that the sqflite_server_app is running on the proper port
 Android: 
   check that you have forwarded tcp ip on Android
-  \$ adb forward tcp:8501 tcp:8501
+  \$ adb forward tcp:$port tcp:$port
 
 url/port can be overriden using env variables
 $sqfliteServerUrlEnvKey: ${envUrl ?? ''}

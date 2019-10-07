@@ -6,7 +6,7 @@ import 'package:sqflite/sql.dart';
 import 'package:sqflite/sqlite_api.dart';
 import 'package:sqflite/utils/utils.dart' as utils;
 import 'package:sqflite_test/sqflite_test.dart';
-import 'package:test/test.dart';
+import 'package:test_api/test_api.dart';
 
 import 'open_test.dart';
 
@@ -495,6 +495,36 @@ void run(SqfliteServerTestContext context) {
     expect(hasTimedOut, true);
     expect(callbackCount, 1);
     await db.close();
+  });
+
+  test('Thread dead lock', () async {
+    // await Sqflite.devSetDebugModeOn(true);
+    String path = await context.initDeleteDb('thread_dead_lock.db');
+    Database db1 = await factory.openDatabase(path,
+        options: OpenDatabaseOptions(singleInstance: false));
+    Database db2 = await factory.openDatabase(path,
+        options: OpenDatabaseOptions(singleInstance: false));
+    expect(db1, isNot(db2));
+    try {
+      await db1.execute('BEGIN EXCLUSIVE TRANSACTION');
+
+      try {
+        // this should block the main thread
+        await db2
+            .execute('BEGIN EXCLUSIVE TRANSACTION')
+            .timeout(const Duration(milliseconds: 500));
+        fail('should timeout');
+      } on TimeoutException catch (e) {
+        print('caught $e');
+      }
+
+      // Try to open another db to check that the main thread is free
+      var db = await factory.openDatabase(inMemoryDatabasePath);
+      await db.close();
+    } finally {
+      await db1?.close();
+      await db2?.close();
+    }
   });
 }
 

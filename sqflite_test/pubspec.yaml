@@ -18,9 +18,10 @@ dependencies:
     version: '>=0.3.0'
 
 dev_dependencies:
+  test:
+  pedantic:
   flutter_test:
     sdk: flutter
-  test:
 
 # For information on the generic Dart part of this file, see the
 # following page: https://www.dartlang.org/tools/pub/pubspec

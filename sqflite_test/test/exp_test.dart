@@ -1,10 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:test/test.dart';
+import 'package:pedantic/pedantic.dart';
 import 'package:sqflite/sqlite_api.dart';
-import 'package:sqflite_test/sqflite_test.dart';
 import 'package:sqflite/utils/utils.dart' as utils;
+import 'package:sqflite_test/sqflite_test.dart';
+import 'package:test_api/test_api.dart';
 
 import 'open_test.dart';
 
@@ -480,6 +481,32 @@ INSERT INTO test (value) VALUES (10);
       await db.insert(table, map, conflictAlgorithm: ConflictAlgorithm.replace);
       expect(
           utils.firstIntValue(await db.query(table, columns: ['COUNT(*)'])), 1);
+    } finally {
+      await db?.close();
+    }
+  });
+
+  test('Issue#272 indexed_param', () async {
+    final db = await factory.openDatabase(':memory:');
+    expect(await db.rawQuery('SELECT ?1 + ?2', [3, 4]), [
+      {'?1 + ?2': 7}
+    ]);
+    await db.close();
+  });
+
+  test("open_close_transaction", () async {
+    // Sqflite.devSetDebugModeOn(true);
+    // Try to insert string with quote
+    Database db;
+    try {
+      String path = await context.initDeleteDb("open_close_transaction.db");
+      db = await factory.openDatabase(path);
+      unawaited(db.close());
+      try {
+        await db.transaction((_) async {});
+        fail('should fail');
+      } on DatabaseException catch (_) {}
+      db = await factory.openDatabase(path);
     } finally {
       await db?.close();
     }

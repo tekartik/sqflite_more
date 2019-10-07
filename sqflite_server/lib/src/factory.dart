@@ -35,7 +35,7 @@ class SqfliteServerDatabaseFactory extends SqfliteDatabaseFactoryBase {
   @override
   Future deleteDatabase(String path) async {
     return await context.sendRequest<String>(
-        methodDeleteDatabase, <String, dynamic>{keyPath: path});
+        methodSqfliteDeleteDatabase, <String, dynamic>{keyPath: path});
   }
 
   @override

@@ -137,6 +137,90 @@ Future main() async {
         await db.close();
       }
     });
+
+    test('Issue#246', () async {
+      String path = await context.initDeleteDb("primary_key.db");
+      Database db = await factory.openDatabase(path);
+      try {
+        String table = "test";
+        await db
+            .execute("CREATE TABLE $table (id INTEGER PRIMARY KEY, name TEXT)");
+        var id = await db.insert(table, <String, dynamic>{'name': 'test'});
+        var id2 = await db.insert(table, <String, dynamic>{'name': 'test'});
+
+        print('inserted $id, $id2');
+        // inserted in a wrong order to check ASC/DESC
+
+        print(await db.query(table));
+        //await db
+      } finally {
+        await db.close();
+      }
+    });
+
+    test('Issue#242', () async {
+      String path = await context.initDeleteDb("issue_242.db");
+      Database db = await factory.openDatabase(path);
+      try {
+        await db.execute('''
+      CREATE TABLE test (
+    f1 TEXT PRIMARY KEY NOT NULL,
+    f2 INTEGER NOT NULL); 
+      ''');
+        await db.execute('CREATE INDEX test_index ON test(f2);');
+        //await db
+      } finally {
+        await db.close();
+      }
+    });
+
+    test('Issue#246', () async {
+      String path = await context.initDeleteDb("Issue_246.db");
+      Database db = await factory.openDatabase(path);
+      try {
+        print(await db.query('sqlite_master', columns: ['name']));
+        //await db
+      } finally {
+        await db.close();
+      }
+    });
+
+    test('Issue#268', () async {
+      String path = await context.initDeleteDb("Issue_268.db");
+      Database db = await factory.openDatabase(path);
+      try {
+        // print('like %meta%');
+        var result = await db.rawQuery(
+            'SELECT * FROM sqlite_master WHERE name LIKE ?', ['%meta%']);
+        // print(result);
+        expect(result.length, 1);
+        //await db
+      } finally {
+        await db.close();
+      }
+    });
+
+    test('Issue#270', () async {
+      String path = await context.initDeleteDb("Issue_270.db");
+      Database db = await factory.openDatabase(path);
+      try {
+        var batch = db.batch();
+        batch.execute('''CREATE TABLE konular (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT
+)''');
+
+        batch.execute('ALTER TABLE konular ADD COLUMN ks INTEGER');
+        await batch.commit();
+        var result = await db.rawQuery(
+            'SELECT * FROM sqlite_master WHERE name LIKE ?', ['konu%']);
+        print(result);
+        expect(result.length, 1);
+        //await db
+      } finally {
+        await db.close();
+      }
+    });
   }
 }
 

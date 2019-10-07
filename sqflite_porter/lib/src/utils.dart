@@ -15,7 +15,7 @@ Future<String> initEmptyDb(String dbName) async {
   String path = join(databasePath, dbName);
 
   // make sure the folder exists
-  if (await Directory(dirname(path)).exists()) {
+  if (Directory(dirname(path)).existsSync()) {
     await deleteDatabase(path);
   } else {
     try {

@@ -1,5 +1,5 @@
 import 'package:sqflite_test/sqflite_test.dart';
-import 'package:test/test.dart';
+import 'package:test_api/test_api.dart';
 
 import 'exception_test.dart' as exception_test;
 import 'exp_test.dart' as exp_test;
@@ -17,8 +17,8 @@ void run(SqfliteServerTestContext context) {
     type_test.run(context);
     statement_test.run(context);
     raw_test.run(context);
-    exp_test.run(context);
     open_test.run(context);
     exception_test.run(context);
+    exp_test.run(context);
   });
 }

@@ -3,7 +3,7 @@ import 'package:tekartik_common_utils/common_utils_import.dart';
 // Get the server information
 const methodGetServerInfo = 'sqfliteGetServerInfo';
 // delete a database (param is map with 'path' key)
-const methodDeleteDatabase = 'sqfliteDeleteDatabase';
+const methodSqfliteDeleteDatabase = 'sqfliteDeleteDatabase';
 // Create a directory if it does not exists (param is map with 'path' key, if null or relative, assumes getDatabasesPath)
 const methodCreateDirectory = 'sqfliteCreateDirectory';
 // Create a directory and its sub directory

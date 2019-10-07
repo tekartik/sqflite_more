@@ -1,12 +1,13 @@
 import 'dart:async';
 import 'dart:io';
+
+import 'package:flutter_test/flutter_test.dart';
+import 'package:path/path.dart';
 import 'package:pedantic/pedantic.dart';
 import 'package:sqflite/sqlite_api.dart';
-import 'package:synchronized/synchronized.dart';
-import 'package:path/path.dart';
-import 'package:test/test.dart';
-import 'package:sqflite_test/sqflite_test.dart';
 import 'package:sqflite/utils/utils.dart' as utils;
+import 'package:sqflite_test/sqflite_test.dart';
+import 'package:synchronized/synchronized.dart';
 
 bool verify(bool condition, [String message]) {
   message ??= "verify failed";
@@ -685,6 +686,23 @@ void run(SqfliteServerTestContext context) {
       {"id": 1}
     ]);
     await db.close();
+  });
+
+  test('close in transaction', () async {
+    //await utils.devSetDebugModeOn(true);
+    String path = await context.initDeleteDb("close_in_transaction.db");
+
+    var db = await factory.openDatabase(path,
+        options: OpenDatabaseOptions(version: 1));
+    try {
+      await db.execute("BEGIN TRANSACTION");
+      await db.close();
+
+      db = await factory.openDatabase(path,
+          options: OpenDatabaseOptions(version: 1));
+    } finally {
+      await db.close();
+    }
   });
 }
 

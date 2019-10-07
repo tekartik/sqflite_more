@@ -5,8 +5,8 @@ import 'dart:typed_data';
 
 import 'package:sqflite/sqlite_api.dart';
 import 'package:sqflite/utils/utils.dart' as utils;
-import 'package:test/test.dart';
 import 'package:sqflite_test/sqflite_test.dart';
+import 'package:test_api/test_api.dart';
 
 class _Data {
   Database db;
@@ -47,7 +47,19 @@ void run(SqfliteServerTestContext context) {
                 await db.execute(
                     "CREATE TABLE Test (_id INTEGER PRIMARY KEY, value INTEGER)");
               }));
-      int id = await insertValue(-1);
+
+      // text
+      int id = await insertValue('test');
+      expect(await getValue(id), 'test');
+
+      // null
+      id = await insertValue(null);
+      expect(await getValue(id), null);
+
+      id = await insertValue(1);
+      expect(await getValue(id), 1);
+
+      id = await insertValue(-1);
       expect(await getValue(id), -1);
 
       // less than 32 bits
@@ -101,7 +113,17 @@ void run(SqfliteServerTestContext context) {
                 await db.execute(
                     "CREATE TABLE Test (_id INTEGER PRIMARY KEY, value REAL)");
               }));
-      int id = await insertValue(-1.1);
+      // text
+      int id = await insertValue('test');
+      expect(await getValue(id), 'test');
+
+      // null
+      id = await insertValue(null);
+      expect(await getValue(id), null);
+
+      id = await insertValue(-1);
+      expect(await getValue(id), -1);
+      id = await insertValue(-1.1);
       expect(await getValue(id), -1.1);
       // big float
       id = await insertValue(1 / 3);
@@ -112,7 +134,7 @@ void run(SqfliteServerTestContext context) {
       } on TestFailure catch (_) {
         // we might still get the positive value
         // This happens when use the server app
-        expect(await getValue(id), - (pow(2, 63) + 0.1));
+        expect(await getValue(id), -(pow(2, 63) + 0.1));
       }
 
       // integer?
@@ -159,6 +181,10 @@ void run(SqfliteServerTestContext context) {
         int id = await insertValue("simple text");
         expect(await getValue(id), "simple text");
 
+        // null
+        id = await insertValue(null);
+        expect(await getValue(id), null);
+
         // UInt8List - default
         ByteData byteData = ByteData(1);
         byteData.setInt8(0, 1);
@@ -204,7 +230,7 @@ void run(SqfliteServerTestContext context) {
         rows = await data.db.rawQuery('SELECT * FROM Test WHERE hex(value) = ?',
             <dynamic>[utils.hex(blob1234)]);
         expect(rows.length, 1);
-        expect(rows[0]['_id'], 3);
+        expect(rows[0]['_id'], id);
       } finally {
         await data.db.close();
       }
@@ -258,6 +284,115 @@ void run(SqfliteServerTestContext context) {
         await data.db.close();
       }
     });
-    // not working with sqlflite server yet
+
+    test('sql timestamp', () async {
+      // await Sqflite.devSetDebugModeOn(true);
+      String path = await context.initDeleteDb("type_sql_timestamp.db");
+      data.db = await factory.openDatabase(path,
+          options: OpenDatabaseOptions(
+              version: 1,
+              onCreate: (Database db, int version) async {
+                await db.execute("CREATE TABLE Test (_id INTEGER PRIMARY KEY,"
+                    " value TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL)");
+              }));
+      try {
+        int id = await data.db.insert("Test", <String, dynamic>{"_id": 1});
+        expect(DateTime.parse(await getValue(id) as String), isNotNull);
+      } finally {
+        await data.db.close();
+      }
+
+      data.db = await factory.openDatabase(inMemoryDatabasePath);
+      try {
+        var dateTimeText =
+            (await data.db.rawQuery("SELECT datetime(1092941466, 'unixepoch')"))
+                .first
+                .values
+                .first as String;
+        expect(dateTimeText, '2004-08-19 18:51:06');
+        expect(DateTime.parse(dateTimeText).toIso8601String(),
+            '2004-08-19T18:51:06.000');
+      } finally {
+        await data.db.close();
+      }
+    });
+
+    test('sql numeric', () async {
+      // await Sqflite.devSetDebugModeOn(true);
+      String path = await context.initDeleteDb("type_sql_numeric.db");
+      data.db = await factory.openDatabase(path,
+          options: OpenDatabaseOptions(
+              version: 1,
+              onCreate: (Database db, int version) async {
+                await db.execute("CREATE TABLE Test (_id INTEGER PRIMARY KEY,"
+                    " value NUMERIC)");
+              }));
+      try {
+        int id = await insertValue(1);
+        expect(await getValue(id), 1);
+        var value = await getValue(id);
+        expect(value, const TypeMatcher<int>());
+
+        id = await insertValue(-1);
+        expect(await getValue(id), -1);
+        id = await insertValue(-1.1);
+        value = await getValue(id);
+        expect(value, const TypeMatcher<double>());
+        expect(value, -1.1);
+
+        // big float
+        id = await insertValue(1 / 3);
+        expect(await getValue(id), 1 / 3);
+        id = await insertValue(pow(2, 63) + .1);
+        try {
+          expect(await getValue(id), pow(2, 63) + 0.1);
+        } on TestFailure catch (_) {
+          // we might still get the positive value
+          // This happens when use the server app
+          expect(await getValue(id), -(pow(2, 63) + 0.1));
+        }
+
+        // integer?
+        id = await insertValue(pow(2, 62));
+        expect(await getValue(id), pow(2, 62));
+
+        // text
+        id = await insertValue('test');
+        expect(await getValue(id), 'test');
+
+        // int text
+        id = await insertValue('18');
+        expect(await getValue(id), 18);
+
+        // double text
+        id = await insertValue('18.1');
+        expect(await getValue(id), 18.1);
+
+        // empty text
+        id = await insertValue('');
+        expect(await getValue(id), '');
+
+        // null
+        id = await insertValue(null);
+        expect(await getValue(id), null);
+      } finally {
+        await data.db.close();
+      }
+    });
+    test("bool", () async {
+      //await Sqflite.devSetDebugModeOn(true);
+      String path = await context.initDeleteDb("type_bool.db");
+      data.db = await factory.openDatabase(path,
+          options: OpenDatabaseOptions(
+              version: 1,
+              onCreate: (Database db, int version) async {
+                await db.execute(
+                    "CREATE TABLE Test (_id INTEGER PRIMARY KEY, value BOOL)");
+              }));
+
+      // text
+      int id = await insertValue('test');
+      expect(await getValue(id), 'test');
+    });
   });
 }
