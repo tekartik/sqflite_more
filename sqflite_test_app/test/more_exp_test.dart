@@ -3,7 +3,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/services.dart';
-import 'package:flutter_test/flutter_test.dart';
+import 'package:test/test.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqlite_api.dart';
 import 'package:sqflite_test/sqflite_test.dart';
@@ -106,7 +106,7 @@ Future main() async {
       } finally {
         await db?.close();
       }
-    });
+    }, skip: true);
 
     test('Issue#146', () => issue146(context));
 
@@ -217,6 +217,38 @@ Future main() async {
         print(result);
         expect(result.length, 1);
         //await db
+      } finally {
+        await db.close();
+      }
+    });
+
+    test('Issue#285', () async {
+      // Type real as int
+      String path = await context.initDeleteDb("issue_285.db");
+      Database db = await factory.openDatabase(path);
+      try {
+        var batch = db.batch();
+        batch.execute('''
+  CREATE TABLE test (
+    id INTEGER PRIMARY KEY,
+    value REAL NOT NULL
+  ); 
+''');
+// Insert an int
+        batch.insert('test', {'id': 3, 'value': 2});
+// Insert 2 floats
+        batch.insert('test', {'id': 1, 'value': 1.5});
+        batch.insert('test', {'id': 2, 'value': 2.5});
+        batch.query('test', orderBy: 'value ASC');
+        var result = (await batch.commit())[4] as List<Map>;
+        expect(result[0]['id'], 1);
+        expect(result[1]['id'], 3);
+        expect(result[2]['id'], 2);
+        expect(result[0]['value'], 1.5);
+// It was inserted as an int, but it is still a double
+        expect(result[1]['value'], 2);
+        expect(result[1]['value'], const TypeMatcher<double>());
+        expect(result[2]['value'], 2.5);
       } finally {
         await db.close();
       }
