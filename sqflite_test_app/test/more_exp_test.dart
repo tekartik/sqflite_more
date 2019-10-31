@@ -3,11 +3,13 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/services.dart';
+import 'package:flutter_test/flutter_test.dart' show TestWidgetsFlutterBinding;
 import 'package:test/test.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqlite_api.dart';
 import 'package:sqflite_test/sqflite_test.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';
+import 'package:sqflite/sqflite.dart';
 
 class TestAssetBundle extends CachingAssetBundle {
   @override
@@ -20,6 +22,8 @@ class TestAssetBundle extends CachingAssetBundle {
 }
 
 Future main() async {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
   var context = await SqfliteServerTestContext.connect();
   if (context != null) {
     var factory = context.databaseFactory;
@@ -252,6 +256,33 @@ Future main() async {
       } finally {
         await db.close();
       }
+    });
+
+    test('Issue#297', () async {
+      Future<Database> openDatabase(String path) async {
+        path = await context.initDeleteDb(path);
+        var db = await factory.openDatabase(path);
+        return db;
+      }
+
+      // Custom version handling
+      var db = await openDatabase('notes.db');
+
+      // We want version 2
+      var oldVersion = await db.getVersion();
+      var newVersion = 2;
+
+      if (oldVersion == 0) {
+        // Create...
+      } else if (oldVersion == 1) {
+        // Update...
+      }
+      if (oldVersion < newVersion) {
+        // We are at version 2 now
+        await db.setVersion(newVersion);
+      }
+
+      await db.close();
     });
   }
 }
