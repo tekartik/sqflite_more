@@ -284,6 +284,16 @@ Future main() async {
 
       await db.close();
     });
+
+    test('Version', () async {
+      // Custom version handling
+      var db = await factory.openDatabase(inMemoryDatabasePath);
+
+      // Print the version
+      print(await db.rawQuery('SELECT sqlite_version()'));
+
+      await db.close();
+    });
   }
 }
 
