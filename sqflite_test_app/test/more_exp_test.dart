@@ -294,6 +294,27 @@ Future main() async {
 
       await db.close();
     });
+
+    test('Issue#310', () async {
+      var db = await factory.openDatabase(inMemoryDatabasePath);
+      await db.rawQuery(
+          "CREATE VIRTUAL TABLE mytable2 USING fts4(description text)");
+      await db.rawQuery(
+          "CREATE VIRTUAL TABLE mytable2_terms USING fts4aux(mytable2)");
+      await db
+          .rawQuery("CREATE VIRTUAL TABLE mytable3 USING spellfix(word text)");
+      await db.rawQuery(
+          "INSERT INTO mytable2 VALUES ('All the Carmichael numbers')");
+      await db.rawQuery("INSERT INTO mytable2 VALUES ('They are great')");
+      await db
+          .rawQuery("INSERT INTO mytable2 VALUES ('Here some other numbers')");
+
+      await db.rawQuery("CREATE VIRTUAL TABLE demo USING spellfix1;");
+//here error occured
+      await db.rawQuery(
+          "INSERT INTO demo(word) SELECT term FROM mytable2_terms WHERE col='*';");
+      await db.close();
+    }, skip: true);
   }
 }
 
