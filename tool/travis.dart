@@ -4,7 +4,6 @@ Future main() async {
   var shell = Shell();
 
   for (var dir in [
-
     'sqflite_porter',
     'sqflite_server',
     'sqflite_test',

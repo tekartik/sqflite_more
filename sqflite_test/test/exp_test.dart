@@ -5,7 +5,7 @@ import 'package:pedantic/pedantic.dart';
 import 'package:sqflite/sqlite_api.dart';
 import 'package:sqflite/utils/utils.dart' as utils;
 import 'package:sqflite_test/sqflite_test.dart';
-import 'package:test_api/test_api.dart';
+import 'package:test/test.dart';
 
 import 'open_test.dart';
 
@@ -504,6 +504,29 @@ INSERT INTO test (value) VALUES (10);
       unawaited(db.close());
       try {
         await db.transaction((_) async {});
+        fail('should fail');
+      } on DatabaseException catch (_) {}
+      db = await factory.openDatabase(path);
+    } finally {
+      await db?.close();
+    }
+  });
+
+  test('read_only', () async {
+    Database db;
+    try {
+      String path = await context.initDeleteDb("read_only.db");
+      db = await factory.openDatabase(path);
+      await db.execute('PRAGMA user_version = 4');
+      await db.close();
+      db = await factory.openDatabase(path,
+          options: OpenDatabaseOptions(readOnly: false));
+      await db.execute('PRAGMA user_version = 4');
+      await db.close();
+      db = await factory.openDatabase(path,
+          options: OpenDatabaseOptions(readOnly: true));
+      try {
+        await db.execute('PRAGMA user_version = 4');
         fail('should fail');
       } on DatabaseException catch (_) {}
       db = await factory.openDatabase(path);

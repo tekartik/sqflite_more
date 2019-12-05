@@ -3,11 +3,13 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/services.dart';
-import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_test/flutter_test.dart' show TestWidgetsFlutterBinding;
+import 'package:test/test.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqlite_api.dart';
 import 'package:sqflite_test/sqflite_test.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';
+import 'package:sqflite/sqflite.dart';
 
 class TestAssetBundle extends CachingAssetBundle {
   @override
@@ -20,6 +22,8 @@ class TestAssetBundle extends CachingAssetBundle {
 }
 
 Future main() async {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
   var context = await SqfliteServerTestContext.connect();
   if (context != null) {
     var factory = context.databaseFactory;
@@ -106,7 +110,7 @@ Future main() async {
       } finally {
         await db?.close();
       }
-    });
+    }, skip: true);
 
     test('Issue#146', () => issue146(context));
 
@@ -221,6 +225,96 @@ Future main() async {
         await db.close();
       }
     });
+
+    test('Issue#285', () async {
+      // Type real as int
+      String path = await context.initDeleteDb("issue_285.db");
+      Database db = await factory.openDatabase(path);
+      try {
+        var batch = db.batch();
+        batch.execute('''
+  CREATE TABLE test (
+    id INTEGER PRIMARY KEY,
+    value REAL NOT NULL
+  ); 
+''');
+// Insert an int
+        batch.insert('test', {'id': 3, 'value': 2});
+// Insert 2 floats
+        batch.insert('test', {'id': 1, 'value': 1.5});
+        batch.insert('test', {'id': 2, 'value': 2.5});
+        batch.query('test', orderBy: 'value ASC');
+        var result = (await batch.commit())[4] as List<Map>;
+        expect(result[0]['id'], 1);
+        expect(result[1]['id'], 3);
+        expect(result[2]['id'], 2);
+        expect(result[0]['value'], 1.5);
+// It was inserted as an int, but it is still a double
+        expect(result[1]['value'], 2);
+        expect(result[1]['value'], const TypeMatcher<double>());
+        expect(result[2]['value'], 2.5);
+      } finally {
+        await db.close();
+      }
+    });
+
+    test('Issue#297', () async {
+      Future<Database> openDatabase(String path) async {
+        path = await context.initDeleteDb(path);
+        var db = await factory.openDatabase(path);
+        return db;
+      }
+
+      // Custom version handling
+      var db = await openDatabase('notes.db');
+
+      // We want version 2
+      var oldVersion = await db.getVersion();
+      var newVersion = 2;
+
+      if (oldVersion == 0) {
+        // Create...
+      } else if (oldVersion == 1) {
+        // Update...
+      }
+      if (oldVersion < newVersion) {
+        // We are at version 2 now
+        await db.setVersion(newVersion);
+      }
+
+      await db.close();
+    });
+
+    test('Version', () async {
+      // Custom version handling
+      var db = await factory.openDatabase(inMemoryDatabasePath);
+
+      // Print the version
+      print(await db.rawQuery('SELECT sqlite_version()'));
+
+      await db.close();
+    });
+
+    test('Issue#310', () async {
+      var db = await factory.openDatabase(inMemoryDatabasePath);
+      await db.rawQuery(
+          "CREATE VIRTUAL TABLE mytable2 USING fts4(description text)");
+      await db.rawQuery(
+          "CREATE VIRTUAL TABLE mytable2_terms USING fts4aux(mytable2)");
+      await db
+          .rawQuery("CREATE VIRTUAL TABLE mytable3 USING spellfix(word text)");
+      await db.rawQuery(
+          "INSERT INTO mytable2 VALUES ('All the Carmichael numbers')");
+      await db.rawQuery("INSERT INTO mytable2 VALUES ('They are great')");
+      await db
+          .rawQuery("INSERT INTO mytable2 VALUES ('Here some other numbers')");
+
+      await db.rawQuery("CREATE VIRTUAL TABLE demo USING spellfix1;");
+//here error occured
+      await db.rawQuery(
+          "INSERT INTO demo(word) SELECT term FROM mytable2_terms WHERE col='*';");
+      await db.close();
+    }, skip: true);
   }
 }
 
