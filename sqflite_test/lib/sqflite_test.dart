@@ -1,7 +1,7 @@
 library sqflite_test;
 
 import 'dart:async';
-import 'package:test_api/test_api.dart';
+import 'package:test/test.dart';
 import 'package:path/path.dart';
 import 'package:sqflite_server/sqflite.dart';
 import 'package:tekartik_common_utils/int_utils.dart';

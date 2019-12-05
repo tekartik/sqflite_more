@@ -5,7 +5,7 @@ import 'package:pedantic/pedantic.dart';
 import 'package:sqflite/sqlite_api.dart';
 import 'package:sqflite/utils/utils.dart' as utils;
 import 'package:sqflite_test/sqflite_test.dart';
-import 'package:test_api/test_api.dart';
+import 'package:test/test.dart';
 
 import 'open_test.dart';
 

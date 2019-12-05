@@ -1,5 +1,5 @@
 import 'package:sqflite_server/src/sqflite_client.dart';
-import 'package:test_api/test_api.dart';
+import 'package:test/test.dart';
 
 import 'package:sqflite_server/sqflite_server.dart';
 import 'package:tekartik_web_socket/web_socket.dart';
