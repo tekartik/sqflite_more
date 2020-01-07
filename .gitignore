@@ -8,3 +8,4 @@ build/
 .idea/
 .vscode/
 *.iml
+/sqflite_test/.flutter-plugins-dependencies
