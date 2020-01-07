@@ -14,3 +14,4 @@ doc/api/
 .flutter-plugins
 ios/
 android/
+/.flutter-plugins-dependencies

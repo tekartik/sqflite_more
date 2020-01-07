@@ -14,3 +14,4 @@ android/
 # ide
 .idea/
 *.iml
+/.flutter-plugins-dependencies

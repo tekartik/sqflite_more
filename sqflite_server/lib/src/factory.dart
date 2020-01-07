@@ -38,18 +38,6 @@ class SqfliteServerDatabaseFactory extends SqfliteDatabaseFactoryBase {
         methodSqfliteDeleteDatabase, <String, dynamic>{keyPath: path});
   }
 
-  @override
-  Future createParentDirectory(String path) async {
-    if (_isPath(path)) {
-      path = pathContext.dirname(path);
-      return await context.createDirectory(path);
-    }
-  }
-
-  bool _isPath(String path) {
-    return (path != null) && (path != inMemoryDatabasePath);
-  }
-
   // overrident to use the proper path context
   @override
   Future<String> fixPath(String path) async {
