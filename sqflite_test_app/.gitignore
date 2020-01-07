@@ -11,3 +11,4 @@ build/
 # ide
 .idea/
 *.iml
+/.flutter-plugins-dependencies
