@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:test/test.dart';
 import 'package:sqflite/sqlite_api.dart';
 import 'package:sqflite_test/sqflite_test.dart';
+import 'package:sqflite/utils/utils.dart';
 
 final String tableTodo = "todo";
 final String columnId = "_id";
@@ -268,5 +269,132 @@ CREATE TABLE Product (
         db = null;
       }
     });
+    test('upsert', () async {
+      var path = inMemoryDatabasePath;
+
+      {
+        /// Create tables
+        void _createTableProduct(Batch batch) {
+          batch.execute('''
+CREATE TABLE Product (
+  id TEXT PRIMARY KEY,
+  title TEXT
+)''');
+        }
+
+// First version of the database
+        var db = await factory.openDatabase(path,
+            options: OpenDatabaseOptions(
+                version: 1,
+                onCreate: (db, version) async {
+                  var batch = db.batch();
+                  _createTableProduct(batch);
+                  await batch.commit();
+                },
+                onDowngrade: onDatabaseDowngradeDelete));
+
+        Future<bool> _exists(Transaction txn, Product product) async {
+          return firstIntValue(await txn.query('Product',
+                  columns: ['COUNT(*)'],
+                  where: 'id = ?',
+                  whereArgs: [product.id])) ==
+              1;
+        }
+
+        Future _update(Transaction txn, Product product) async {
+          await txn.update('Product', product.toMap(),
+              where: 'id = ?', whereArgs: [product.id]);
+        }
+
+        Future _insert(Transaction txn, Product product) async {
+          await txn.insert('Product', product.toMap()..['id'] = product.id);
+        }
+
+        Future upsertRecord(Product product) async {
+          await db.transaction((txn) async {
+            if (await _exists(txn, product)) {
+              await _update(txn, product);
+            } else {
+              await _insert(txn, product);
+            }
+          });
+        }
+
+        var product = Product()
+          ..id = 'table'
+          ..title = 'Table';
+        await upsertRecord(product);
+        await upsertRecord(product);
+
+        var result = await db.query('Product');
+        expect(result.length, 1, reason: 'list ${result}');
+        await db.close();
+        db = null;
+      }
+    });
+
+    test('upsert_with_exception', () async {
+      var path = inMemoryDatabasePath;
+
+      {
+        /// Create tables
+        void _createTableProduct(Batch batch) {
+          batch.execute('''
+CREATE TABLE Product (
+  id TEXT PRIMARY KEY,
+  title TEXT
+)''');
+        }
+
+// First version of the database
+        var db = await factory.openDatabase(path,
+            options: OpenDatabaseOptions(
+                version: 1,
+                onCreate: (db, version) async {
+                  var batch = db.batch();
+                  _createTableProduct(batch);
+                  await batch.commit();
+                },
+                onDowngrade: onDatabaseDowngradeDelete));
+
+        Future _update(Product product) async {
+          await db.update('Product', product.toMap(),
+              where: 'id = ?', whereArgs: [product.id]);
+        }
+
+        Future _insert(Product product) async {
+          await db.insert('Product', product.toMap()..['id'] = product.id);
+        }
+
+        Future upsertRecord(Product product) async {
+          try {
+            await _insert(product);
+          } on DatabaseException catch (e) {
+            if (e.isUniqueConstraintError()) {
+              await _update(product);
+            }
+          }
+        }
+
+        var product = Product()
+          ..id = 'table'
+          ..title = 'Table';
+        await upsertRecord(product);
+        await upsertRecord(product);
+
+        var result = await db.query('Product');
+        expect(result.length, 1, reason: 'list ${result}');
+        await db.close();
+        db = null;
+      }
+    });
   });
+}
+
+class Product {
+  String id;
+  String title;
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{'title': title};
+  }
 }

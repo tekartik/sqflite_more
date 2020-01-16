@@ -5,7 +5,7 @@ import 'package:pedantic/pedantic.dart';
 import 'package:sqflite/sqlite_api.dart';
 import 'package:sqflite/utils/utils.dart' as utils;
 import 'package:sqflite_test/sqflite_test.dart';
-import 'package:test/test.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 import 'open_test.dart';
 
@@ -533,5 +533,43 @@ INSERT INTO test (value) VALUES (10);
     } finally {
       await db?.close();
     }
+  });
+
+  test('as', () async {
+    String path = await context.initDeleteDb("exp_as.db");
+    Database db = await factory.openDatabase(path,
+        options: OpenDatabaseOptions(
+            version: 1,
+            onCreate: (Database db, int version) async {
+              await db.execute("CREATE TABLE test (id INT, value TEXT)");
+              await db.insert(
+                  "test", <String, dynamic>{"id": 1, "value": 'without quote'});
+              await db.insert(
+                  "test", <String, dynamic>{"id": 2, "value": 'with " quote'});
+            }));
+    var resultSet = await db.rawQuery("SELECT r.id FROM test r");
+    expect(resultSet, [
+      {'id': 1},
+      {'id': 2}
+    ]);
+    var dbItem = resultSet.first;
+    // ignore: unused_local_variable
+    var resourceId = dbItem['id'];
+    // print(resourceId);
+
+    {
+      resultSet = await db.rawQuery("SELECT r.id AS r_id FROM test r");
+      expect(resultSet, [
+        {'r_id': 1},
+        {'r_id': 2}
+      ]);
+      // print(resultSet.first.keys);
+      dbItem = resultSet.first;
+      // ignore: unused_local_variable
+      var resourceId = dbItem['r_id'];
+      // print(dbItem.keys);
+      // print(resourceId);
+    }
+    await db.close();
   });
 }
