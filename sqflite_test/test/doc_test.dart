@@ -6,10 +6,10 @@ import 'package:sqflite/sqlite_api.dart';
 import 'package:sqflite_test/sqflite_test.dart';
 import 'package:sqflite/utils/utils.dart';
 
-final String tableTodo = "todo";
-final String columnId = "_id";
-final String columnTitle = "title";
-final String columnDone = "done";
+final String tableTodo = 'todo';
+final String columnId = '_id';
+final String columnTitle = 'title';
+final String columnDone = 'done';
 
 Future main() {
   return testMain(run);
@@ -19,7 +19,7 @@ void run(SqfliteServerTestContext context) {
   var factory = context.databaseFactory;
 
   group('doc', () {
-    test("upgrade_add_table", () async {
+    test('upgrade_add_table', () async {
       //await Sqflite.setDebugModeOn(true);
 
       // Our database path
@@ -153,7 +153,7 @@ void run(SqfliteServerTestContext context) {
         {
           // Test1
           path =
-              await context.initDeleteDb("upgrade_add_table_and_column_doc.db");
+              await context.initDeleteDb('upgrade_add_table_and_column_doc.db');
           await openCloseV1();
           await openCloseV2();
           await _test();
@@ -161,7 +161,7 @@ void run(SqfliteServerTestContext context) {
         {
           // Test2
           path =
-              await context.initDeleteDb("upgrade_add_table_and_column_doc.db");
+              await context.initDeleteDb('upgrade_add_table_and_column_doc.db');
           await openCloseV2();
           await _test();
         }
@@ -185,15 +185,15 @@ void run(SqfliteServerTestContext context) {
 
     test('record map', () async {
       Map<String, dynamic> map = <String, dynamic>{
-        "title": "Table",
-        "size": <String, dynamic>{"width": 80, "height": 80}
+        'title': 'Table',
+        'size': <String, dynamic>{'width': 80, 'height': 80}
       };
 
-      map = <String, dynamic>{"title": "Table", "width": 80, "height": 80};
+      map = <String, dynamic>{'title': 'Table', 'width': 80, 'height': 80};
 
       map = <String, dynamic>{
-        "title": "Table",
-        "size": jsonEncode(<String, dynamic>{"width": 80, "height": 80})
+        'title': 'Table',
+        'size': jsonEncode(<String, dynamic>{'width': 80, 'height': 80})
       };
       final Map<String, dynamic> map2 = <String, dynamic>{
         'title': 'Table',
@@ -229,9 +229,9 @@ CREATE TABLE Product (
                 onDowngrade: onDatabaseDowngradeDelete));
 
         var map = <String, dynamic>{
-          "title": "Table",
-          "width": 80,
-          "height": 80
+          'title': 'Table',
+          'width': 80,
+          'height': 80
         };
         await db.insert('Product', map);
         await db.close();

@@ -1,13 +1,15 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:flutter_test/flutter_test.dart';
+import 'package:test/test.dart';
 import 'package:path/path.dart';
 import 'package:pedantic/pedantic.dart';
 import 'package:sqflite/sqlite_api.dart';
 import 'package:sqflite/utils/utils.dart' as utils;
 import 'package:sqflite_test/sqflite_test.dart';
 import 'package:synchronized/synchronized.dart';
+
+import 'core_import.dart';
 
 bool verify(bool condition, [String message]) {
   message ??= "verify failed";
@@ -127,7 +129,7 @@ void run(SqfliteServerTestContext context) {
   test("Delete database", () async {
     // await context.devSetDebugModeOn(false);
     String path = await context.initDeleteDb("delete_database.db");
-    expect(await checkFileExists(path), isFalse);
+    expect(await checkFileExists(path), isFalse, reason: '$path');
     Database db = await factory.openDatabase(path);
     await db.close();
 
@@ -250,6 +252,7 @@ void run(SqfliteServerTestContext context) {
       print(e);
     }
     await database.close();
+
     database = await factory.openDatabase(path,
         options: OpenDatabaseOptions(
             version: 2,
@@ -259,7 +262,7 @@ void run(SqfliteServerTestContext context) {
               await db.execute("ALTER TABLE Test ADD name TEXT");
               onUpgrade = true;
             }));
-    verify(onUpgrade);
+    expect(onUpgrade, isTrue);
 
     expect(
         await database

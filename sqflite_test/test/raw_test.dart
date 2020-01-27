@@ -8,6 +8,8 @@ import 'package:sqflite/utils/utils.dart' as utils;
 import 'package:sqflite_test/sqflite_test.dart';
 import 'package:test/test.dart';
 
+import 'core_import.dart';
+
 Future main() {
   return testMain(run);
 }
