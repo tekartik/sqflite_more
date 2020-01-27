@@ -22,7 +22,7 @@ String _findPackage(String currentPath) {
       var parts = line.split(':');
       if (parts.length > 1) {
         if (parts[0] == 'sqflite_ffi_test') {
-          var location = parts.sublist(parts[0].length + 1).join(':');
+          var location = parts.sublist(1).join(':');
           return absolute(normalize(toFilePath(dirname(file.path), location)));
         }
       }
