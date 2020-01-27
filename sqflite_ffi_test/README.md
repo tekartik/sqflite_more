@@ -5,7 +5,7 @@
 It allows mocking sqflite during regular flutter unit test (i.e. not using the emulator/simulator).
 One goal is make it stricter than sqflite to encourage good practices.
 
-Currently supported on Linux and MacOS.
+Currently supported on Linux, MacOS and Windows.
 
 ## Getting Started
 
@@ -36,7 +36,7 @@ Should work as is.
 
 ### Windows
 
-Untested.
+Should work as is (`sqlite3.dll` is bundled).
 
 ## Simple code
 
@@ -50,7 +50,7 @@ import 'package:sqflite_ffi_test/sqflite_ffi_test.dart';
 void main() {
   // Set sqflite ffi support in test
   TestWidgetsFlutterBinding.ensureInitialized();
-  setAsMockMethodCallHandler();
+  sqfliteFfiTestInit();
 
   test('simple sqflite example', () async {
     var db = await openDatabase(inMemoryDatabasePath);

@@ -62,7 +62,7 @@ var ffiTestContext = SqfliteFfiTestContext();
 void main() {
   // Set sqflite ffi support in test
   TestWidgetsFlutterBinding.ensureInitialized();
-  setAsMockMethodCallHandler();
+  sqfliteFfiTestInit();
 
   test('simplest', () async {
     var db = await openDatabase(inMemoryDatabasePath);
