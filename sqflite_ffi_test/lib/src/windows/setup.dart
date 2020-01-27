@@ -5,6 +5,16 @@ import 'dart:io';
 import 'package:moor_ffi/open_helper.dart';
 import 'package:path/path.dart';
 
+String toFilePath(String parent, String path) {
+  var uri = Uri.parse(path);
+  path = uri.toFilePath(windows: true);
+  if (isRelative(path)) {
+    return join(parent, path);
+  }
+  return path;
+
+}
+
 String _findPackage(String currentPath) {
   String findPath(File file) {
     var lines = LineSplitter.split(file.readAsStringSync());
@@ -13,10 +23,7 @@ String _findPackage(String currentPath) {
       if (parts.length > 1) {
         if (parts[0] == 'sqflite_ffi_test') {
           var location = parts[1];
-          if (isRelative(location)) {
-            return join(dirname(file.path), location);
-          }
-          return location;
+          return toFilePath(dirname(file.path), location);
         }
       }
     }
