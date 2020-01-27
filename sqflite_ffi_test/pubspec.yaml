@@ -1,6 +1,6 @@
 name: sqflite_ffi_test
 description: sqflite dev testing using ffi
-version: 0.1.1
+version: 0.1.2
 publish_to: none
 
 environment:

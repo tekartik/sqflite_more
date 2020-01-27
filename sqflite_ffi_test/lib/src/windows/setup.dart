@@ -23,7 +23,7 @@ String _findPackage(String currentPath) {
       if (parts.length > 1) {
         if (parts[0] == 'sqflite_ffi_test') {
           var location = parts[1];
-          return toFilePath(dirname(file.path), location);
+          return absolute(normalize(toFilePath(dirname(file.path), location)));
         }
       }
     }
@@ -49,8 +49,13 @@ void windowsInit() {
   var location = _findPackage(Directory.current.path);
   var path = normalize(join(location, 'src', 'windows', 'sqlite3.dll'));
   open.overrideFor(OperatingSystem.windows, () {
-    // print('loading $path');
-    return DynamicLibrary.open(path);
+    //print('loading $path');
+    try {
+      return DynamicLibrary.open(path);
+    } catch (e) {
+      stderr.writeln('Failed to load sqlite3.dll at $path');
+      rethrow;
+    }
   });
 
   // sqflite_ffi_test:lib/
