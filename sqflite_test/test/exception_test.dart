@@ -597,7 +597,7 @@ void run(SqfliteServerTestContext context) {
         await db1?.close();
         await db2?.close();
       }
-    });
+    }, skip: !supportsDeadLock);
   });
 }
 

@@ -135,6 +135,9 @@ class _MultiInstanceLocker {
 extension SqfliteFfiMethodCallHandler on MethodCall {
   Future<T> synchronized<T>(Future<T> Function() action) async {
     var path = getPath() ?? getDatabase()?.path;
+    if (isInMemory(path)) {
+      return await action();
+    }
     return await (_MultiInstanceLocker(path).synchronized(action));
   }
 

@@ -11,5 +11,13 @@ void main() {
     var db = await openDatabase(inMemoryDatabasePath);
     expect(await db.getVersion(), 0);
     await db.close();
+
+    db = await openDatabase(inMemoryDatabasePath, version: 1);
+    expect(await db.getVersion(), 1);
+    await db.close();
+
+    db = await openDatabase('simple_version_1.db', version: 1);
+    expect(await db.getVersion(), 1);
+    await db.close();
   });
 }
