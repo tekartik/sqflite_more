@@ -12,7 +12,6 @@ String toFilePath(String parent, String path) {
     return join(parent, path);
   }
   return path;
-
 }
 
 String _findPackage(String currentPath) {
@@ -40,8 +39,6 @@ String _findPackage(String currentPath) {
     }
     return _findPackage(parent);
   }
-
-
 }
 
 /// One windows load the embedded sqlite3.dll for convenience
