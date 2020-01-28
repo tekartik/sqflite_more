@@ -9,7 +9,7 @@ Future main() {
   return testMain(run);
 }
 
-void run(SqfliteServerTestContext context) {
+void run(SqfliteTestContext context) {
   var factory = context.databaseFactory;
 
   test("with_sudoku_solver", () async {

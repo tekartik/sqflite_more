@@ -23,7 +23,7 @@ Future main() {
   return testMain(run);
 }
 
-void run(SqfliteServerTestContext context) {
+void run(SqfliteTestContext context) {
   var factory = context.databaseFactory;
 
   test("Open asset database", () async {
@@ -51,11 +51,11 @@ void run(SqfliteServerTestContext context) {
     expect(list.first["name"], "simple value");
 
     await db.close();
-  });
+  }, skip: true);
 
   test('Open demo (doc)', () async {
     // await utils.devSetDebugModeOn(true);
-    var rootBundle = TestAssetBundle();
+
     String path = await context.initDeleteDb("open_read_only.db");
 
     {
@@ -103,7 +103,9 @@ void run(SqfliteServerTestContext context) {
           ));
       await db.close();
     }
-
+  });
+  test('Open asset (doc)', () async {
+    var rootBundle = TestAssetBundle();
     // asset (use existing copy if any)
     {
       // Check if we have an existing copy first
@@ -138,5 +140,5 @@ void run(SqfliteServerTestContext context) {
 
       await db.close();
     }
-  });
+  }, skip: true);
 }

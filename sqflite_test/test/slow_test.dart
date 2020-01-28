@@ -8,7 +8,7 @@ Future main() {
   return testMain(run);
 }
 
-void run(SqfliteServerTestContext context) {
+void run(SqfliteTestContext context) {
   var factory = context.databaseFactory;
   test("Perf 100 insert", () async {
     String path = await context.initDeleteDb("slow_txn_100_insert.db");

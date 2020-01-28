@@ -93,10 +93,11 @@ class OpenCallbacks {
 }
 
 Future main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
   return testMain(run);
 }
 
-void run(SqfliteServerTestContext context) {
+void run(SqfliteTestContext context) {
   var factory = context.databaseFactory;
   test('Databases path', () async {
     // await utils.devSetDebugModeOn(false);
