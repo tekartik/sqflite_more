@@ -8,6 +8,7 @@ import 'package:path/path.dart' as path;
 import 'package:process_run/cmd_run.dart';
 import 'package:process_run/which.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:sqflite/sqflite.dart' as sqflite;
 import 'package:sqflite_server/sqflite.dart';
 import 'package:sqflite_server/src/sqflite_client.dart'; // ignore: implementation_imports
 import 'package:tekartik_common_utils/int_utils.dart';
@@ -116,6 +117,12 @@ mixin SqfliteTestContextMixin implements SqfliteTestContext {
     await this.databaseFactory.deleteDatabase(path);
     return path;
   }
+}
+
+class SqfliteLocalTestContext
+    with SqfliteTestContextMixin, SqfliteLocalTestContextMixin {
+  @override
+  DatabaseFactory get databaseFactory => sqflite.databaseFactory;
 }
 
 class SqfliteServerTestContext extends SqfliteServerContext

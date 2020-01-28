@@ -6,13 +6,7 @@ import 'package:sqflite_test/sqflite_test.dart';
 
 import 'all_test_.dart' as all;
 
-class SqfliteFfiTestContext
-    with SqfliteTestContextMixin, SqfliteLocalTestContextMixin {
-  @override
-  DatabaseFactory get databaseFactory => sqflite.databaseFactory;
-}
-
-var ffiTestContext = SqfliteFfiTestContext();
+var ffiTestContext = SqfliteLocalTestContext();
 
 void main() {
   // Set sqflite ffi support in test
