@@ -4,11 +4,12 @@ import 'dart:convert';
 import 'package:test/test.dart';
 import 'package:sqflite/sqlite_api.dart';
 import 'package:sqflite_test/sqflite_test.dart';
+import 'package:sqflite/utils/utils.dart';
 
-final String tableTodo = "todo";
-final String columnId = "_id";
-final String columnTitle = "title";
-final String columnDone = "done";
+final String tableTodo = 'todo';
+final String columnId = '_id';
+final String columnTitle = 'title';
+final String columnDone = 'done';
 
 Future main() {
   return testMain(run);
@@ -18,7 +19,7 @@ void run(SqfliteServerTestContext context) {
   var factory = context.databaseFactory;
 
   group('doc', () {
-    test("upgrade_add_table", () async {
+    test('upgrade_add_table', () async {
       //await Sqflite.setDebugModeOn(true);
 
       // Our database path
@@ -152,7 +153,7 @@ void run(SqfliteServerTestContext context) {
         {
           // Test1
           path =
-              await context.initDeleteDb("upgrade_add_table_and_column_doc.db");
+              await context.initDeleteDb('upgrade_add_table_and_column_doc.db');
           await openCloseV1();
           await openCloseV2();
           await _test();
@@ -160,7 +161,7 @@ void run(SqfliteServerTestContext context) {
         {
           // Test2
           path =
-              await context.initDeleteDb("upgrade_add_table_and_column_doc.db");
+              await context.initDeleteDb('upgrade_add_table_and_column_doc.db');
           await openCloseV2();
           await _test();
         }
@@ -184,15 +185,15 @@ void run(SqfliteServerTestContext context) {
 
     test('record map', () async {
       Map<String, dynamic> map = <String, dynamic>{
-        "title": "Table",
-        "size": <String, dynamic>{"width": 80, "height": 80}
+        'title': 'Table',
+        'size': <String, dynamic>{'width': 80, 'height': 80}
       };
 
-      map = <String, dynamic>{"title": "Table", "width": 80, "height": 80};
+      map = <String, dynamic>{'title': 'Table', 'width': 80, 'height': 80};
 
       map = <String, dynamic>{
-        "title": "Table",
-        "size": jsonEncode(<String, dynamic>{"width": 80, "height": 80})
+        'title': 'Table',
+        'size': jsonEncode(<String, dynamic>{'width': 80, 'height': 80})
       };
       final Map<String, dynamic> map2 = <String, dynamic>{
         'title': 'Table',
@@ -228,9 +229,9 @@ CREATE TABLE Product (
                 onDowngrade: onDatabaseDowngradeDelete));
 
         var map = <String, dynamic>{
-          "title": "Table",
-          "width": 80,
-          "height": 80
+          'title': 'Table',
+          'width': 80,
+          'height': 80
         };
         await db.insert('Product', map);
         await db.close();
@@ -268,5 +269,132 @@ CREATE TABLE Product (
         db = null;
       }
     });
+    test('upsert', () async {
+      var path = inMemoryDatabasePath;
+
+      {
+        /// Create tables
+        void _createTableProduct(Batch batch) {
+          batch.execute('''
+CREATE TABLE Product (
+  id TEXT PRIMARY KEY,
+  title TEXT
+)''');
+        }
+
+// First version of the database
+        var db = await factory.openDatabase(path,
+            options: OpenDatabaseOptions(
+                version: 1,
+                onCreate: (db, version) async {
+                  var batch = db.batch();
+                  _createTableProduct(batch);
+                  await batch.commit();
+                },
+                onDowngrade: onDatabaseDowngradeDelete));
+
+        Future<bool> _exists(Transaction txn, Product product) async {
+          return firstIntValue(await txn.query('Product',
+                  columns: ['COUNT(*)'],
+                  where: 'id = ?',
+                  whereArgs: [product.id])) ==
+              1;
+        }
+
+        Future _update(Transaction txn, Product product) async {
+          await txn.update('Product', product.toMap(),
+              where: 'id = ?', whereArgs: [product.id]);
+        }
+
+        Future _insert(Transaction txn, Product product) async {
+          await txn.insert('Product', product.toMap()..['id'] = product.id);
+        }
+
+        Future upsertRecord(Product product) async {
+          await db.transaction((txn) async {
+            if (await _exists(txn, product)) {
+              await _update(txn, product);
+            } else {
+              await _insert(txn, product);
+            }
+          });
+        }
+
+        var product = Product()
+          ..id = 'table'
+          ..title = 'Table';
+        await upsertRecord(product);
+        await upsertRecord(product);
+
+        var result = await db.query('Product');
+        expect(result.length, 1, reason: 'list ${result}');
+        await db.close();
+        db = null;
+      }
+    });
+
+    test('upsert_with_exception', () async {
+      var path = inMemoryDatabasePath;
+
+      {
+        /// Create tables
+        void _createTableProduct(Batch batch) {
+          batch.execute('''
+CREATE TABLE Product (
+  id TEXT PRIMARY KEY,
+  title TEXT
+)''');
+        }
+
+// First version of the database
+        var db = await factory.openDatabase(path,
+            options: OpenDatabaseOptions(
+                version: 1,
+                onCreate: (db, version) async {
+                  var batch = db.batch();
+                  _createTableProduct(batch);
+                  await batch.commit();
+                },
+                onDowngrade: onDatabaseDowngradeDelete));
+
+        Future _update(Product product) async {
+          await db.update('Product', product.toMap(),
+              where: 'id = ?', whereArgs: [product.id]);
+        }
+
+        Future _insert(Product product) async {
+          await db.insert('Product', product.toMap()..['id'] = product.id);
+        }
+
+        Future upsertRecord(Product product) async {
+          try {
+            await _insert(product);
+          } on DatabaseException catch (e) {
+            if (e.isUniqueConstraintError()) {
+              await _update(product);
+            }
+          }
+        }
+
+        var product = Product()
+          ..id = 'table'
+          ..title = 'Table';
+        await upsertRecord(product);
+        await upsertRecord(product);
+
+        var result = await db.query('Product');
+        expect(result.length, 1, reason: 'list ${result}');
+        await db.close();
+        db = null;
+      }
+    });
   });
+}
+
+class Product {
+  String id;
+  String title;
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{'title': title};
+  }
 }

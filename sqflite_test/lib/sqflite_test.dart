@@ -10,7 +10,16 @@ import 'package:sqflite_server/src/sqflite_client.dart';
 import 'package:process_run/cmd_run.dart';
 import 'package:process_run/which.dart';
 
-class SqfliteServerTestContext extends SqfliteServerContext {
+/// Test context for testing
+abstract class SqfliteTestContext {
+  // True if dead lock can be tested
+  bool get supportsDeadLock;
+
+  bool get strict;
+}
+
+class SqfliteServerTestContext extends SqfliteServerContext
+    implements SqfliteTestContext {
   String envUrl;
   int envPort;
   String url;
@@ -25,9 +34,7 @@ class SqfliteServerTestContext extends SqfliteServerContext {
             parseInt(const String.fromEnvironment(sqfliteServerPortEnvKey));
 
         url = envUrl;
-        if (url == null) {
-          url = getSqfliteServerUrl(port: envPort);
-        }
+        url ??= getSqfliteServerUrl(port: envPort);
       }
 
       port ??= parseSqfliteServerUrlPort(url, defaultValue: 0);
@@ -73,7 +80,7 @@ $sqfliteServerPortEnvKey: ${envPort ?? ''}
   Future<String> initDeleteDb(String dbName) async {
     var databasesPath = await createDirectory(null);
     // print(databasePath);
-    String path = join(databasesPath, dbName);
+    var path = join(databasesPath, dbName);
     await databaseFactory.deleteDatabase(path);
     return path;
   }
@@ -108,7 +115,7 @@ Android:
     if (_debugModeOn) {
       print('$param');
     }
-    T t = await super.sendRequest(method, param);
+    var t = await super.sendRequest(method, param) as T;
     if (_debugModeOn) {
       print(t);
     }
@@ -117,7 +124,7 @@ Android:
 
   @override
   Future<T> invoke<T>(String method, dynamic param) async {
-    T t = await super.invoke(method, param);
+    var t = await super.invoke<T>(method, param);
     return t;
   }
 
@@ -127,6 +134,16 @@ Android:
   Future devSetDebugModeOn(bool on) async {
     _debugModeOn = on ?? false;
   }
+
+  @override
+
+  /// Complex manual dead lock (multi instance) is not well supported. Avoid it
+  bool get supportsDeadLock => false;
+
+  @override
+
+  /// Default implementation is not strict, ffi one is
+  bool get strict => false;
 }
 
 /// Main entry point for with Sqflite context

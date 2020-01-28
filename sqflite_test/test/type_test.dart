@@ -199,16 +199,34 @@ void run(SqfliteServerTestContext context) {
         expect(result.length, 1);
         expect(result, [1]);
 
+        // Insert blob manually
+
+        id = await data.db
+            .rawInsert("INSERT INTO Test(value) VALUES ( X'deadbeef' )");
+        var blobRead = await getValue(id);
+        expect(blobRead, const TypeMatcher<Uint8List>());
+        print('${blobRead.length}');
+        expect(await getValue(id), [0xDE, 0xAD, 0xBE, 0xEF],
+            reason: "${await getValue(id)}");
         // empty array not supported
         //id = await insertValue([]);
         //print(await getValue(id));
         //assert(eq.equals(await getValue(id), []));
 
-        final blob1234 = [1, 2, 3, 4];
+        final blob1234 = Uint8List.fromList([1, 2, 3, 4]);
         id = await insertValue(blob1234);
         print(await getValue(id));
         print('${(await getValue(id)).length}');
         expect(await getValue(id), blob1234, reason: "${await getValue(id)}");
+
+        if (!context.strict) {
+          final blob1234Int = [1, 2, 3, 4];
+          id = await insertValue(blob1234Int);
+          print(await getValue(id));
+          print('${(await getValue(id)).length}');
+          expect(await getValue(id), blob1234Int,
+              reason: "${await getValue(id)}");
+        }
 
         // test hex feature on sqlite
         var hexResult = await data.db.rawQuery(
@@ -229,8 +247,8 @@ void run(SqfliteServerTestContext context) {
         // try blob lookup using hex
         rows = await data.db.rawQuery('SELECT * FROM Test WHERE hex(value) = ?',
             <dynamic>[utils.hex(blob1234)]);
-        expect(rows.length, 1);
-        expect(rows[0]['_id'], id);
+        expect(rows.length, context.strict ? 1 : 2);
+        expect(rows.last['_id'], id);
       } finally {
         await data.db.close();
       }
