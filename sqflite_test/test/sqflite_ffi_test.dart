@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:sqflite/sqflite.dart' as sqflite;
 import 'package:sqflite_ffi_test/sqflite_ffi_test.dart';
 import 'package:sqflite_test/sqflite_test.dart';
 
