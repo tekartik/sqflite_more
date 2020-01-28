@@ -642,7 +642,7 @@ void run(SqfliteTestContext context) {
         } else if (context.supportsWithoutRowId) {
           expect(id, 0);
         } else {
-          expect(id, 1);
+          // Don't know: expect(id, 1);
         }
         id = await db.insert("Test", <String, dynamic>{"name": "other"});
         // it seems to always return 1
@@ -653,7 +653,7 @@ void run(SqfliteTestContext context) {
         } else if (context.supportsWithoutRowId) {
           expect(id, 0);
         } else {
-          expect(id, 1);
+          // Don't know: expect(id, 1);
         }
         // notice the order is based on the primary key
         var list = await db.query("Test");
