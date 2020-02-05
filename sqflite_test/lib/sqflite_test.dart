@@ -43,6 +43,8 @@ abstract class SqfliteTestContext {
   bool get isAndroid;
 
   bool get isIOS;
+
+  Future devSetDebugModeOn(bool on);
 }
 
 mixin SqfliteLocalTestContextMixin implements SqfliteTestContext {
@@ -123,6 +125,11 @@ class SqfliteLocalTestContext
     with SqfliteTestContextMixin, SqfliteLocalTestContextMixin {
   @override
   DatabaseFactory get databaseFactory => sqflite.databaseFactory;
+
+  @override
+  Future devSetDebugModeOn(bool on) =>
+      // ignore: deprecated_member_use
+      sqflite.Sqflite.devSetDebugModeOn(on);
 }
 
 class SqfliteServerTestContext extends SqfliteServerContext
@@ -233,6 +240,7 @@ Android:
 
   bool _debugModeOn = false;
 
+  @override
   @deprecated
   Future devSetDebugModeOn(bool on) async {
     _debugModeOn = on ?? false;

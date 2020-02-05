@@ -6,12 +6,15 @@ import 'package:meta/meta.dart';
 import 'package:moor_ffi/database.dart' as ffi;
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_ffi_test/src/isolate.dart';
 import 'package:synchronized/extension.dart';
 import 'package:synchronized/synchronized.dart';
 
 import 'import.dart';
 
 final _debug = false; // devWarning(true);
+// final _useIsolate = true; // devWarning(true); // true the default!
+
 String _prefix = '[sqflite]';
 
 /// By id
@@ -21,6 +24,8 @@ var ffiDbs = <int, SqfliteFfiDatabase>{};
 var ffiSingleInstanceDbs = <String, SqfliteFfiDatabase>{};
 
 var _lastFfiId = 0;
+
+SqfliteIsolate _isolate;
 
 class SqfliteFfiException implements DatabaseException {
   final String message;
@@ -212,66 +217,9 @@ extension SqfliteFfiMethodCallHandler on MethodCall {
   }
 
   /// Handle a method call
-  Future<dynamic> handle() async {
-    Future doHandle() async {
-      // devPrint('$this');
-      try {
-        if (_debug) {
-          print('handle $this');
-        }
-        var result = await _handle();
-        if (_debug) {
-          print('result: $result');
-        }
-
-        // devPrint('result: $result');
-        return result;
-      } catch (e, st) {
-        if (_debug) {
-          print('error: $e');
-        }
-        if (e is ffi.SqliteException) {
-          var database = getDatabase();
-          var sql = getSql();
-          var sqlArguments = getSqlArguments();
-          var wrapped = wrapSqlException(e, details: <String, dynamic>{
-            'database': database.toDebugMap(),
-            'sql': sql,
-            'arguments': sqlArguments
-          });
-          // devPrint(wrapped);
-          throw wrapped;
-        }
-        if (e is PlatformException) {
-          // devPrint('throwing $e');
-          var database = getDatabase();
-          var sql = getSql();
-          var sqlArguments = getSqlArguments();
-          if (_debug) {
-            print('$e in ${database?.toDebugMap()}');
-          }
-          throw PlatformException(
-              code: e.code,
-              message: e.message,
-              details: <String, dynamic>{
-                'database': database?.toDebugMap(),
-                'sql': sql,
-                'arguments': sqlArguments,
-                'details': e.details,
-              });
-        } else {
-          if (_debug) {
-            print('handleError: $e');
-            print('stackTrace : $st');
-          }
-          throw PlatformException(
-              code: 'sqflite_ffi_test_error', message: e.toString());
-        }
-      }
-    }
-
+  Future<dynamic> handleInIsolate() async {
     try {
-      return await synchronized(doHandle);
+      return await synchronized(_isolateHandle);
     } catch (e, st) {
       if (_debug) {
         print(st);
@@ -280,8 +228,72 @@ extension SqfliteFfiMethodCallHandler on MethodCall {
     }
   }
 
+  Future<dynamic> _isolateHandle() async {
+    _isolate ??= await createIsolate();
+    return await _isolate.handle(this);
+  }
+
+  Future handleImpl() async {
+    // devPrint('$this');
+    try {
+      if (_debug) {
+        print('handle $this');
+      }
+      dynamic result = await rawHandle();
+
+      if (_debug) {
+        print('result: $result');
+      }
+
+      // devPrint('result: $result');
+      return result;
+    } catch (e, st) {
+      if (_debug) {
+        print('error: $e');
+      }
+
+      if (e is ffi.SqliteException) {
+        var database = getDatabase();
+        var sql = getSql();
+        var sqlArguments = getSqlArguments();
+        var wrapped = wrapSqlException(e, details: <String, dynamic>{
+          'database': database.toDebugMap(),
+          'sql': sql,
+          'arguments': sqlArguments
+        });
+        // devPrint(wrapped);
+        throw wrapped;
+      }
+      if (e is PlatformException) {
+        // devPrint('throwing $e');
+        var database = getDatabase();
+        var sql = getSql();
+        var sqlArguments = getSqlArguments();
+        if (_debug) {
+          print('$e in ${database?.toDebugMap()}');
+        }
+        throw PlatformException(
+            code: e.code,
+            message: e.message,
+            details: <String, dynamic>{
+              'database': database?.toDebugMap(),
+              'sql': sql,
+              'arguments': sqlArguments,
+              'details': e.details,
+            });
+      } else {
+        if (_debug) {
+          print('handleError: $e');
+          print('stackTrace : $st');
+        }
+        throw PlatformException(
+            code: 'sqflite_ffi_test_error', message: e.toString());
+      }
+    }
+  }
+
   /// Handle a method call
-  Future<dynamic> _handle() async {
+  Future<dynamic> rawHandle() async {
     switch (method) {
       case 'openDatabase':
         return await handleOpenDatabase();

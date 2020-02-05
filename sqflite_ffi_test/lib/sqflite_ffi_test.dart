@@ -12,7 +12,7 @@ void _setAsMockMethodCallHandler() {
   const channel = MethodChannel('com.tekartik.sqflite');
 
   channel.setMockMethodCallHandler((MethodCall methodCall) async {
-    return methodCall.handle();
+    return methodCall.handleInIsolate();
   });
 }
 
