@@ -1,18 +1,19 @@
 import 'dart:isolate';
 
-import 'package:flutter/src/services/message_codec.dart';
 import 'package:meta/meta.dart';
+import 'package:sqflite_ffi_test/src/import.dart';
+import 'package:sqflite_ffi_test/src/method_call.dart';
 
 import 'sqflite_ffi_impl.dart';
 
-bool _debug = false; // devWarning(true);
+bool _debug = false; // devWarning(true); // false;
 
 class SqfliteIsolate {
   final SendPort sendPort;
 
   SqfliteIsolate({@required this.sendPort});
 
-  Future<dynamic> handle(MethodCall methodCall) async {
+  Future<dynamic> handle(FfiMethodCall methodCall) async {
     var recvPort = ReceivePort();
     var map = <String, dynamic>{
       'method': methodCall.method,
@@ -31,7 +32,7 @@ class SqfliteIsolate {
     if (response is Map) {
       var error = response['error'];
       if (error is Map) {
-        throw PlatformException(
+        throw SqfliteFfiException(
             code: error['code'],
             message: error['message'],
             details: error['details']);
@@ -78,12 +79,12 @@ Future _isolate(SendPort sendPort) async {
         if (method != null) {
           try {
             var arguments = msg['arguments'];
-            var methodCall = MethodCall(method, arguments);
+            var methodCall = FfiMethodCall(method, arguments);
             var result = await methodCall.handleImpl();
             sendPort.send({'result': result});
           } catch (e) {
             var error = <String, dynamic>{};
-            if (e is PlatformException) {
+            if (e is SqfliteFfiException) {
               error['code'] = e.code;
               error['details'] = e.details;
               error['message'] = e.message;

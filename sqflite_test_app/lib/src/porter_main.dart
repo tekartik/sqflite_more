@@ -1,14 +1,18 @@
-import 'package:tekartik_test_menu/test.dart';
+import 'dart:typed_data';
+
 import 'package:sqflite/sqflite.dart';
-// ignore: implementation_imports
-import 'package:sqflite_porter/src/utils.dart';
 import 'package:sqflite_porter/sqflite_porter.dart';
+import 'package:sqflite_porter/src/utils.dart'; // ignore: implementation_imports
+import 'package:tekartik_test_menu/test.dart';
 import 'package:tekartik_test_menu_flutter/test.dart';
 
 void porterMain() {
+  dumpSetPrint(write);
+
   group('export/import', () {
     test('export_import', () async {
       String path = await initEmptyDb("export.db");
+      // await Sqflite.devSetDebugModeOn();
       Database db = await openDatabase(path);
       try {
         String table = "test";
@@ -28,24 +32,25 @@ void porterMain() {
             "INSERT INTO $table (column_1, column_2, column_3) VALUES (11, ?, ?)",
             <dynamic>[
               'Some \' test \n',
-              [1, 2, 3, 4]
+              // Uint8List needed for ffi
+              Uint8List.fromList([1, 2, 3, 4])
             ]);
         var statements = await dbExportSql(db);
         var sql = statements.join('\n');
         write(sql);
         // print('#### $sql');
         expect(sql, '''
-  CREATE TABLE test (column_1 INTEGER, column_2 TEXT, column_3 BLOB);
-  INSERT INTO test VALUES (11,'Some '' test 
-  ',x'01020304');
-  CREATE TABLE test_2 (id integer primary key autoincrement, column_2 TEXT);
-  INSERT INTO test_2 VALUES (1,'Some '' test 
-  ');
-  DELETE FROM sqlite_sequence;
-  INSERT INTO sqlite_sequence VALUES ('test_2',1);
-  CREATE VIEW my_view AS SELECT * from test;
-  CREATE INDEX [test_index] ON "test" (column_2);
-  CREATE TRIGGER my_trigger AFTER INSERT ON test BEGIN INSERT INTO test_2(column_2) VALUES (new.column_2); END;''');
+CREATE TABLE test (column_1 INTEGER, column_2 TEXT, column_3 BLOB);
+INSERT INTO test VALUES (11,'Some '' test 
+',x'01020304');
+CREATE TABLE test_2 (id integer primary key autoincrement, column_2 TEXT);
+INSERT INTO test_2 VALUES (1,'Some '' test 
+');
+DELETE FROM sqlite_sequence;
+INSERT INTO sqlite_sequence VALUES ('test_2',1);
+CREATE VIEW my_view AS SELECT * from test;
+CREATE INDEX [test_index] ON "test" (column_2);
+CREATE TRIGGER my_trigger AFTER INSERT ON test BEGIN INSERT INTO test_2(column_2) VALUES (new.column_2); END;''');
 
         // print('#### $sql');
         await db.close();

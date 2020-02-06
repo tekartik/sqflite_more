@@ -1,18 +1,19 @@
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:flutter/services.dart';
 import 'package:meta/meta.dart';
 import 'package:moor_ffi/database.dart' as ffi;
 import 'package:path/path.dart';
-import 'package:sqflite/sqflite.dart';
-import 'package:sqflite_ffi_test/src/isolate.dart';
+import 'package:sqflite/sqlite_api.dart';
+import 'package:sqflite/src/constant.dart';
+import 'package:sqflite_ffi_test/src/constant.dart';
+import 'package:sqflite_ffi_test/src/method_call.dart';
 import 'package:synchronized/extension.dart';
 import 'package:synchronized/synchronized.dart';
 
 import 'import.dart';
 
-final _debug = false; // devWarning(true);
+final _debug = false; // devWarning(true); // false
 // final _useIsolate = true; // devWarning(true); // true the default!
 
 String _prefix = '[sqflite]';
@@ -25,13 +26,15 @@ var ffiSingleInstanceDbs = <String, SqfliteFfiDatabase>{};
 
 var _lastFfiId = 0;
 
-SqfliteIsolate _isolate;
+//SqfliteIsolate _isolate;
 
 class SqfliteFfiException implements DatabaseException {
+  final String code;
   final String message;
   Map<String, dynamic> details;
 
-  SqfliteFfiException({@required this.message, @required this.details});
+  SqfliteFfiException(
+      {@required this.code, @required this.message, this.details});
 
   @override
   bool isDatabaseClosedError() {
@@ -75,7 +78,7 @@ class SqfliteFfiException implements DatabaseException {
     if (details != null) {
       map['details'] = details;
     }
-    return '${super.toString()} $map';
+    return 'SqfliteFfiException($code, $message} ${super.toString()} $map';
   }
 }
 
@@ -94,6 +97,7 @@ class SqfliteFfiDatabase {
   final bool readOnly;
   final ffi.Database _ffiDb;
   final int logLevel;
+
   String get _prefix => '[sqflite-$id]';
 
   SqfliteFfiDatabase(this.id, this._ffiDb,
@@ -207,30 +211,13 @@ class _MultiInstanceLocker {
 }
 
 /// Extension on MethodCall
-extension SqfliteFfiMethodCallHandler on MethodCall {
+extension SqfliteFfiMethodCallHandler on FfiMethodCall {
   Future<T> synchronized<T>(Future<T> Function() action) async {
     var path = getPath() ?? getDatabase()?.path;
     if (isInMemory(path)) {
       return await action();
     }
     return await (_MultiInstanceLocker(path).synchronized(action));
-  }
-
-  /// Handle a method call
-  Future<dynamic> handleInIsolate() async {
-    try {
-      return await synchronized(_isolateHandle);
-    } catch (e, st) {
-      if (_debug) {
-        print(st);
-      }
-      rethrow;
-    }
-  }
-
-  Future<dynamic> _isolateHandle() async {
-    _isolate ??= await createIsolate();
-    return await _isolate.handle(this);
   }
 
   Future handleImpl() async {
@@ -264,31 +251,37 @@ extension SqfliteFfiMethodCallHandler on MethodCall {
         // devPrint(wrapped);
         throw wrapped;
       }
-      if (e is PlatformException) {
-        // devPrint('throwing $e');
-        var database = getDatabase();
-        var sql = getSql();
-        var sqlArguments = getSqlArguments();
-        if (_debug) {
-          print('$e in ${database?.toDebugMap()}');
-        }
-        throw PlatformException(
-            code: e.code,
-            message: e.message,
-            details: <String, dynamic>{
-              'database': database?.toDebugMap(),
-              'sql': sql,
-              'arguments': sqlArguments,
-              'details': e.details,
-            });
-      } else {
-        if (_debug) {
-          print('handleError: $e');
-          print('stackTrace : $st');
-        }
-        throw PlatformException(
-            code: 'sqflite_ffi_test_error', message: e.toString());
+      var database = getDatabase();
+      var sql = getSql();
+      var sqlArguments = getSqlArguments();
+      if (_debug) {
+        print('$e in ${database?.toDebugMap()}');
       }
+      String code;
+      String message;
+      Map<String, dynamic> details;
+      if (e is SqfliteFfiException) {
+        // devPrint('throwing $e');
+        code = e.code;
+        message = e.message;
+        details = e.details;
+      } else {
+        code = anyErrorCode;
+        message = e.toString();
+      }
+      if (_debug) {
+        print('handleError: $e');
+        print('stackTrace : $st');
+      }
+      throw SqfliteFfiException(
+          code: code,
+          message: message,
+          details: <String, dynamic>{
+            if (database != null) 'database': database.toDebugMap(),
+            if (sql != null) 'sql': sql,
+            if (sqlArguments != null) 'arguments': sqlArguments,
+            if (details != null) 'details': details,
+          });
     }
   }
 
@@ -480,11 +473,9 @@ extension SqfliteFfiMethodCallHandler on MethodCall {
     return database.handleQuery(sqlArguments: sqlArguments, sql: sql);
   }
 
-  static const sqliteErrorCode = 'sqlite_error';
-
-  PlatformException wrapSqlException(ffi.SqliteException e,
+  SqfliteFfiException wrapSqlException(ffi.SqliteException e,
       {String code, Map<String, dynamic> details}) {
-    return PlatformException(
+    return SqfliteFfiException(
         // Hardcoded
         code: sqliteErrorCode,
         message: code == null ? '$e' : '$code: $e',
@@ -504,7 +495,7 @@ extension SqfliteFfiMethodCallHandler on MethodCall {
       writeAttempt = true;
     }
     if (writeAttempt && (database.readOnly ?? false)) {
-      throw PlatformException(
+      throw SqfliteFfiException(
           code: sqliteErrorCode, message: 'Database readonly');
     }
 
@@ -528,7 +519,7 @@ extension SqfliteFfiMethodCallHandler on MethodCall {
   Future handleInsert() async {
     var database = getDatabaseOrThrow();
     if (database.readOnly ?? false) {
-      throw PlatformException(
+      throw SqfliteFfiException(
           code: sqliteErrorCode, message: 'Database readonly');
     }
 
@@ -544,7 +535,7 @@ extension SqfliteFfiMethodCallHandler on MethodCall {
   Future handleUpdate() async {
     var database = getDatabaseOrThrow();
     if (database.readOnly ?? false) {
-      throw PlatformException(
+      throw SqfliteFfiException(
           code: sqliteErrorCode, message: 'Database readonly');
     }
 

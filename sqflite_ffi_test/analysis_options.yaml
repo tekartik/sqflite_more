@@ -9,7 +9,6 @@ include: package:pedantic/analysis_options.yaml
 # linter:
 #   rules:
 #     - camel_case_types
-
 analyzer:
   strong_mode:
     implicit_casts: false
