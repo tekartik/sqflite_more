@@ -8,7 +8,10 @@ void main() {
     item('sqlite example app', () {
       example.main();
     });
-    serverMain();
-    porterMain();
+    group('more', () {
+      serverMain();
+      porterMain();
+    });
+
   }, showConsole: true);
 }

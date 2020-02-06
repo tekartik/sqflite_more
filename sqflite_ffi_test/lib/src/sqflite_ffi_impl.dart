@@ -167,6 +167,28 @@ extension SqfliteFfiMethodCallHandler on FfiMethodCall {
     return await (_MultiInstanceLocker(path).synchronized(action));
   }
 
+  /// Wrap the exception, keeping sql/sqlArguments in error
+  SqfliteFfiException wrapAnyException(dynamic e) {
+    if (e is SqfliteFfiException) {
+      e.database ??= getDatabase();
+      e.sql ??= getSql();
+      e.sqlArguments ??= getSqlArguments();
+      if (e.database != null || e.sql != null || e.sqlArguments != null) {
+        e.details ??= <String, dynamic>{
+          if (e.database != null) 'database': e.database.toDebugMap(),
+          if (e.sql != null) 'sql': e.sql,
+          if (e.sqlArguments != null) 'arguments': e.sqlArguments
+        };
+      }
+      return e;
+    } else if (e is ffi.SqliteException) {
+      return wrapAnyException(wrapSqlException(e));
+    } else {
+      return wrapAnyException(
+          SqfliteFfiException(code: anyErrorCode, message: e?.toString()));
+    }
+  }
+
   Future handleImpl() async {
     // devPrint('$this');
     try {
@@ -182,10 +204,15 @@ extension SqfliteFfiMethodCallHandler on FfiMethodCall {
       // devPrint('result: $result');
       return result;
     } catch (e, st) {
+      // devPrint('st $st');
       if (_debug) {
         print('error: $e');
+        print('st $st');
       }
 
+      var ffiException = wrapAnyException(e);
+      throw ffiException;
+      /*
       if (e is ffi.SqliteException) {
         var database = getDatabase();
         var sql = getSql();
@@ -229,6 +256,8 @@ extension SqfliteFfiMethodCallHandler on FfiMethodCall {
             if (sqlArguments != null) 'arguments': sqlArguments,
             if (details != null) 'details': details,
           });
+
+       */
     }
   }
 
@@ -399,7 +428,15 @@ extension SqfliteFfiMethodCallHandler on FfiMethodCall {
 
   bool getNoResult() {
     var noResult = arguments['noResult'] as bool;
-    return noResult;
+    return noResult ?? false;
+  }
+
+  /// To ignore errors for batch.
+  ///
+  // "continueOnError": true
+  bool getContinueOnError() {
+    var continueOnError = arguments['continueOnError'] as bool;
+    return continueOnError ?? false;
   }
 
   List<SqfliteFfiOperation> getOperations() {
@@ -498,47 +535,100 @@ extension SqfliteFfiMethodCallHandler on FfiMethodCall {
     var database = getDatabaseOrThrow();
     var operations = getOperations();
     List<Map<String, dynamic>> results;
-    var noResult = getNoResult() ?? false;
+    var noResult = getNoResult();
+    var continueOnError = getContinueOnError();
     if (!noResult) {
       results = <Map<String, dynamic>>[];
     }
     for (var operation in operations) {
+      Map<String, dynamic> getErrorMap(SqfliteFfiException e) {
+        return <String, dynamic>{
+          'error': <String, dynamic>{
+            'message': '$e',
+            if (e.sql != null || e.sqlArguments != null)
+              'data': {
+                'sql': e.sql,
+                if (e.sqlArguments != null) 'arguments': e.sqlArguments
+              }
+          }
+        };
+      }
+
+      void addResult(dynamic result) {
+        if (!noResult) {
+          results.add(<String, dynamic>{'result': result});
+        }
+      }
+
+      void addError(dynamic e) {
+        SqfliteFfiException wrap(dynamic e) {
+          return wrapAnyException(e)
+            ..sql = operation.sql
+            ..sqlArguments = operation.sqlArguments;
+        }
+
+        if (continueOnError) {
+          if (!noResult) {
+            results.add(getErrorMap(wrap(e)));
+          }
+        } else {
+          throw wrapAnyException(e)
+            ..sql = operation.sql
+            ..sqlArguments = operation.sqlArguments;
+        }
+      }
+
       switch (operation.method) {
         case 'insert':
           {
-            await database.handleExecute(
-                sql: operation.sql, sqlArguments: operation.sqlArguments);
-            if (!noResult) {
-              results
-                  .add(<String, dynamic>{'result': database.getLastInsertId()});
+            try {
+              await database.handleExecute(
+                  sql: operation.sql, sqlArguments: operation.sqlArguments);
+              if (!noResult) {
+                addResult(database.getLastInsertId());
+              }
+            } catch (e) {
+              addError(e);
             }
+
             break;
           }
         case 'execute':
           {
-            await database.handleExecute(
-                sql: operation.sql, sqlArguments: operation.sqlArguments);
-            if (!noResult) {
-              results.add(<String, dynamic>{'result': null});
+            try {
+              await database.handleExecute(
+                  sql: operation.sql, sqlArguments: operation.sqlArguments);
+             addResult(null);
+            } catch (e) {
+              addError(e);
             }
+
+
             break;
           }
         case 'query':
           {
-            var result = await database.handleQuery(
-                sql: operation.sql, sqlArguments: operation.sqlArguments);
-            if (!noResult) {
-              results.add(<String, dynamic>{'result': result});
+            try {
+              var result = await database.handleQuery(
+                  sql: operation.sql, sqlArguments: operation.sqlArguments);
+              addResult(result);
+            } catch (e) {
+              addError(e);
             }
+
+
             break;
           }
         case 'update':
           {
-            await database.handleExecute(
-                sql: operation.sql, sqlArguments: operation.sqlArguments);
-            if (!noResult) {
-              results
-                  .add(<String, dynamic>{'result': database.getUpdatedRows()});
+            try {
+              await database.handleExecute(
+                  sql: operation.sql, sqlArguments: operation.sqlArguments);
+              if (!noResult) {
+                addResult(database.getUpdatedRows());
+              }
+            } catch (e) {
+              addError(e);
             }
             break;
           }
