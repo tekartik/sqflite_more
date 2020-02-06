@@ -8,6 +8,6 @@ void main() {
     test('simple', () async {
       await run('dart test/no_flutter_main.dart',
           verbose: false, stderr: stderr);
-    }, skip: 'Skipped until sqflite allows non flutter mixins');
+    });
   });
 }
