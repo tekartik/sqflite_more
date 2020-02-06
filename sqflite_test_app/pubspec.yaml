@@ -58,7 +58,11 @@ dependencies:
       ref: dart2
       path: app_roboto
       version: '>=0.1.0'
-
+  sqflite_example:
+    git:
+      url: git://github.com/tekartik/sqflite
+      ref: develop
+      path: sqflite/example/
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2
@@ -119,6 +123,7 @@ flutter:
   # see https://flutter.io/custom-fonts/#from-packages
 
 dependency_overrides:
+  sqflite:
   sqflite_porter:
     path: ../sqflite_porter
   sqflite_server:
