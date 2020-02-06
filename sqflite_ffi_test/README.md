@@ -7,6 +7,8 @@ One goal is make it stricter than sqflite to encourage good practices.
 
 Currently supported on Linux, MacOS and Windows.
 
+It allows also Desktop Windows and Linux build.
+
 ## Getting Started
 
 ### Dart
