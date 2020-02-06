@@ -8,6 +8,7 @@ import 'package:sqflite/sqlite_api.dart';
 import 'package:sqflite/src/constant.dart';
 import 'package:sqflite_ffi_test/src/constant.dart';
 import 'package:sqflite_ffi_test/src/method_call.dart';
+import 'package:sqflite_ffi_test/src/sqflite_ffi_exception.dart';
 import 'package:synchronized/extension.dart';
 import 'package:synchronized/synchronized.dart';
 
@@ -27,60 +28,6 @@ var ffiSingleInstanceDbs = <String, SqfliteFfiDatabase>{};
 var _lastFfiId = 0;
 
 //SqfliteIsolate _isolate;
-
-class SqfliteFfiException implements DatabaseException {
-  final String code;
-  final String message;
-  Map<String, dynamic> details;
-
-  SqfliteFfiException(
-      {@required this.code, @required this.message, this.details});
-
-  @override
-  bool isDatabaseClosedError() {
-    // TODO: implement isDatabaseClosedError
-    return null;
-  }
-
-  @override
-  bool isNoSuchTableError([String table]) {
-    // TODO: implement isNoSuchTableError
-    return null;
-  }
-
-  @override
-  bool isOpenFailedError() {
-    // TODO: implement isOpenFailedError
-    return null;
-  }
-
-  @override
-  bool isReadOnlyError() {
-    // TODO: implement isReadOnlyError
-    return null;
-  }
-
-  @override
-  bool isSyntaxError() {
-    // TODO: implement isSyntaxError
-    return null;
-  }
-
-  @override
-  bool isUniqueConstraintError([String field]) {
-    // TODO: implement isUniqueConstraintError
-    return null;
-  }
-
-  @override
-  String toString() {
-    var map = <String, dynamic>{};
-    if (details != null) {
-      map['details'] = details;
-    }
-    return 'SqfliteFfiException($code, $message} ${super.toString()} $map';
-  }
-}
 
 int logLevel = sqfliteLogLevelNone;
 

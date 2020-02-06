@@ -3,6 +3,7 @@ import 'dart:isolate';
 import 'package:meta/meta.dart';
 import 'package:sqflite_ffi_test/src/import.dart';
 import 'package:sqflite_ffi_test/src/method_call.dart';
+import 'package:sqflite_ffi_test/src/sqflite_ffi_exception.dart';
 
 import 'sqflite_ffi_impl.dart';
 

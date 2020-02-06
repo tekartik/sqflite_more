@@ -372,6 +372,8 @@ CREATE TABLE Product (
           } on DatabaseException catch (e) {
             if (e.isUniqueConstraintError()) {
               await _update(product);
+            } else {
+              throw TestFailure('expected unique constraint $e');
             }
           }
         }
