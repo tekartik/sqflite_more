@@ -1,6 +1,6 @@
 import 'package:sqflite/sqlite_api.dart';
 import 'package:sqflite_ffi_test/src/method_call.dart';
-import 'package:sqflite_ffi_test/src/mixin/factory.dart';
+import 'package:sqflite/src/mixin/factory.dart';
 import 'package:synchronized/synchronized.dart';
 
 import 'isolate.dart';

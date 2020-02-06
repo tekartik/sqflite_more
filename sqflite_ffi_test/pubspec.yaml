@@ -10,7 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
   moor_ffi:
-  sqflite: '>=1.2.1-dev.1'
+  sqflite: '>=1.2.1-dev.2'
   path:
   synchronized:
 

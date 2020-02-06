@@ -1,10 +1,10 @@
 export 'src/setup_flutter.dart' show sqfliteInitAsMockMethodCallHandler;
 
 import 'package:sqflite/src/compat.dart';
-import 'package:sqflite/src/constant.dart';
+import 'package:sqflite/src/mixin/constant.dart';
 import 'package:sqflite/sqlite_api.dart';
 import 'package:sqflite_ffi_test/sqflite_ffi.dart';
-import 'package:sqflite_ffi_test/src/mixin/factory.dart';
+import 'package:sqflite/src/mixin/factory.dart';
 import 'package:sqflite_ffi_test/src/setup_flutter.dart';
 
 /// Dev extension
@@ -15,7 +15,8 @@ extension SqfliteFfiDev on DatabaseFactory {
   /// Deprecated for temp usage only
   @deprecated
   Future<void> setDebugModeOn([bool on = true]) async {
-    await setOptions(SqfliteOptions(logLevel: sqfliteLogLevelVerbose));
+    await setOptions(SqfliteOptions(
+        logLevel: (on ?? true) ? sqfliteLogLevelVerbose : sqfliteLogLevelNone));
   }
 
   /// Testing only.
@@ -23,7 +24,7 @@ extension SqfliteFfiDev on DatabaseFactory {
   /// deprecated on purpose to remove from code.
   @deprecated
   Future<void> setOptions(SqfliteOptions options) async {
-    await (this as SqfliteFfiInvokeHandler)
+    await (this as SqfliteInvokeHandler)
         .invokeMethod<dynamic>(methodOptions, options.toMap());
   }
 }
