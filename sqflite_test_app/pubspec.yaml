@@ -11,12 +11,12 @@ publish_to: none
 version: 0.1.0
 
 environment:
-  sdk: ">=2.1.0-dev <3.0.0"
+  sdk: ">=2.7.0-dev <3.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
-
+  sqflite: '>=1.2.1-dev.2'
   sqflite_porter:
     git:
       url: git://github.com/tekartik/sqflite_more
@@ -40,8 +40,29 @@ dependencies:
       url: git://github.com/tekartik/test_menu_flutter
       ref: dart2
       path: test_menu_flutter
-    version: '>=0.2.4'
-
+    version: '>=0.3.0'
+  tekartik_app_platform:
+    git:
+      url: git://github.com/tekartik/app_flutter_utils.dart
+      ref: dart2
+      path: app_platform
+    version: '>=0.1.0'
+  sqflite_ffi_test:
+    git:
+      url: git://github.com/tekartik/sqflite_more
+      ref: dart2
+      path: sqflite_ffi_test
+  tekartik_app_roboto:
+    git:
+      url: git://github.com/tekartik/app_flutter_utils.dart
+      ref: dart2
+      path: app_roboto
+      version: '>=0.1.0'
+  sqflite_example:
+    git:
+      url: git://github.com/tekartik/sqflite
+      ref: develop
+      path: sqflite/example/
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2
@@ -50,6 +71,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   test:
+  process_run: '>=0.10.7'
 
 
 # For information on the generic Dart part of this file, see the
@@ -81,6 +103,10 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
+  fonts:
+    - family: Roboto
+      fonts:
+        - asset: packages/tekartik_app_roboto/fonts/Roboto/Roboto-Regular.ttf
   # fonts:
   #   - family: Schyler
   #     fonts:
@@ -97,12 +123,15 @@ flutter:
   # see https://flutter.io/custom-fonts/#from-packages
 
 dependency_overrides:
+  sqflite: '>=1.2.1-dev.2'
   sqflite_porter:
     path: ../sqflite_porter
   sqflite_server:
     path: ../sqflite_server
   sqflite_test:
     path: ../sqflite_test
+  sqflite_ffi_test:
+    path: ../sqflite_ffi_test
 #  tekartik_test_menu_flutter:
 #    path: ../../test_menu_flutter/test_menu_flutter
 #  sqflite:

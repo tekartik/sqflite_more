@@ -1,6 +1,6 @@
 name: sqflite_ffi_test
 description: sqflite dev testing using ffi
-version: 0.1.4
+version: 0.2.3
 publish_to: none
 
 environment:
@@ -10,7 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
   moor_ffi:
-  sqflite:
+  sqflite: '>=1.2.1-dev.2'
   path:
   synchronized:
 
@@ -20,6 +20,9 @@ dev_dependencies:
   process_run: '>=0.10.7'
 dependency_overrides:
   pedantic: '>=1.9.0'
+#  sqflite:
+#    path: ../../sqflite/sqflite
+
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 

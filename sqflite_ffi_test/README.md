@@ -7,6 +7,8 @@ One goal is make it stricter than sqflite to encourage good practices.
 
 Currently supported on Linux, MacOS and Windows.
 
+It allows also Desktop Windows and Linux build.
+
 ## Getting Started
 
 ### Dart
@@ -26,6 +28,8 @@ dev_dependencies:
 
 `sqlite3` and `sqlite3-dev` linux packages are required.
 
+One time setup for Ubuntu:
+
 ```bash
 dart tool/linux_setup.dart
 ```
@@ -38,9 +42,11 @@ Should work as is.
 
 Should work as is (`sqlite3.dll` is bundled).
 
-## Simple code
+## Sample code
 
-main.dart:
+### Unit test code
+
+`sqflite_ffi_test.dart`:
 
 ```dart
 import 'package:flutter_test/flutter_test.dart';
@@ -59,11 +65,38 @@ void main() {
   });
 }
 ```
+
+### Application
+
+Make it a normal dependency.
+
+`main.dart`:
+```dart
+import 'package:sqflite/sqlite_api.dart';
+import 'package:sqflite_ffi_test/sqflite_ffi.dart';
+
+Future main() async {
+  sqfliteFfiInit();
+
+  var databaseFactory = databaseFactoryFfi;
+  var db = await databaseFactory.openDatabase(inMemoryDatabasePath,
+      options: OpenDatabaseOptions(version: 1));
+  print('inMemory version: ${await db.getVersion()}');
+  await db.close();
+
+  db = await databaseFactory.openDatabase('simple_version_1.db',
+      options: OpenDatabaseOptions(version: 1));
+  print('io file version: ${await db.getVersion()}');
+  await db.close();
+}
+```
+
+
 ## Limitations
 
 * This is intended for mocking database calls during flutter unit test, don't use this in production.
 * Database calls are made in the foreground isolate so don't make fancy lock mechanism,
 * Only `Uint8List` is accepted for blob since `List<int>` is not optimized
 * read-only support is limited and faked so some command might still
- work (such as `PRAGMA user_version = 4`), insert, update, delete will be prevented through
+ work (such as `PRAGMA user_version = 4`), insert, update, delete will be prevented though
 * Multi-instance support (not common) is simulated

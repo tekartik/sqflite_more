@@ -238,7 +238,7 @@ class SqfliteLocalContext implements SqfliteContext {
   }
 
   @override
-  bool get supportsWithoutRowId => !Platform.isIOS;
+  bool get supportsWithoutRowId => Platform.isIOS;
 
   @override
   bool get isAndroid => Platform.isAndroid;

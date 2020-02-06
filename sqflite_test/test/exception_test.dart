@@ -15,7 +15,7 @@ Future main() {
   return testMain(run);
 }
 
-void run(SqfliteServerTestContext context) {
+void run(SqfliteTestContext context) {
   var factory = context.databaseFactory;
   group('exception', () {
     test("Transaction failed", () async {

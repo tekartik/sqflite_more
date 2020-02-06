@@ -142,10 +142,10 @@ Android:
   }
 
   @override
-  bool get isAndroid => client.serverInfo.isAndroid;
+  bool get isAndroid => client.serverInfo.isAndroid ?? false;
 
   @override
-  bool get isIOS => client.serverInfo.isIOS;
+  bool get isIOS => client.serverInfo.isIOS ?? false;
 
   // Force posix
   @override

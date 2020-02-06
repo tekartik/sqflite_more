@@ -25,12 +25,20 @@ dev_dependencies:
     sdk: flutter
   test:
   process_run: '>=0.10.2'
+  sqflite_ffi_test:
+    git:
+      url: git://github.com/tekartik/sqflite_more
+      ref: dart2
+      path: sqflite_ffi_test
+    version: '>=0.0.1'
 
 dependency_overrides:
   sqflite_server:
     path: ../../sqflite_server
   sqflite_test:
     path: ../../sqflite_test
+  sqflite_ffi_test:
+    path: ../../sqflite_ffi_test
 # Here we use a local dependency assuming we sqlite and sqflite_more at the same level
   sqflite:
     path: ../../../sqflite/sqflite

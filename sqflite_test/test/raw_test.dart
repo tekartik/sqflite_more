@@ -11,10 +11,11 @@ import 'package:test/test.dart';
 import 'core_import.dart';
 
 Future main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
   return testMain(run);
 }
 
-void run(SqfliteServerTestContext context) {
+void run(SqfliteTestContext context) {
   var factory = context.databaseFactory;
   group('raw', () {
     /*
@@ -634,25 +635,25 @@ void run(SqfliteServerTestContext context) {
             .execute("CREATE TABLE Test (name TEXT PRIMARY KEY) WITHOUT ROWID");
         int id = await db.insert("Test", <String, dynamic>{"name": "test"});
         // it seems to always return 1 on Android, 0 on iOS...
-        if (Platform.isIOS) {
+        if (context.isIOS) {
           expect(id, 0);
-        } else if (Platform.isAndroid) {
+        } else if (context.isAndroid) {
           expect(id, 1);
         } else if (context.supportsWithoutRowId) {
-          expect(id, 1);
-        } else {
           expect(id, 0);
+        } else {
+          // Don't know: expect(id, 1);
         }
         id = await db.insert("Test", <String, dynamic>{"name": "other"});
         // it seems to always return 1
-        if (Platform.isIOS) {
+        if (context.isIOS) {
           expect(id, 0);
-        } else if (Platform.isAndroid) {
+        } else if (context.isAndroid) {
           expect(id, 1);
         } else if (context.supportsWithoutRowId) {
-          expect(id, 1);
-        } else {
           expect(id, 0);
+        } else {
+          // Don't know: expect(id, 1);
         }
         // notice the order is based on the primary key
         var list = await db.query("Test");

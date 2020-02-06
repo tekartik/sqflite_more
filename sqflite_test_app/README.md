@@ -4,5 +4,18 @@ Sqflite testing app
 
 ## Getting Started
 
-For help getting started with Flutter, view our online
-[documentation](https://flutter.io/).
+```bash
+flutter run
+```
+
+## Desktop build
+
+```bash
+flutter run
+```
+
+Ensure you manage to build and run google sample first in <https://github.com/google/flutter-desktop-embedding>
+
+Desktop build use ffi.
+
+

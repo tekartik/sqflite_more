@@ -93,10 +93,11 @@ class OpenCallbacks {
 }
 
 Future main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
   return testMain(run);
 }
 
-void run(SqfliteServerTestContext context) {
+void run(SqfliteTestContext context) {
   var factory = context.databaseFactory;
   test('Databases path', () async {
     // await utils.devSetDebugModeOn(false);
@@ -127,7 +128,8 @@ void run(SqfliteServerTestContext context) {
   }
 
   test("Delete database", () async {
-    // await context.devSetDebugModeOn(false);
+    await context.devSetDebugModeOn(true);
+    //await context..devSetDebugModeOn(false);
     String path = await context.initDeleteDb("delete_database.db");
     expect(await checkFileExists(path), isFalse, reason: '$path');
     Database db = await factory.openDatabase(path);
