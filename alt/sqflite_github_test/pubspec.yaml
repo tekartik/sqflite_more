@@ -43,4 +43,5 @@ dependency_overrides:
     git:
       url: git://github.com/tekartik/sqflite
       path: sqflite
+      version: '1.2.1-dev.2'
 
