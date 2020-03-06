@@ -98,16 +98,16 @@ void run(SqfliteTestContext context) {
     var db = await factory.openDatabase(path);
 
     var table = 'table';
-    await db.execute("CREATE TABLE '$table' ('group' INTEGER)");
+    await db.execute('CREATE TABLE "$table" ("group" INTEGER)');
     // inserted in a wrong order to check ASC/DESC
-    await db.execute("INSERT INTO '$table' ('group') VALUES (1)");
+    await db.execute('INSERT INTO "$table" ("group") VALUES (1)');
 
     var expectedResult = [
       {'group': 1}
     ];
 
     var result =
-        await db.rawQuery("SELECT 'group' FROM '$table' ORDER BY 'group' DESC");
+        await db.rawQuery('SELECT "group" FROM "$table" ORDER BY "group" DESC');
     print(result);
     expect(result, expectedResult);
     result = await db.rawQuery("SELECT * FROM '$table' ORDER BY `group` DESC");
@@ -125,19 +125,19 @@ void run(SqfliteTestContext context) {
     var db = await factory.openDatabase(path);
 
     var table = 'group';
-    await db.execute("CREATE TABLE '$table' ('group' TEXT)");
+    await db.execute('CREATE TABLE "$table" ("group" TEXT)');
     // inserted in a wrong order to check ASC/DESC
 
     await db.insert(table, <String, dynamic>{'group': 'group_value'});
     await db.update(table, <String, dynamic>{'group': 'group_new_value'},
-        where: '\'group\' = \'group_value\'');
+        where: "\"group\" = 'group_value'");
 
     var expectedResult = [
       {'group': 'group_new_value'}
     ];
 
     var result =
-        await db.query(table, columns: ['group'], orderBy: "'group' DESC");
+        await db.query(table, columns: ['group'], orderBy: '"group" DESC');
     //print(JSON.encode(result));
     expect(result, expectedResult);
 
@@ -276,7 +276,7 @@ void run(SqfliteTestContext context) {
     */
   test('Issue#48', () async {
     // Sqflite.devSetDebugModeOn(true);
-    // devPrint('issue #48');
+    // devPrint("issue #48");
     // Try to query on a non-indexed field
     var path = await context.initDeleteDb('exp_issue_48.db');
     var db = await factory.openDatabase(path,
@@ -298,7 +298,7 @@ void run(SqfliteTestContext context) {
             }));
     var resultSet = await db.query('npa',
         columns: ['id', 'title', 'identifier'],
-        where: "'identifier' = ?",
+        where: '"identifier" = ?',
         whereArgs: <dynamic>['0008120150514']);
     // print(resultSet);
     expect(resultSet.length, 1);
@@ -306,7 +306,7 @@ void run(SqfliteTestContext context) {
     // If i'm trying to do the same with the id field and integer value like
     resultSet = await db.query('npa',
         columns: ['id', 'title', 'identifier'],
-        where: "'id' = ?",
+        where: '"id" = ?',
         whereArgs: <dynamic>[215]);
     // print(resultSet);
     expect(resultSet.length, 1);
