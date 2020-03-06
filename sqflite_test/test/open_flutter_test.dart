@@ -26,29 +26,29 @@ Future main() {
 void run(SqfliteTestContext context) {
   var factory = context.databaseFactory;
 
-  test("Open asset database", () async {
+  test('Open asset database', () async {
     // await utils.devSetDebugModeOn(false);
     var rootBundle = TestAssetBundle();
     var databasesPath = await factory.getDatabasesPath();
-    String path = join(databasesPath, "asset_example.db");
+    var path = join(databasesPath, 'asset_example.db');
 
     // delete existing if any
     await factory.deleteDatabase(path);
 
     // Copy from asset
-    ByteData data = await rootBundle.load(join("assets", "example.db"));
+    var data = await rootBundle.load(join('assets', 'example.db'));
     List<int> bytes =
         data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
     await context.writeFile(path, bytes);
 
     // open the database
-    Database db = await factory.openDatabase(path);
+    var db = await factory.openDatabase(path);
 
     // Our database as a single table with a single element
-    List<Map<String, dynamic>> list = await db.rawQuery("SELECT * FROM Test");
-    print("list $list");
+    var list = await db.rawQuery('SELECT * FROM Test');
+    print('list $list');
     // list [{id: 1, name: simple value}]
-    expect(list.first["name"], "simple value");
+    expect(list.first['name'], 'simple value');
 
     await db.close();
   }, skip: true);
@@ -56,12 +56,12 @@ void run(SqfliteTestContext context) {
   test('Open demo (doc)', () async {
     // await utils.devSetDebugModeOn(true);
 
-    String path = await context.initDeleteDb("open_read_only.db");
+    var path = await context.initDeleteDb('open_read_only.db');
 
     {
       Future _onConfigure(Database db) async {
         // Add support for cascade delete
-        await db.execute("PRAGMA foreign_keys = ON");
+        await db.execute('PRAGMA foreign_keys = ON');
       }
 
       var db = await factory.openDatabase(path,
@@ -73,12 +73,12 @@ void run(SqfliteTestContext context) {
       Future _onCreate(Database db, int version) async {
         // Database is created, delete the table
         await db
-            .execute("CREATE TABLE Test (id INTEGER PRIMARY KEY, value TEXT)");
+            .execute('CREATE TABLE Test (id INTEGER PRIMARY KEY, value TEXT)');
       }
 
       Future _onUpgrade(Database db, int oldVersion, int newVersion) async {
         // Database version is updated, alter the table
-        await db.execute("ALTER TABLE Test ADD name TEXT");
+        await db.execute('ALTER TABLE Test ADD name TEXT');
       }
 
       // Special callback used for onDowngrade here to recreate the database
@@ -110,7 +110,7 @@ void run(SqfliteTestContext context) {
     {
       // Check if we have an existing copy first
       var databasesPath = await factory.getDatabasesPath();
-      String path = join(databasesPath, "demo_asset_example.db");
+      var path = join(databasesPath, 'demo_asset_example.db');
 
       // try opening (will work if it exists)
       Database db;
@@ -118,15 +118,15 @@ void run(SqfliteTestContext context) {
         db = await factory.openDatabase(path,
             options: OpenDatabaseOptions(readOnly: true));
       } catch (e) {
-        print("Error $e");
+        print('Error $e');
       }
 
       if (db == null) {
         // Should happen only the first time you launch your application
-        print("Creating new copy from asset");
+        print('Creating new copy from asset');
 
         // Copy from asset
-        ByteData data = await rootBundle.load(join("assets", "example.db"));
+        var data = await rootBundle.load(join('assets', 'example.db'));
         List<int> bytes =
             data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
         await context.writeFile(path, bytes);
@@ -135,7 +135,7 @@ void run(SqfliteTestContext context) {
         db = await factory.openDatabase(path,
             options: OpenDatabaseOptions(readOnly: true));
       } else {
-        print("Opening existing database");
+        print('Opening existing database');
       }
 
       await db.close();

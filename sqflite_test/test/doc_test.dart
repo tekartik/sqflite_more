@@ -184,7 +184,7 @@ void run(SqfliteTestContext context) {
     });
 
     test('record map', () async {
-      Map<String, dynamic> map = <String, dynamic>{
+      var map = <String, dynamic>{
         'title': 'Table',
         'size': <String, dynamic>{'width': 80, 'height': 80}
       };
@@ -195,7 +195,7 @@ void run(SqfliteTestContext context) {
         'title': 'Table',
         'size': jsonEncode(<String, dynamic>{'width': 80, 'height': 80})
       };
-      final Map<String, dynamic> map2 = <String, dynamic>{
+      final map2 = <String, dynamic>{
         'title': 'Table',
         'size': '{"width":80,"height":80}'
       };

@@ -12,7 +12,7 @@ bool isWhitespace(int codeUnit) {
 bool isStringWrapper(int codeUnit) {
   switch (codeUnit) {
     case 39: // '
-    case 34: // "
+    case 34: // '
     case 96: // `
       return true;
   }
@@ -53,7 +53,7 @@ class SqlParserIndex {
 
   @override
   String toString() {
-    return "pos: $position";
+    return 'pos: $position';
   }
 }
 
@@ -64,13 +64,13 @@ class SqlParser {
   int position = 0;
 
   void skipWhitespaces({bool skip, SqlParserIndex index}) {
-    int position = index?.position ?? this.position;
+    var position = index?.position ?? this.position;
 
     while (true) {
       if (atEnd(position)) {
         break;
       }
-      int codeUnit = sql.codeUnitAt(position);
+      var codeUnit = sql.codeUnitAt(position);
       if (isWhitespace(codeUnit)) {
         position++;
       } else {
@@ -91,12 +91,12 @@ class SqlParser {
 
   String getNextToken({bool skip, SqlParserIndex index}) {
     index ??= SqlParserIndex();
-    index.position ??= this.position;
+    index.position ??= position;
     skipWhitespaces(skip: skip, index: index);
     if (!atEnd(index.position)) {
       var sb = StringBuffer();
 
-      int codeUnit = sql.codeUnitAt(index.position);
+      var codeUnit = sql.codeUnitAt(index.position);
       int startCodeUnit;
       if (isStringWrapper(codeUnit)) {
         startCodeUnit = codeUnit;
@@ -105,7 +105,7 @@ class SqlParser {
       index.position++;
 
       // is separator ?
-      bool isTokenSeparator = false;
+      var isTokenSeparator = false;
       if (startCodeUnit == null) {
         if (isSeparator(codeUnit)) {
           isTokenSeparator = true;
@@ -138,7 +138,7 @@ class SqlParser {
         }
       }
       if (skip == true) {
-        this.position = index.position;
+        position = index.position;
       }
       return sb.toString();
     } else {
@@ -173,7 +173,7 @@ class SqlParser {
   String getNextStatement({bool skip, SqlParserIndex index}) {
     skipWhitespaces(skip: skip, index: index);
     index ??= SqlParserIndex()..position = position;
-    int startPosition = index.position;
+    var startPosition = index.position;
     var sb = StringBuffer();
     String currentTriggerStatement;
     String previousToken;

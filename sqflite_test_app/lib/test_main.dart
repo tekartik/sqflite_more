@@ -12,6 +12,5 @@ void main() {
       serverMain();
       porterMain();
     });
-
   }, showConsole: true);
 }

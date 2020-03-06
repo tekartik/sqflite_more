@@ -19,7 +19,7 @@ const sqfliteServerUrlEnvKey = 'SQFLITE_SERVER_URL';
 const sqfliteServerPortEnvKey = 'SQFLITE_SERVER_PORT';
 
 int parseSqfliteServerUrlPort(String url, {int defaultValue}) {
-  int port = parseInt(url.split('\:').last);
+  var port = parseInt(url.split('\:').last);
   return port ?? defaultValue;
 }
 
@@ -30,10 +30,8 @@ Future<SqfliteServerDatabaseFactory> initSqfliteServerDatabaseFactory() async {
   var envUrl = const String.fromEnvironment(sqfliteServerUrlEnvKey);
   var envPort = parseInt(const String.fromEnvironment(sqfliteServerPortEnvKey));
 
-  var url = envUrl;
-  if (url == null) {
-    url = getSqfliteServerUrl(port: envPort);
-  }
+  var url = envUrl ?? getSqfliteServerUrl(port: envPort);
+
   try {
     databaseFactory = await SqfliteServerDatabaseFactory.connect(url);
   } catch (e) {
@@ -90,7 +88,7 @@ class SqfliteServerContext implements SqfliteContext {
       sqfliteClient = await SqfliteClient.connect(url,
           webSocketChannelClientFactory: webSocketChannelClientFactory);
       if (sqfliteClient != null) {
-        this._client = sqfliteClient;
+        _client = sqfliteClient;
         _databaseFactory = SqfliteServerDatabaseFactory(this);
       }
       return sqfliteClient;

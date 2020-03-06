@@ -28,7 +28,7 @@ void main() {
     });
 
     item('Create data in isolate', () async {
-      write("starting isolate...don't expact any more information");
+      write("starting isolate...don't expect any more information");
       var path = await initDeleteDb(isolateDbName);
       var receivePort = ReceivePort();
       var param = <String, dynamic>{
@@ -43,7 +43,7 @@ void main() {
     item('Read data', () async {
       var db = await openReadOnlyDatabase(isolateDbName);
       try {
-        var results = await db.rawQuery("SELECT id, name FROM Test");
+        var results = await db.rawQuery('SELECT id, name FROM Test');
         write(results);
       } finally {
         await db.close();
@@ -71,15 +71,15 @@ void simpleIsolate(Map<String, dynamic> param) {
 
 Future<List<Map<String, dynamic>>> simpleTest(String path) async {
   // Get the path
-  Database db = await openDatabase(path, version: 1, onCreate: (db, version) {
-    db.execute("CREATE TABLE Test (id INTEGER PRIMARY KEY, name TEXT)");
+  var db = await openDatabase(path, version: 1, onCreate: (db, version) {
+    db.execute('CREATE TABLE Test (id INTEGER PRIMARY KEY, name TEXT)');
   });
   List<Map<String, dynamic>> results;
   try {
     await insert(db, 1);
     await insert(db, 2);
     await insert(db, 3);
-    results = await db.rawQuery("SELECT id, name FROM Test");
+    results = await db.rawQuery('SELECT id, name FROM Test');
     print(results);
   } finally {
     await db.close();

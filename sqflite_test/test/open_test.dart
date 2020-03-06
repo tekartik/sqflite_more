@@ -12,7 +12,7 @@ import 'package:synchronized/synchronized.dart';
 import 'core_import.dart';
 
 bool verify(bool condition, [String message]) {
-  message ??= "verify failed";
+  message ??= 'verify failed';
   expect(condition, true, reason: message);
   return condition;
 }
@@ -20,38 +20,38 @@ bool verify(bool condition, [String message]) {
 class OpenCallbacks {
   OpenCallbacks(this.databaseFactory) {
     onConfigure = (Database db) {
-      //print("onConfigure");
-      //verify(!onConfigureCalled, "onConfigure must be called once");
+      //print('onConfigure');
+      //verify(!onConfigureCalled, 'onConfigure must be called once');
       expect(onConfigureCalled, false,
           reason:
-              "onConfigure already called"); // onConfigure must be called once
+              'onConfigure already called'); // onConfigure must be called once
       onConfigureCalled = true;
     };
 
     onCreate = (Database db, int version) {
-      //print("onCreate");
-      expect(onConfigureCalled, true, reason: "onConfigure not called");
-      expect(onCreateCalled, false, reason: "onCreate already called");
+      //print('onCreate');
+      expect(onConfigureCalled, true, reason: 'onConfigure not called');
+      expect(onCreateCalled, false, reason: 'onCreate already called');
       onCreateCalled = true;
     };
 
     onOpen = (Database db) {
-      //print("onOpen");
+      //print('onOpen');
       expect(onConfigureCalled, isTrue,
-          reason: "onConfigure must be called before onOpen");
-      expect(onOpenCalled, isFalse, reason: "onOpen already called");
+          reason: 'onConfigure must be called before onOpen');
+      expect(onOpenCalled, isFalse, reason: 'onOpen already called');
       onOpenCalled = true;
     };
 
     onUpgrade = (Database db, int oldVersion, int newVersion) {
-      verify(onConfigureCalled, "onConfigure not called in onUpgrade");
-      verify(!onUpgradeCalled, "onUpgradeCalled already called");
+      verify(onConfigureCalled, 'onConfigure not called in onUpgrade');
+      verify(!onUpgradeCalled, 'onUpgradeCalled already called');
       onUpgradeCalled = true;
     };
 
     onDowngrade = (Database db, int oldVersion, int newVersion) {
-      verify(onConfigureCalled, "onConfigure not called");
-      verify(!onDowngradeCalled, "onDowngrade already called");
+      verify(onConfigureCalled, 'onConfigure not called');
+      verify(!onDowngradeCalled, 'onDowngrade already called');
       onDowngradeCalled = true;
     };
 
@@ -102,24 +102,24 @@ void run(SqfliteTestContext context) {
   test('Databases path', () async {
     // await utils.devSetDebugModeOn(false);
     var databasesPath = await factory.getDatabasesPath();
-    // On Android we know it is current a "databases" folder in the package folder
-    print("databasesPath: " + databasesPath);
+    // On Android we know it is current a 'databases' folder in the package folder
+    print('databasesPath: ' + databasesPath);
     if (Platform.isAndroid) {
-      expect(basename(databasesPath), "databases");
+      expect(basename(databasesPath), 'databases');
     } else if (Platform.isIOS) {
-      expect(basename(databasesPath), "Documents");
+      expect(basename(databasesPath), 'Documents');
     }
-    String path =
-        context.pathContext.join(databasesPath, "in_default_directory.db");
+    var path =
+        context.pathContext.join(databasesPath, 'in_default_directory.db');
     await factory.deleteDatabase(path);
-    Database db = await factory.openDatabase(path);
+    var db = await factory.openDatabase(path);
     await db.close();
   });
 
   Future<bool> checkFileExists(String path) async {
-    bool exists = false;
+    var exists = false;
     try {
-      Database db = await factory.openDatabase(path,
+      var db = await factory.openDatabase(path,
           options: OpenDatabaseOptions(readOnly: true, singleInstance: false));
       exists = true;
       await db.close();
@@ -127,35 +127,35 @@ void run(SqfliteTestContext context) {
     return exists;
   }
 
-  test("Delete database", () async {
+  test('Delete database', () async {
     await context.devSetDebugModeOn(true);
     //await context..devSetDebugModeOn(false);
-    String path = await context.initDeleteDb("delete_database.db");
+    var path = await context.initDeleteDb('delete_database.db');
     expect(await checkFileExists(path), isFalse, reason: '$path');
-    Database db = await factory.openDatabase(path);
+    var db = await factory.openDatabase(path);
     await db.close();
 
     expect(await checkFileExists(path), isTrue);
 
     // expect((await new File(path).exists()), true);
-    print("Deleting database $path");
+    print('Deleting database $path');
     await factory.deleteDatabase(path);
     // expect((await new File(path).exists()), false);
     expect(await checkFileExists(path), isFalse);
   });
 
-  test("Open no version", () async {
+  test('Open no version', () async {
     //await utils.devSetDebugModeOn(true);
-    String path = await context.initDeleteDb("open_no_version.db");
+    var path = await context.initDeleteDb('open_no_version.db');
     expect(await checkFileExists(path), false);
-    Database db = await factory.openDatabase(path);
+    var db = await factory.openDatabase(path);
     verify(await checkFileExists(path));
     await db.close();
   });
 
   test('open in sub directory', () async {
     // await context.devSetDebugModeOn(true);
-    String path =
+    var path =
         await context.deleteDirectory(join('sub_that_should_not_exists'));
     var dbPath = join(path, 'open.db');
     var db = await factory.openDatabase(dbPath);
@@ -166,7 +166,7 @@ void run(SqfliteTestContext context) {
 
   test('open in sub sub directory', () async {
     // await context.devSetDebugModeOn(true);
-    String path = await context
+    var path = await context
         .deleteDirectory(join('sub2_that_should_not_exists', 'sub_sub'));
     var dbPath = join(path, 'open.db');
     var db = await factory.openDatabase(dbPath);
@@ -175,20 +175,20 @@ void run(SqfliteTestContext context) {
     }
   });
 
-  test("isOpen", () async {
+  test('isOpen', () async {
     //await utils.devSetDebugModeOn(true);
-    String path = await context.initDeleteDb("is_open.db");
+    var path = await context.initDeleteDb('is_open.db');
     expect(await checkFileExists(path), false);
-    Database db = await factory.openDatabase(path);
+    var db = await factory.openDatabase(path);
     expect(db.isOpen, true);
     verify(await checkFileExists(path));
     await db.close();
     expect(db.isOpen, false);
   });
 
-  test("Open no version onCreate", () async {
+  test('Open no version onCreate', () async {
     // should fail
-    String path = await context.initDeleteDb("open_no_version_on_create.db");
+    var path = await context.initDeleteDb('open_no_version_on_create.db');
     verify(!(File(path).existsSync()));
     Database db;
     try {
@@ -203,12 +203,12 @@ void run(SqfliteTestContext context) {
     expect(db, null);
   });
 
-  test("Open onCreate", () async {
+  test('Open onCreate', () async {
     // await utils.devSetDebugModeOn(true);
-    String path = await context.initDeleteDb("open_test2.db");
-    bool onCreate = false;
-    bool onCreateTransaction = false;
-    Database db = await factory.openDatabase(path,
+    var path = await context.initDeleteDb('open_test2.db');
+    var onCreate = false;
+    var onCreateTransaction = false;
+    var db = await factory.openDatabase(path,
         options: OpenDatabaseOptions(
             version: 1,
             onCreate: (Database db, int version) async {
@@ -217,7 +217,7 @@ void run(SqfliteTestContext context) {
 
               await db.transaction((txn) async {
                 await txn
-                    .execute("CREATE TABLE Test2 (id INTEGER PRIMARY KEY)");
+                    .execute('CREATE TABLE Test2 (id INTEGER PRIMARY KEY)');
                 onCreateTransaction = true;
               });
             }));
@@ -226,29 +226,29 @@ void run(SqfliteTestContext context) {
     await db.close();
   });
 
-  test("Open 2 databases", () async {
+  test('Open 2 databases', () async {
     //await utils.devSetDebugModeOn(true);
-    String path1 = await context.initDeleteDb("open_db_1.db");
-    String path2 = await context.initDeleteDb("open_db_2.db");
-    Database db1 = await factory.openDatabase(path1,
+    var path1 = await context.initDeleteDb('open_db_1.db');
+    var path2 = await context.initDeleteDb('open_db_2.db');
+    var db1 = await factory.openDatabase(path1,
         options: OpenDatabaseOptions(version: 1));
-    Database db2 = await factory.openDatabase(path2,
+    var db2 = await factory.openDatabase(path2,
         options: OpenDatabaseOptions(version: 1));
     await db1.close();
     await db2.close();
   });
 
-  test("Open onUpgrade", () async {
-    bool onUpgrade = false;
-    String path = await context.initDeleteDb("open_on_upgrade.db");
-    Database database = await factory.openDatabase(path,
+  test('Open onUpgrade', () async {
+    var onUpgrade = false;
+    var path = await context.initDeleteDb('open_on_upgrade.db');
+    var database = await factory.openDatabase(path,
         options: OpenDatabaseOptions(
             version: 1,
             onCreate: (Database db, int version) async {
-              await db.execute("CREATE TABLE Test(id INTEGER PRIMARY KEY)");
+              await db.execute('CREATE TABLE Test(id INTEGER PRIMARY KEY)');
             }));
     try {
-      await database.insert("Test", <String, dynamic>{'id': 1, 'name': 'test'});
+      await database.insert('Test', <String, dynamic>{'id': 1, 'name': 'test'});
       fail('should fail');
     } on DatabaseException catch (e) {
       print(e);
@@ -261,39 +261,39 @@ void run(SqfliteTestContext context) {
             onUpgrade: (Database db, int oldVersion, int newVersion) async {
               expect(oldVersion, 1);
               expect(newVersion, 2);
-              await db.execute("ALTER TABLE Test ADD name TEXT");
+              await db.execute('ALTER TABLE Test ADD name TEXT');
               onUpgrade = true;
             }));
     expect(onUpgrade, isTrue);
 
     expect(
         await database
-            .insert("Test", <String, dynamic>{'id': 1, 'name': 'test'}),
+            .insert('Test', <String, dynamic>{'id': 1, 'name': 'test'}),
         1);
     await database.close();
   });
 
-  test("Open onDowngrade", () async {
-    String path = await context.initDeleteDb("open_on_downgrade.db");
-    Database database = await factory.openDatabase(path,
+  test('Open onDowngrade', () async {
+    var path = await context.initDeleteDb('open_on_downgrade.db');
+    var database = await factory.openDatabase(path,
         options: OpenDatabaseOptions(
             version: 2,
             onCreate: (Database db, int version) async {
-              await db.execute("CREATE TABLE Test(id INTEGER PRIMARY KEY)");
+              await db.execute('CREATE TABLE Test(id INTEGER PRIMARY KEY)');
             },
             onDowngrade: (Database db, int oldVersion, int newVersion) async {
-              verify(false, "should not be called");
+              verify(false, 'should not be called');
             }));
     await database.close();
 
-    bool onDowngrade = false;
+    var onDowngrade = false;
     database = await factory.openDatabase(path,
         options: OpenDatabaseOptions(
             version: 1,
             onDowngrade: (Database db, int oldVersion, int newVersion) async {
               expect(oldVersion, 2);
               expect(newVersion, 1);
-              await db.execute("ALTER TABLE Test ADD name TEXT");
+              await db.execute('ALTER TABLE Test ADD name TEXT');
               onDowngrade = true;
             }));
     verify(onDowngrade);
@@ -301,9 +301,9 @@ void run(SqfliteTestContext context) {
     await database.close();
   });
 
-  test("Open bad path", () async {
+  test('Open bad path', () async {
     try {
-      await factory.openDatabase("/invalid_path");
+      await factory.openDatabase('/invalid_path');
       fail('should fail');
     } on DatabaseException catch (e) {
       expect(e.toString(), contains('open_failed'));
@@ -311,16 +311,16 @@ void run(SqfliteTestContext context) {
     }
   });
 
-  test("Open on configure", () async {
-    String path = await context.initDeleteDb("open_on_configure.db");
+  test('Open on configure', () async {
+    var path = await context.initDeleteDb('open_on_configure.db');
 
-    bool onConfigured = false;
-    bool onConfiguredTransaction = false;
+    var onConfigured = false;
+    var onConfiguredTransaction = false;
     Future _onConfigure(Database db) async {
       onConfigured = true;
-      await db.execute("CREATE TABLE Test1 (id INTEGER PRIMARY KEY)");
+      await db.execute('CREATE TABLE Test1 (id INTEGER PRIMARY KEY)');
       await db.transaction((txn) async {
-        await txn.execute("CREATE TABLE Test2 (id INTEGER PRIMARY KEY)");
+        await txn.execute('CREATE TABLE Test2 (id INTEGER PRIMARY KEY)');
         onConfiguredTransaction = true;
       });
     }
@@ -333,24 +333,24 @@ void run(SqfliteTestContext context) {
     await db.close();
   });
 
-  test("Open onDowngrade delete", () async {
+  test('Open onDowngrade delete', () async {
     // await utils.devSetDebugModeOn(false);
 
-    String path = await context.initDeleteDb("open_on_downgrade_delete.db");
-    Database database = await factory.openDatabase(path,
+    var path = await context.initDeleteDb('open_on_downgrade_delete.db');
+    var database = await factory.openDatabase(path,
         options: OpenDatabaseOptions(
             version: 3,
             onCreate: (Database db, int version) async {
-              await db.execute("CREATE TABLE Test(id INTEGER PRIMARY KEY)");
+              await db.execute('CREATE TABLE Test(id INTEGER PRIMARY KEY)');
             }));
     await database.close();
 
     // should fail going back in versions
-    bool onCreated = false;
-    bool onOpened = false;
-    bool onConfiguredOnce = false; // onConfigure will be called twice here
+    var onCreated = false;
+    var onOpened = false;
+    var onConfiguredOnce = false; // onConfigure will be called twice here
     // since the database is re-opened
-    bool onConfigured = false;
+    var onConfigured = false;
     database = await factory.openDatabase(path,
         options: OpenDatabaseOptions(
             version: 2,
@@ -390,7 +390,7 @@ void run(SqfliteTestContext context) {
         options: OpenDatabaseOptions(
             version: 2,
             onCreate: (Database db, int version) {
-              expect(false, "should not be called");
+              expect(false, 'should not be called');
             },
             onOpen: (Database db) {
               onOpened = true;
@@ -400,40 +400,40 @@ void run(SqfliteTestContext context) {
     await database.close();
   });
 
-  test("All open callback", () async {
+  test('All open callback', () async {
     // await utils.devSetDebugModeOn(false);
-    String path = await context.initDeleteDb("open_all_callbacks.db");
+    var path = await context.initDeleteDb('open_all_callbacks.db');
 
-    int step = 1;
-    OpenCallbacks openCallbacks = OpenCallbacks(factory);
+    var step = 1;
+    var openCallbacks = OpenCallbacks(factory);
     var db = await openCallbacks.open(path, version: 1);
-    verify(openCallbacks.onConfigureCalled, "onConfiguredCalled $step");
-    verify(openCallbacks.onCreateCalled, "onCreateCalled $step");
-    verify(openCallbacks.onOpenCalled, "onOpenCalled $step");
-    verify(!openCallbacks.onUpgradeCalled, "onUpdateCalled $step");
-    verify(!openCallbacks.onDowngradeCalled, "onDowngradCalled $step");
+    verify(openCallbacks.onConfigureCalled, 'onConfiguredCalled $step');
+    verify(openCallbacks.onCreateCalled, 'onCreateCalled $step');
+    verify(openCallbacks.onOpenCalled, 'onOpenCalled $step');
+    verify(!openCallbacks.onUpgradeCalled, 'onUpdateCalled $step');
+    verify(!openCallbacks.onDowngradeCalled, 'onDowngradCalled $step');
     await db.close();
 
     ++step;
     db = await openCallbacks.open(path, version: 3);
-    verify(openCallbacks.onConfigureCalled, "onConfiguredCalled $step");
-    verify(!openCallbacks.onCreateCalled, "onCreateCalled $step");
-    verify(openCallbacks.onOpenCalled, "onOpenCalled $step");
-    verify(openCallbacks.onUpgradeCalled, "onUpdateCalled $step");
-    verify(!openCallbacks.onDowngradeCalled, "onDowngradCalled $step");
+    verify(openCallbacks.onConfigureCalled, 'onConfiguredCalled $step');
+    verify(!openCallbacks.onCreateCalled, 'onCreateCalled $step');
+    verify(openCallbacks.onOpenCalled, 'onOpenCalled $step');
+    verify(openCallbacks.onUpgradeCalled, 'onUpdateCalled $step');
+    verify(!openCallbacks.onDowngradeCalled, 'onDowngradCalled $step');
     await db.close();
 
     ++step;
     db = await openCallbacks.open(path, version: 2);
-    verify(openCallbacks.onConfigureCalled, "onConfiguredCalled $step");
-    verify(!openCallbacks.onCreateCalled, "onCreateCalled $step");
-    verify(openCallbacks.onOpenCalled, "onOpenCalled $step");
-    verify(!openCallbacks.onUpgradeCalled, "onUpdateCalled $step");
-    verify(openCallbacks.onDowngradeCalled, "onDowngradCalled $step");
+    verify(openCallbacks.onConfigureCalled, 'onConfiguredCalled $step');
+    verify(!openCallbacks.onCreateCalled, 'onCreateCalled $step');
+    verify(openCallbacks.onOpenCalled, 'onOpenCalled $step');
+    verify(!openCallbacks.onUpgradeCalled, 'onUpdateCalled $step');
+    verify(openCallbacks.onDowngradeCalled, 'onDowngradCalled $step');
     await db.close();
 
     openCallbacks.onDowngrade = onDatabaseDowngradeDelete;
-    int configureCount = 0;
+    var configureCount = 0;
     var callback = openCallbacks.onConfigure;
     // allow being called twice
     openCallbacks.onConfigure = (Database db) {
@@ -447,35 +447,35 @@ void run(SqfliteTestContext context) {
     db = await openCallbacks.open(path, version: 1);
 
     /*
-      verify(openCallbacks.onConfigureCalled,"onConfiguredCalled $step");
-      verify(configureCount == 2, "onConfigure count");
-      verify(openCallbacks.onCreateCalled, "onCreateCalled $step");
-      verify(openCallbacks.onOpenCalled, "onOpenCalled $step");
-      verify(!openCallbacks.onUpgradeCalled, "onUpdateCalled $step");
-      verify(!openCallbacks.onDowngradeCalled, "onDowngradCalled $step");
+      verify(openCallbacks.onConfigureCalled,'onConfiguredCalled $step');
+      verify(configureCount == 2, 'onConfigure count');
+      verify(openCallbacks.onCreateCalled, 'onCreateCalled $step');
+      verify(openCallbacks.onOpenCalled, 'onOpenCalled $step');
+      verify(!openCallbacks.onUpgradeCalled, 'onUpdateCalled $step');
+      verify(!openCallbacks.onDowngradeCalled, 'onDowngradCalled $step');
       */
     await db.close();
   });
 
-  test("Open batch", () async {
+  test('Open batch', () async {
     // await utils.devSetDebugModeOn(true);
-    String path = await context.initDeleteDb("open_batch.db");
+    var path = await context.initDeleteDb('open_batch.db');
 
     Future _onConfigure(Database db) async {
       var batch = db.batch();
-      batch.execute("CREATE TABLE Test (id INTEGER PRIMARY KEY, value TEXT)");
+      batch.execute('CREATE TABLE Test (id INTEGER PRIMARY KEY, value TEXT)');
       await batch.commit();
     }
 
     Future _onCreate(Database db, int version) async {
       var batch = db.batch();
-      batch.rawInsert('INSERT INTO Test(value) VALUES("value1")');
+      batch.rawInsert("INSERT INTO Test(value) VALUES('value1')");
       await batch.commit();
     }
 
     Future _onOpen(Database db) async {
       var batch = db.batch();
-      batch.rawInsert('INSERT INTO Test(value) VALUES("value2")');
+      batch.rawInsert("INSERT INTO Test(value) VALUES('value2')");
       await batch.commit();
     }
 
@@ -486,44 +486,44 @@ void run(SqfliteTestContext context) {
             onCreate: _onCreate,
             onOpen: _onOpen));
     expect(
-        utils.firstIntValue(await db.rawQuery("SELECT COUNT(*) FROM Test")), 2);
+        utils.firstIntValue(await db.rawQuery('SELECT COUNT(*) FROM Test')), 2);
 
     await db.close();
   });
 
-  test("Open read-only", () async {
+  test('Open read-only', () async {
     // await context.devSetDebugModeOn(true);
-    String path = await context.initDeleteDb("open_read_only.db");
+    var path = await context.initDeleteDb('open_read_only.db');
 
     Future _onCreate(Database db, int version) async {
       var batch = db.batch();
-      batch.execute("CREATE TABLE Test (id INTEGER PRIMARY KEY, value TEXT)");
-      batch.rawInsert('INSERT INTO Test(value) VALUES("value1")');
+      batch.execute('CREATE TABLE Test (id INTEGER PRIMARY KEY, value TEXT)');
+      batch.rawInsert("INSERT INTO Test(value) VALUES('value1')");
       await batch.commit();
     }
 
     var db = await factory.openDatabase(path,
         options: OpenDatabaseOptions(version: 1, onCreate: _onCreate));
     expect(
-        utils.firstIntValue(await db.rawQuery("SELECT COUNT(*) FROM Test")), 1);
+        utils.firstIntValue(await db.rawQuery('SELECT COUNT(*) FROM Test')), 1);
 
     await db.close();
 
     db = await factory.openDatabase(path,
         options: OpenDatabaseOptions(readOnly: true));
     expect(
-        utils.firstIntValue(await db.rawQuery("SELECT COUNT(*) FROM Test")), 1);
+        utils.firstIntValue(await db.rawQuery('SELECT COUNT(*) FROM Test')), 1);
 
     try {
-      await db.rawInsert('INSERT INTO Test(value) VALUES("value1")');
-      fail("should fail");
+      await db.rawInsert("INSERT INTO Test(value) VALUES('value1')");
+      fail('should fail');
     } on DatabaseException catch (e) {
       // Error DatabaseException(attempt to write a readonly database (code 8)) running Open read-only
       expect(e.isReadOnlyError(), true);
     }
 
     var batch = db.batch();
-    batch.rawQuery("SELECT COUNT(*) FROM Test");
+    batch.rawQuery('SELECT COUNT(*) FROM Test');
     await batch.commit();
 
     await db.close();
@@ -531,12 +531,12 @@ void run(SqfliteTestContext context) {
 
   test('Open demo (doc)', () async {
     // await utils.devSetDebugModeOn(true);
-    String path = await context.initDeleteDb("open_read_only.db");
+    var path = await context.initDeleteDb('open_read_only.db');
 
     {
       Future _onConfigure(Database db) async {
         // Add support for cascade delete
-        await db.execute("PRAGMA foreign_keys = ON");
+        await db.execute('PRAGMA foreign_keys = ON');
       }
 
       var db = await factory.openDatabase(path,
@@ -548,12 +548,12 @@ void run(SqfliteTestContext context) {
       Future _onCreate(Database db, int version) async {
         // Database is created, delete the table
         await db
-            .execute("CREATE TABLE Test (id INTEGER PRIMARY KEY, value TEXT)");
+            .execute('CREATE TABLE Test (id INTEGER PRIMARY KEY, value TEXT)');
       }
 
       Future _onUpgrade(Database db, int oldVersion, int newVersion) async {
         // Database version is updated, alter the table
-        await db.execute("ALTER TABLE Test ADD name TEXT");
+        await db.execute('ALTER TABLE Test ADD name TEXT');
       }
 
       // Special callback used for onDowngrade here to recreate the database
@@ -583,7 +583,7 @@ void run(SqfliteTestContext context) {
     {
       // Check if we have an existing copy first
       var databasesPath = await factory.getDatabasesPath();
-      String path = join(databasesPath, "demo_asset_example.db");
+      var path = join(databasesPath, 'demo_asset_example.db');
 
       // try opening (will work if it exists)
       Database db;
@@ -591,7 +591,7 @@ void run(SqfliteTestContext context) {
         db = await factory.openDatabase(path,
             options: OpenDatabaseOptions(readOnly: true));
       } catch (e) {
-        print("Error $e");
+        print('Error $e');
       }
 
       await db?.close();
@@ -600,11 +600,11 @@ void run(SqfliteTestContext context) {
 
   test('Database locked (doc)', () async {
     // await utils.devSetDebugModeOn(true);
-    String path = await context.initDeleteDb("open_locked.db");
+    var path = await context.initDeleteDb('open_locked.db');
     var helper = Helper(factory, path);
 
     // without the synchronized fix, this could faild
-    for (int i = 0; i < 100; i++) {
+    for (var i = 0; i < 100; i++) {
       unawaited(helper.getDb());
     }
     var db = await helper.getDb();
@@ -613,7 +613,7 @@ void run(SqfliteTestContext context) {
 
   test('single/multi instance (using factory)', () async {
     // await utils.devSetDebugModeOn(true);
-    String path = await context.initDeleteDb("instances_test.db");
+    var path = await context.initDeleteDb('instances_test.db');
     var db1 = await factory.openDatabase(path,
         options: OpenDatabaseOptions(singleInstance: false));
     var db2 = await factory.openDatabase(path,
@@ -629,7 +629,7 @@ void run(SqfliteTestContext context) {
 
   test('single/multi instance', () async {
     // await utils.devSetDebugModeOn(true);
-    String path = await context.initDeleteDb("instances_test.db");
+    var path = await context.initDeleteDb('instances_test.db');
     var db1 = await factory.openDatabase(path,
         options: OpenDatabaseOptions(singleInstance: false));
     var db2 = await factory.openDatabase(path,
@@ -645,17 +645,17 @@ void run(SqfliteTestContext context) {
 
   test('In memory database', () async {
     // await context.devSetDebugModeOn(true);
-    String inMemoryPath =
+    var inMemoryPath =
         inMemoryDatabasePath; // tried null without success, as it crashes on Android
-    String path = inMemoryPath;
+    var path = inMemoryPath;
 
     var db = await factory.openDatabase(path);
     try {
       await db
-          .execute("CREATE TABLE IF NOT EXISTS Test(id INTEGER PRIMARY KEY)");
-      await db.insert("Test", <String, dynamic>{"id": 1});
-      expect(await db.query("Test"), [
-        {"id": 1}
+          .execute('CREATE TABLE IF NOT EXISTS Test(id INTEGER PRIMARY KEY)');
+      await db.insert('Test', <String, dynamic>{'id': 1});
+      expect(await db.query('Test'), [
+        {'id': 1}
       ]);
 
       await db.close();
@@ -663,8 +663,8 @@ void run(SqfliteTestContext context) {
       // reopen, content should be gone
       db = await factory.openDatabase(path);
       try {
-        await db.query("Test");
-        fail("fail");
+        await db.query('Test');
+        fail('fail');
       } on DatabaseException catch (e) {
         print(e);
       }
@@ -675,32 +675,32 @@ void run(SqfliteTestContext context) {
 
   test('Not in memory database', () async {
     // await utils.devSetDebugModeOn(true);
-    String path = await context.initDeleteDb("not_in_memory.db");
+    var path = await context.initDeleteDb('not_in_memory.db');
 
     var db = await factory.openDatabase(path);
-    await db.execute("CREATE TABLE IF NOT EXISTS Test(id INTEGER PRIMARY KEY)");
-    await db.insert("Test", <String, dynamic>{"id": 1});
-    expect(await db.query("Test"), [
-      {"id": 1}
+    await db.execute('CREATE TABLE IF NOT EXISTS Test(id INTEGER PRIMARY KEY)');
+    await db.insert('Test', <String, dynamic>{'id': 1});
+    expect(await db.query('Test'), [
+      {'id': 1}
     ]);
     await db.close();
 
     // reopen, content should be done
     db = await factory.openDatabase(path);
-    expect(await db.query("Test"), [
-      {"id": 1}
+    expect(await db.query('Test'), [
+      {'id': 1}
     ]);
     await db.close();
   });
 
   test('close in transaction', () async {
     //await utils.devSetDebugModeOn(true);
-    String path = await context.initDeleteDb("close_in_transaction.db");
+    var path = await context.initDeleteDb('close_in_transaction.db');
 
     var db = await factory.openDatabase(path,
         options: OpenDatabaseOptions(version: 1));
     try {
-      await db.execute("BEGIN TRANSACTION");
+      await db.execute('BEGIN TRANSACTION');
       await db.close();
 
       db = await factory.openDatabase(path,
@@ -723,9 +723,7 @@ class Helper {
     if (_db == null) {
       await _lock.synchronized(() async {
         // Check again once entering the synchronized block
-        if (_db == null) {
-          _db = await databaseFactory.openDatabase(path);
-        }
+        _db ??= await databaseFactory.openDatabase(path);
       });
     }
     return _db;

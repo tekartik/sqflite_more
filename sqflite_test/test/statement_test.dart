@@ -1,9 +1,8 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:test/test.dart';
-import 'package:sqflite/sqlite_api.dart';
 import 'package:sqflite_test/sqflite_test.dart';
+import 'package:test/test.dart';
 
 Future main() {
   return testMain(run);
@@ -12,10 +11,10 @@ Future main() {
 void run(SqfliteTestContext context) {
   var factory = context.databaseFactory;
 
-  test("with_sudoku_solver", () async {
+  test('with_sudoku_solver', () async {
     //await Sqflite.setDebugModeOn(true);
-    String path = await context.initDeleteDb("with_sudoku_solver.db");
-    Database db = await factory.openDatabase(path);
+    var path = await context.initDeleteDb('with_sudoku_solver.db');
+    var db = await factory.openDatabase(path);
     try {
       var result = await db.rawQuery('''
 WITH RECURSIVE

@@ -46,7 +46,7 @@ class Prefs {
     var list =
         await db.query('Pref', columns: ['name', 'textValue', 'intValue']);
     //devPrint(list);
-    for (Map<String, dynamic> item in list) {
+    for (var item in list) {
       var prefName = item['name'] as String;
       switch (prefName) {
         case 'port':
@@ -91,13 +91,13 @@ class Prefs {
 
   Future setShowConsole(bool showConsole) async {
     this.showConsole = showConsole != false;
-    int intValue = this.showConsole ? 1 : 0;
+    var intValue = this.showConsole ? 1 : 0;
     await _setIntValue('showConsole', intValue);
   }
 
   Future setAutoStart(bool autoStart) async {
     this.autoStart = autoStart == true;
-    int intValue = this.autoStart ? 1 : 0;
+    var intValue = this.autoStart ? 1 : 0;
     await _setIntValue('autoStart', intValue);
   }
 

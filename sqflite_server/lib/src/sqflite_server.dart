@@ -15,7 +15,7 @@ import 'package:tekartik_common_utils/common_utils_import.dart';
 import 'package:tekartik_web_socket/web_socket.dart';
 import 'package:tekartik_web_socket_io/web_socket_io.dart';
 
-typedef void SqfliteServerNotifyCallback(
+typedef SqfliteServerNotifyCallback = void Function(
     bool response, String method, dynamic params);
 
 /// Web socket server
@@ -53,7 +53,7 @@ class SqfliteServer {
 /// We have one channer per client
 class SqfliteServerChannel {
   // Keep
-  List<int> _openDatabaseIds = [];
+  final _openDatabaseIds = <int>[];
 
   SqfliteServerChannel(this._sqfliteServer, WebSocketChannel<String> channel)
       : _rpcServer = json_rpc.Server(channel) {
@@ -119,8 +119,8 @@ class SqfliteServerChannel {
         _notifyCallback(false, methodWriteFile, parameters.value);
       }
       final map = parameters.value as Map;
-      String path = map[keyPath]?.toString();
-      List<int> content = (map[keyContent] as List)?.cast<int>();
+      var path = map[keyPath]?.toString();
+      var content = (map[keyContent] as List)?.cast<int>();
       path = await sqfliteLocalContext.writeFile(path, content);
       if (_notifyCallback != null) {
         _notifyCallback(true, methodWriteFile, path);
@@ -180,7 +180,7 @@ class SqfliteServerChannel {
     // Cleanup
     // close opened database
     _rpcServer.done.then((_) async {
-      for (int databaseId in _openDatabaseIds) {
+      for (var databaseId in _openDatabaseIds) {
         try {
           await invokeMethod<dynamic>(
               methodCloseDatabase, {paramId: databaseId});
