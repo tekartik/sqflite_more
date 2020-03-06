@@ -67,6 +67,7 @@ flutter:
   # For details regarding fonts in packages, see
   # https://flutter.io/custom-fonts/#from-packages
 
-# dependency_overrides:
+dependency_overrides:
+  pedantic: '>=1.9.0'
 #   sqflite:
 #     path: ../../sqflite

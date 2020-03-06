@@ -2,43 +2,43 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:sqflite_porter/src/sql_parser.dart';
 
 void main() {
-  group("sql_parser", () {
-    test("isWhitespace", () {
+  group('sql_parser', () {
+    test('isWhitespace', () {
       var whitespaces = '\t\n\r ';
-      for (int codeUnit in whitespaces.codeUnits) {
+      for (var codeUnit in whitespaces.codeUnits) {
         expect(isWhitespace(codeUnit), isTrue, reason: 'codeUnit: $codeUnit');
       }
       var noWhitespaces = 'ab10';
-      for (int codeUnit in noWhitespaces.codeUnits) {
+      for (var codeUnit in noWhitespaces.codeUnits) {
         expect(isWhitespace(codeUnit), isFalse);
       }
     });
 
-    test("isStringWrapper", () {
+    test('isStringWrapper', () {
       var stringWrapper = '\'"`';
-      for (int codeUnit in stringWrapper.codeUnits) {
+      for (var codeUnit in stringWrapper.codeUnits) {
         expect(isStringWrapper(codeUnit), isTrue,
             reason: 'codeUnit: $codeUnit');
       }
       var noStringWrapper = 'ab10 ';
-      for (int codeUnit in noStringWrapper.codeUnits) {
+      for (var codeUnit in noStringWrapper.codeUnits) {
         expect(isStringWrapper(codeUnit), isFalse);
       }
     });
 
-    test("isSeparator", () {
+    test('isSeparator', () {
       var separator = '(,#);';
-      for (int codeUnit in separator.codeUnits) {
+      for (var codeUnit in separator.codeUnits) {
         expect(isSeparator(codeUnit), isTrue,
             reason: 'codeUnit: $codeUnit ${String.fromCharCode(codeUnit)}');
       }
       var noSeparator = 'ab10 \'"`';
-      for (int codeUnit in noSeparator.codeUnits) {
+      for (var codeUnit in noSeparator.codeUnits) {
         expect(isSeparator(codeUnit), isFalse);
       }
     });
 
-    test("unescapeText", () {
+    test('unescapeText', () {
       expect(unescapeText('table'), 'table');
       expect(unescapeText('"table"'), 'table');
       expect(unescapeText('"table'), 'table');

@@ -28,24 +28,24 @@ void main() {
 
     group('export/import', () {
       test('export_import', () async {
-        String path = await initEmptyDb("export.db");
-        Database db = await openDatabase(path);
+        var path = await initEmptyDb('export.db');
+        var db = await openDatabase(path);
         try {
-          String table = "test";
+          var table = 'test';
           await db.execute(
-              "CREATE TABLE $table (column_1 INTEGER, column_2 TEXT, column_3 BLOB)");
+              'CREATE TABLE $table (column_1 INTEGER, column_2 TEXT, column_3 BLOB)');
           await db.execute(
-              "CREATE TABLE test_2 (id integer primary key autoincrement, column_2 TEXT)");
+              'CREATE TABLE test_2 (id integer primary key autoincrement, column_2 TEXT)');
           // inserted in a wrong order to check ASC/DESC
 
-          await db.execute("CREATE VIEW my_view AS SELECT * from $table");
+          await db.execute('CREATE VIEW my_view AS SELECT * from $table');
           await db
-              .execute('CREATE INDEX [${table}_index] ON "$table" (column_2)');
+              .execute("CREATE INDEX [${table}_index] ON '$table' (column_2)");
           await db.execute(
               'CREATE TRIGGER my_trigger AFTER INSERT ON test BEGIN INSERT INTO test_2(column_2) VALUES (new.column_2); END');
 
           await db.execute(
-              "INSERT INTO $table (column_1, column_2, column_3) VALUES (11, ?, ?)",
+              'INSERT INTO $table (column_1, column_2, column_3) VALUES (11, ?, ?)',
               <dynamic>[
                 'Some \' test \n',
                 [1, 2, 3, 4]
@@ -64,12 +64,12 @@ INSERT INTO test_2 VALUES (1,'Some '' test
 DELETE FROM sqlite_sequence;
 INSERT INTO sqlite_sequence VALUES ('test_2',1);
 CREATE VIEW my_view AS SELECT * from test;
-CREATE INDEX [test_index] ON "test" (column_2);
+CREATE INDEX [test_index] ON 'test' (column_2);
 CREATE TRIGGER my_trigger AFTER INSERT ON test BEGIN INSERT INTO test_2(column_2) VALUES (new.column_2); END;''');
 
           // print('#### $sql');
           await db.close();
-          db = await openEmptyDatabase("import.db");
+          db = await openEmptyDatabase('import.db');
           await dbImportSql(db, statements);
           // re-export
           var statements2 = await dbExportSql(db);
@@ -80,7 +80,7 @@ CREATE TRIGGER my_trigger AFTER INSERT ON test BEGIN INSERT INTO test_2(column_2
       });
     });
 
-    String bookshelfSql = '''
+    var bookshelfSql = '''
 CREATE TABLE book (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT);
 INSERT INTO book(title) VALUES ('Le petit prince');
 INSERT INTO book(title) VALUES ('Harry Potter');
@@ -89,11 +89,11 @@ INSERT INTO book(title) VALUES ('Harry Potter');
     group('meta', () {
       test('table_definitions', () async {
         //Sqflite.devSetDebugModeOn(true);
-        var db = await importSqlDatabase("book_table_definitions.db",
+        var db = await importSqlDatabase('book_table_definitions.db',
             sql: bookshelfSql);
         try {
           await dumpTableDefinitions(db);
-          // print(await db.query("sqlite_master"));} finally {
+          // print(await db.query('sqlite_master'));} finally {
         } finally {
           await db.close();
         }
@@ -102,7 +102,7 @@ INSERT INTO book(title) VALUES ('Harry Potter');
       test('table', () async {
         //Sqflite.devSetDebugModeOn(true);
         var db =
-            await importSqlDatabase("book_dump_table.db", sql: bookshelfSql);
+            await importSqlDatabase('book_dump_table.db', sql: bookshelfSql);
         try {
           await dumpTable(db, 'book');
         } finally {
@@ -113,7 +113,7 @@ INSERT INTO book(title) VALUES ('Harry Potter');
       test('tables', () async {
         //Sqflite.devSetDebugModeOn(true);
         var db =
-            await importSqlDatabase("book_dump_tables.db", sql: bookshelfSql);
+            await importSqlDatabase('book_dump_tables.db', sql: bookshelfSql);
         try {
           await dumpTables(db);
         } finally {

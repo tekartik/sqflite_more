@@ -19,7 +19,7 @@ class SqfliteServerHomePage extends StatefulWidget {
   // This class is the configuration for the state. It holds the values (in this
   // case the title) provided by the parent (in this case the App widget) and
   // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
+  // always marked 'final'.
 
   final String title;
 
@@ -92,7 +92,7 @@ class _SqfliteServerHomePageState extends State<SqfliteServerHomePage> {
                       child: TextField(
                         controller: portInputController,
                         decoration: const InputDecoration(
-                            labelText: "Port number (0 for any)"),
+                            labelText: 'Port number (0 for any)'),
                         keyboardType: TextInputType.number,
                       )),
                   Row(
@@ -144,8 +144,8 @@ class _SqfliteServerHomePageState extends State<SqfliteServerHomePage> {
                     // arranges them vertically. By default, it sizes itself to fit its
                     // children horizontally, and tries to be as tall as its parent.
                     //
-                    // Invoke "debug paint" (press "p" in the console where you ran
-                    // "flutter run", or select "Toggle Debug Paint" from the Flutter tool
+                    // Invoke 'debug paint' (press 'p' in the console where you ran
+                    // 'flutter run', or select 'Toggle Debug Paint' from the Flutter tool
                     // window in IntelliJ) to see the wireframe for each widget.
                     //
                     // Column has various properties to control how it sizes itself and

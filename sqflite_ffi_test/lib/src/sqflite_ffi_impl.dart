@@ -433,7 +433,7 @@ extension SqfliteFfiMethodCallHandler on FfiMethodCall {
 
   /// To ignore errors for batch.
   ///
-  // "continueOnError": true
+  // 'continueOnError': true
   bool getContinueOnError() {
     var continueOnError = arguments['continueOnError'] as bool;
     return continueOnError ?? false;
@@ -598,11 +598,10 @@ extension SqfliteFfiMethodCallHandler on FfiMethodCall {
             try {
               await database.handleExecute(
                   sql: operation.sql, sqlArguments: operation.sqlArguments);
-             addResult(null);
+              addResult(null);
             } catch (e) {
               addError(e);
             }
-
 
             break;
           }
@@ -615,7 +614,6 @@ extension SqfliteFfiMethodCallHandler on FfiMethodCall {
             } catch (e) {
               addError(e);
             }
-
 
             break;
           }

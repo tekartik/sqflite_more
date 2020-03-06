@@ -90,6 +90,7 @@ flutter:
   # For details regarding fonts from package dependencies,
   # see https://flutter.io/custom-fonts/#from-packages
 dependency_overrides:
+  pedantic: '>=1.9.0'
   sqflite_porter:
     path: ../sqflite_porter
   sqflite_server:

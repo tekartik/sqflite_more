@@ -28,18 +28,18 @@ Future main() async {
   if (context != null) {
     var factory = context.databaseFactory;
 
-    test("Issue#144", () async {
+    test('Issue#144', () async {
       /*
 
       initDb() async {
         String databases_path = await getDatabasesPath();
-        String path = join(databases_path, 'example.db');
+        var path =join(databases_path, 'example.db');
 
         print(FileSystemEntity.typeSync(path) ==
             FileSystemEntityType.notFound); // false
         Database oldDB = await openDatabase(path);
         List count = await oldDB.rawQuery(
-            "select 'name' from sqlite_master where name = 'example_table'");
+            'select 'name' from sqlite_master where name = 'example_table'');
         print(count.length); // 0
 
         print('copy from asset');
@@ -47,16 +47,16 @@ Future main() async {
         print(FileSystemEntity.typeSync(path) ==
             FileSystemEntityType.notFound); // true
         ByteData data =
-            await rootBundle.load(join("assets", 'example.db')); // 6,9 MB
+            await rootBundle.load(join('assets', 'example.db')); // 6,9 MB
 
         List<int> bytes =
             data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
         await File(path).writeAsBytes(bytes);
-        Database db = await openDatabase(path);
+        var db =await openDatabase(path);
         print(FileSystemEntity.typeSync(path) ==
             FileSystemEntityType.notFound); // false
         List count2 = await db.rawQuery(
-            "select 'name' from sqlite_master where name = 'example_table'");
+            'select 'name' from sqlite_master where name = 'example_table'');
         print(count2.length); // 0 should 1
 
         return db; // should
@@ -65,14 +65,14 @@ Future main() async {
        */
       // Sqflite.devSetDebugModeOn(true);
       // Try to insert string with quote
-      String path = await context.initDeleteDb("exp_issue_144.db");
+      var path = await context.initDeleteDb('exp_issue_144.db');
       var rootBundle = TestAssetBundle();
       Database db;
       print('current dir: ${absolute(Directory.current.path)}');
       print('path: $path');
       try {
         Future<Database> initDb() async {
-          Database oldDB = await factory.openDatabase(path);
+          var oldDB = await factory.openDatabase(path);
           List count = await oldDB
               .rawQuery("select 'name' from sqlite_master where name = 'Test'");
           print(count.length); // 0
@@ -82,7 +82,7 @@ Future main() async {
 
           print('copy from asset');
           await factory.deleteDatabase(path);
-          ByteData data = await rootBundle.load(join("assets", 'example.db'));
+          var data = await rootBundle.load(join('assets', 'example.db'));
 
           List<int> bytes =
               data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
@@ -90,18 +90,17 @@ Future main() async {
           expect(bytes.length, greaterThan(1000));
           // Writing the database
           await context.writeFile(path, bytes);
-          Database db = await factory.openDatabase(path,
+          var db = await factory.openDatabase(path,
               options: OpenDatabaseOptions(readOnly: true));
           List count2 = await db
               .rawQuery("select 'name' from sqlite_master where name = 'Test'");
           print(count2);
 
           // Our database as a single table with a single element
-          List<Map<String, dynamic>> list =
-              await db.rawQuery("SELECT * FROM Test");
-          print("list $list");
+          var list = await db.rawQuery('SELECT * FROM Test');
+          print('list $list');
           // list [{id: 1, name: simple value}]
-          expect(list.first["name"], "simple value");
+          expect(list.first['name'], 'simple value');
 
           return db; // should
         }
@@ -116,19 +115,19 @@ Future main() async {
 
     test('Issue#159', () async {
       var db = DbHelper(context);
-      User user1 = User("User1");
-      int insertResult = await db.saveUser(user1);
-      print("insert result is " + insertResult.toString());
-      User searchResult = await db.retrieveUser(insertResult);
+      var user1 = User('User1');
+      var insertResult = await db.saveUser(user1);
+      print('insert result is ' + insertResult.toString());
+      var searchResult = await db.retrieveUser(insertResult);
       print(searchResult.toString());
     });
     test('primary key', () async {
-      String path = await context.initDeleteDb("primary_key.db");
-      Database db = await factory.openDatabase(path);
+      var path = await context.initDeleteDb('primary_key.db');
+      var db = await factory.openDatabase(path);
       try {
-        String table = "test";
+        var table = 'test';
         await db
-            .execute("CREATE TABLE $table (id INTEGER PRIMARY KEY, name TEXT)");
+            .execute('CREATE TABLE $table (id INTEGER PRIMARY KEY, name TEXT)');
         var id = await db.insert(table, <String, dynamic>{'name': 'test'});
         var id2 = await db.insert(table, <String, dynamic>{'name': 'test'});
 
@@ -143,12 +142,12 @@ Future main() async {
     });
 
     test('Issue#246', () async {
-      String path = await context.initDeleteDb("primary_key.db");
-      Database db = await factory.openDatabase(path);
+      var path = await context.initDeleteDb('primary_key.db');
+      var db = await factory.openDatabase(path);
       try {
-        String table = "test";
+        var table = 'test';
         await db
-            .execute("CREATE TABLE $table (id INTEGER PRIMARY KEY, name TEXT)");
+            .execute('CREATE TABLE $table (id INTEGER PRIMARY KEY, name TEXT)');
         var id = await db.insert(table, <String, dynamic>{'name': 'test'});
         var id2 = await db.insert(table, <String, dynamic>{'name': 'test'});
 
@@ -163,8 +162,8 @@ Future main() async {
     });
 
     test('Issue#242', () async {
-      String path = await context.initDeleteDb("issue_242.db");
-      Database db = await factory.openDatabase(path);
+      var path = await context.initDeleteDb('issue_242.db');
+      var db = await factory.openDatabase(path);
       try {
         await db.execute('''
       CREATE TABLE test (
@@ -179,8 +178,8 @@ Future main() async {
     });
 
     test('Issue#246', () async {
-      String path = await context.initDeleteDb("Issue_246.db");
-      Database db = await factory.openDatabase(path);
+      var path = await context.initDeleteDb('Issue_246.db');
+      var db = await factory.openDatabase(path);
       try {
         print(await db.query('sqlite_master', columns: ['name']));
         //await db
@@ -190,8 +189,8 @@ Future main() async {
     });
 
     test('Issue#268', () async {
-      String path = await context.initDeleteDb("Issue_268.db");
-      Database db = await factory.openDatabase(path);
+      var path = await context.initDeleteDb('Issue_268.db');
+      var db = await factory.openDatabase(path);
       try {
         // print('like %meta%');
         var result = await db.rawQuery(
@@ -205,8 +204,8 @@ Future main() async {
     });
 
     test('Issue#270', () async {
-      String path = await context.initDeleteDb("Issue_270.db");
-      Database db = await factory.openDatabase(path);
+      var path = await context.initDeleteDb('Issue_270.db');
+      var db = await factory.openDatabase(path);
       try {
         var batch = db.batch();
         batch.execute('''CREATE TABLE konular (
@@ -228,8 +227,8 @@ Future main() async {
 
     test('Issue#285', () async {
       // Type real as int
-      String path = await context.initDeleteDb("issue_285.db");
-      Database db = await factory.openDatabase(path);
+      var path = await context.initDeleteDb('issue_285.db');
+      var db = await factory.openDatabase(path);
       try {
         var batch = db.batch();
         batch.execute('''
@@ -298,18 +297,18 @@ Future main() async {
     test('Issue#310', () async {
       var db = await factory.openDatabase(inMemoryDatabasePath);
       await db.rawQuery(
-          "CREATE VIRTUAL TABLE mytable2 USING fts4(description text)");
+          'CREATE VIRTUAL TABLE mytable2 USING fts4(description text)');
       await db.rawQuery(
-          "CREATE VIRTUAL TABLE mytable2_terms USING fts4aux(mytable2)");
+          'CREATE VIRTUAL TABLE mytable2_terms USING fts4aux(mytable2)');
       await db
-          .rawQuery("CREATE VIRTUAL TABLE mytable3 USING spellfix(word text)");
+          .rawQuery('CREATE VIRTUAL TABLE mytable3 USING spellfix(word text)');
       await db.rawQuery(
           "INSERT INTO mytable2 VALUES ('All the Carmichael numbers')");
       await db.rawQuery("INSERT INTO mytable2 VALUES ('They are great')");
       await db
           .rawQuery("INSERT INTO mytable2 VALUES ('Here some other numbers')");
 
-      await db.rawQuery("CREATE VIRTUAL TABLE demo USING spellfix1;");
+      await db.rawQuery('CREATE VIRTUAL TABLE demo USING spellfix1;');
 //here error occured
       await db.rawQuery(
           "INSERT INTO demo(word) SELECT term FROM mytable2_terms WHERE col='*';");
@@ -388,7 +387,7 @@ StudentProvider _studentProvider;
 Future issue146(SqfliteServerTestContext context) async {
   //context.devSetDebugModeOn(true);
   try {
-    String path = await context.initDeleteDb("exp_issue_146.db");
+    var path = await context.initDeleteDb('exp_issue_146.db');
     database = await context.databaseFactory.openDatabase(path,
         options: OpenDatabaseOptions(
             version: 1,
@@ -458,14 +457,14 @@ class DbHelper {
 
   void _onCreate(Database _db, int newVersion) async {
     await _db.execute(
-        "CREATE TABLE MYTABLE(ID INTEGER PRIMARY KEY, userName TEXT NOT NULL)");
+        'CREATE TABLE MYTABLE(ID INTEGER PRIMARY KEY, userName TEXT NOT NULL)');
   }
 
   Future<Database> initDB() async {
     //Directory documentDirectory = await contextgetApplicationDocumentsDirectory();
-    // String path = join(documentDirectory.path, "appdb.db");
-    String path = await context.initDeleteDb('issue159.db');
-    Database newDB = await context.databaseFactory.openDatabase(path,
+    // var path =join(documentDirectory.path, 'appdb.db');
+    var path = await context.initDeleteDb('issue159.db');
+    var newDB = await context.databaseFactory.openDatabase(path,
         options: OpenDatabaseOptions(version: 1, onCreate: _onCreate));
     return newDB;
   }
@@ -483,19 +482,19 @@ class DbHelper {
     var dbClient = await db;
     int result;
     var userMap = user.toMap();
-    result = await dbClient.insert("MYTABLE", userMap);
+    result = await dbClient.insert('MYTABLE', userMap);
     return result;
   }
 
   Future<User> retrieveUser(int id) async {
     var dbClient = await db;
     if (id == null) {
-      print("The ID is null, cannot find user with Id null");
+      print('The ID is null, cannot find user with Id null');
       var nullResult =
-          await dbClient.rawQuery("SELECT * FROM MYTABLE WHERE ID is null");
+          await dbClient.rawQuery('SELECT * FROM MYTABLE WHERE ID is null');
       return User.fromMap(nullResult.first);
     }
-    String sql = "SELECT * FROM MYTABLE WHERE ID = $id";
+    var sql = 'SELECT * FROM MYTABLE WHERE ID = $id';
     var result = await dbClient.rawQuery(sql);
     print(result);
     if (result.isNotEmpty) {
@@ -517,32 +516,32 @@ class User {
   User(this._userName, [this._id]);
 
   User.map(dynamic obj) {
-    this._userName = obj['userName'] as String;
-    this._id = obj['id'] as int;
+    _userName = obj['userName'] as String;
+    _id = obj['id'] as int;
   }
 
   User.fromMap(Map<String, dynamic> map) {
-    this._userName = map["userName"] as String;
-    if (map["id"] != null) {
-      this._id = map["id"] as int;
+    _userName = map['userName'] as String;
+    if (map['id'] != null) {
+      _id = map['id'] as int;
     } else {
-      print("in fromMap, Id is null");
+      print('in fromMap, Id is null');
     }
   }
 
   Map<String, dynamic> toMap() {
     var map = <String, dynamic>{};
-    map["userName"] = this._userName;
+    map['userName'] = _userName;
     if (_id != null) {
-      map["id"] = _id;
+      map['id'] = _id;
     } else {
-      print("in toMap, id is null");
+      print('in toMap, id is null');
     }
     return map;
   }
 
   @override
   String toString() {
-    return "ID is ${this._id} , Username is ${this._userName} }";
+    return 'ID is $_id , Username is $_userName }';
   }
 }

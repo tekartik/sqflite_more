@@ -6,9 +6,7 @@ void main() {
   menu('server', () {
     SqfliteServer server;
     item('start', () async {
-      if (server == null) {
-        server = await SqfliteServer.serve(port: defaultPort);
-      }
+      server ??= await SqfliteServer.serve(port: defaultPort);
     });
     item('stop', () async {
       await server?.close();

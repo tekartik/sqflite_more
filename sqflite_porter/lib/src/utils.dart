@@ -12,7 +12,7 @@ import 'package:sqflite_porter/src/sqlite_porter.dart';
 Future<String> initEmptyDb(String dbName) async {
   var databasePath = await getDatabasesPath();
   // print(databasePath);
-  String path = join(databasePath, dbName);
+  var path = join(databasePath, dbName);
 
   // make sure the folder exists
   if (Directory(dirname(path)).existsSync()) {
@@ -28,8 +28,8 @@ Future<String> initEmptyDb(String dbName) async {
 }
 
 Future<Database> openEmptyDatabase(String dbName) async {
-  String path = await initEmptyDb(dbName);
-  Database db = await openDatabase(path);
+  var path = await initEmptyDb(dbName);
+  var db = await openDatabase(path);
   return db;
 }
 
@@ -38,7 +38,7 @@ Iterable<String> rowsToLines(Iterable<dynamic> rows) {
 }
 
 String formatLines(List rows) {
-  return '[${rowsToLines(rows).join(",\n")}]';
+  return '[${rowsToLines(rows).join(',\n')}]';
 }
 
 Function(dynamic message) _print = core.print;
@@ -61,7 +61,7 @@ void dumpLine(dynamic line, {Function(dynamic message) print}) {
 
 Future dumpTableDefinitions(Database db,
     {Function(dynamic message) print}) async {
-  dumpLines(await db.query("sqlite_master"), print: print);
+  dumpLines(await db.query('sqlite_master'), print: print);
 }
 
 Future dumpTable(Database db, String table,
@@ -71,7 +71,7 @@ Future dumpTable(Database db, String table,
 }
 
 Future dumpTables(Database db, {Function(dynamic message) print}) async {
-  for (var row in await db.query("sqlite_master", columns: ["name"])) {
+  for (var row in await db.query('sqlite_master', columns: ['name'])) {
     var table = row.values.first as String;
     await dumpTable(db, table, print: print);
   }
@@ -83,8 +83,8 @@ Future<Database> importSqlDatabase(String dbName,
   if (sqlStatements == null) {
     throw ArgumentError('sql or sqlStatements is required');
   }
-  String path = await initEmptyDb(dbName);
-  Database db = await openDatabase(path, version: 1,
+  var path = await initEmptyDb(dbName);
+  var db = await openDatabase(path, version: 1,
       onCreate: (Database db, int version) async {
     await dbImportSql(db, sqlStatements);
   });

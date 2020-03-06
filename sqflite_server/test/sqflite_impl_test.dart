@@ -7,10 +7,10 @@ import 'package:tekartik_web_socket/web_socket.dart';
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  group("sqflite", () {
-    const MethodChannel channel = MethodChannel('com.tekartik.sqflite');
+  group('sqflite', () {
+    const channel = MethodChannel('com.tekartik.sqflite');
 
-    final List<MethodCall> log = <MethodCall>[];
+    final log = <MethodCall>[];
     String response;
 
     channel.setMockMethodCallHandler((MethodCall methodCall) async {
@@ -37,13 +37,13 @@ void main() {
       log.clear();
     });
 
-    test("getDatabasesPath", () async {
+    test('getDatabasesPath', () async {
       response = 'path';
       var databasesPath = await databaseFactory.getDatabasesPath();
       expect(databasesPath, 'path');
     });
 
-    test("deleteDatabase", () async {
+    test('deleteDatabase', () async {
       await databaseFactory.deleteDatabase('dummy');
     });
   });

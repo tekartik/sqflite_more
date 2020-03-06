@@ -10,7 +10,7 @@ void expectCsv(String value, String expected) {
 }
 
 void main() {
-  group("src_csv_utils", () {
+  group('src_csv_utils', () {
     test('mapListToCsv', () {
       // null
       expect(mapListToCsv(null), isNull);

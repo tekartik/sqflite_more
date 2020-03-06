@@ -22,7 +22,7 @@ class ServerInfo {
 class SqfliteClient {
   SqfliteClient._(this._client, this.serverInfo);
 
-  json_rpc.Client _client;
+  final json_rpc.Client _client;
   final ServerInfo serverInfo;
 
   static Future<SqfliteClient> connect(
@@ -98,9 +98,9 @@ class SqfliteClient {
       // print(result);
       dynamic _rows = result['rows'];
       if (_rows is List) {
-        List<List> rows = _rows.cast<List>();
+        var rows = _rows.cast<List>();
         for (var row in rows) {
-          for (int i = 0; i < row.length; i++) {
+          for (var i = 0; i < row.length; i++) {
             dynamic value = row[i];
             if (shouldFix(value)) {
               row[i] = fix(value);
