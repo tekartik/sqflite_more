@@ -28,4 +28,19 @@ void main() {
       print('error: $e');
     }
   });
+
+  test('insert bool', () async {
+    var db = await openDatabase(inMemoryDatabasePath);
+    await db.execute('''
+      CREATE TABLE boolTable (
+        id INTEGER PRIMARY KEY,
+        b BOOLEAN NOT NULL
+      )''');
+
+    final id = await db.insert(
+      'boolTable',
+      {'b': true},
+    );
+    expect(id, isNotNull);
+  });
 }

@@ -408,6 +408,7 @@ extension SqfliteFfiMethodCallHandler on FfiMethodCall {
     var arguments = this.arguments;
     if (arguments != null) {
       var sqlArguments = arguments['arguments'] as List;
+      final strictArguments = <dynamic>[];
       if (sqlArguments != null) {
         // Check the argument, make it stricter
         for (var argument in sqlArguments) {
@@ -415,13 +416,16 @@ extension SqfliteFfiMethodCallHandler on FfiMethodCall {
           } else if (argument is num) {
           } else if (argument is String) {
           } else if (argument is Uint8List) {
+          } else if (argument is bool) {
+            argument = argument == false ? 0 : 1;
           } else {
             throw ArgumentError(
                 'Invalid sql argument type \'${argument.runtimeType}\': $argument');
           }
+          strictArguments.add(argument);
         }
       }
-      return sqlArguments;
+      return strictArguments;
     }
     return null;
   }
