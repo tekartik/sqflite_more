@@ -1,13 +1,13 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:test/test.dart';
 import 'package:path/path.dart';
 import 'package:pedantic/pedantic.dart';
 import 'package:sqflite/sqlite_api.dart';
 import 'package:sqflite/utils/utils.dart' as utils;
 import 'package:sqflite_test/sqflite_test.dart';
 import 'package:synchronized/synchronized.dart';
+import 'package:test/test.dart';
 
 import 'core_import.dart';
 
@@ -128,7 +128,7 @@ void run(SqfliteTestContext context) {
   }
 
   test('Delete database', () async {
-    await context.devSetDebugModeOn(true);
+    // await context.devSetDebugModeOn(true);
     //await context..devSetDebugModeOn(false);
     var path = await context.initDeleteDb('delete_database.db');
     expect(await checkFileExists(path), isFalse, reason: '$path');
@@ -145,7 +145,7 @@ void run(SqfliteTestContext context) {
   });
 
   test('Open no version', () async {
-    //await utils.devSetDebugModeOn(true);
+    // await factory.setLogLevel(sqfliteLogLevelVerbose);
     var path = await context.initDeleteDb('open_no_version.db');
     expect(await checkFileExists(path), false);
     var db = await factory.openDatabase(path);

@@ -1,19 +1,17 @@
 library sqflite_test;
 
 import 'dart:async';
-import 'dart:io';
 
-import 'package:path/path.dart';
-import 'package:path/path.dart' as path;
 import 'package:process_run/cmd_run.dart';
 import 'package:process_run/which.dart';
-import 'package:sqflite/sqflite.dart';
-import 'package:sqflite/sqflite.dart' as sqflite;
+import 'package:sqflite_common_test/sqflite_test.dart';
 import 'package:sqflite_server/sqflite.dart';
 import 'package:sqflite_server/src/sqflite_client.dart'; // ignore: implementation_imports
 import 'package:tekartik_common_utils/int_utils.dart';
 import 'package:test/test.dart';
 
+export 'package:sqflite_common_test/sqflite_test.dart';
+/*
 /// Test context for testing
 abstract class SqfliteTestContext {
   DatabaseFactory get databaseFactory;
@@ -131,6 +129,8 @@ class SqfliteLocalTestContext
       // ignore: deprecated_member_use
       sqflite.Sqflite.devSetDebugModeOn(on);
 }
+
+ */
 
 class SqfliteServerTestContext extends SqfliteServerContext
     with SqfliteTestContextMixin
@@ -256,7 +256,7 @@ Android:
   bool get strict => false;
 }
 
-/// Main entry point for with Sqflite context
+/// Main entry point for with Sqflite context using server
 Future testMain(void Function(SqfliteServerTestContext context) run) async {
   var context = await SqfliteServerTestContext.connect();
   if (context == null) {

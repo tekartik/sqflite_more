@@ -5,7 +5,7 @@ import 'package:sqflite_server/sqflite_server.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';
 
 class Prefs {
-  Prefs({DatabaseFactory databaseFactory, String dbName})
+  Prefs({@required DatabaseFactory databaseFactory, String dbName})
       : _databaseFactory = databaseFactory ?? sqflite.databaseFactory,
         dbName = dbName ?? defaultDbName;
 

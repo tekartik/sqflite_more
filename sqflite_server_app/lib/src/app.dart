@@ -1,4 +1,5 @@
 import 'package:sqflite_server/sqflite_server.dart';
+import 'package:sqflite_server_app/main.dart';
 import 'package:sqflite_server_app/src/prefs.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';
 
@@ -39,7 +40,7 @@ App get app => _app ??= App();
 Future clearApp() async {
   //_app = null;
   await app.stopServer();
-  var prefs = Prefs();
+  var prefs = Prefs(databaseFactory: databaseFactory);
   await prefs.load();
   app.prefs = prefs;
   app.started = false;

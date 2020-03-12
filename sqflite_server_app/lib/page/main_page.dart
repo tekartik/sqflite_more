@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:sqflite/src/constant.dart';
 import 'package:sqflite_server/sqflite_server.dart';
 import 'package:sqflite_server/src/constant.dart';
+import 'package:sqflite_server_app/main.dart';
 import 'package:sqflite_server_app/src/app.dart';
 import 'package:sqflite_server_app/src/prefs.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';
@@ -257,7 +258,7 @@ class _SqfliteServerHomePageState extends State<SqfliteServerHomePage> {
   Future<Prefs> _loadPrefs() async {
     //devPrint('prefs: ${app.prefs?.toString()}');
     if (app.prefs == null) {
-      var prefs = Prefs();
+      var prefs = Prefs(databaseFactory: databaseFactory);
       await prefs.load();
       port = prefs.port;
       portInputController.text = port.toString();

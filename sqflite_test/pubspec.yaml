@@ -16,6 +16,12 @@ dependencies:
       ref: dart2
       path: sqflite_server
     version: '>=0.3.0'
+  sqflite_common_test:
+    git:
+      url: git://github.com/tekartik/sqflite
+      ref: develop
+      path: sqflite_common_test
+    version: '>=0.3.0'
   synchronized: '>=2.2.0'
 dev_dependencies:
   test:
