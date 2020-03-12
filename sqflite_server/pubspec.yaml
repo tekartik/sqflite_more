@@ -10,7 +10,7 @@ dependencies:
   path:
   flutter:
     sdk: flutter
-  sqflite: '>=1.1.6+2'
+  sqflite: '>=1.3.0-dev.2'
   tekartik_web_socket_io:
     git:
       url: git://github.com/tekartik/web_socket.dart
