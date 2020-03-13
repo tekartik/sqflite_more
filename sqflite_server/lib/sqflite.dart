@@ -145,6 +145,15 @@ Android:
   @override
   bool get isIOS => client.serverInfo.isIOS ?? false;
 
+  @override
+  bool get isMacOS => client.serverInfo.isMacOS ?? false;
+
+  @override
+  bool get isLinux => client.serverInfo.isLinux ?? false;
+
+  @override
+  bool get isWindows => client.serverInfo.isWindows ?? false;
+
   // Force posix
   @override
   path.Context get pathContext => path.posix;

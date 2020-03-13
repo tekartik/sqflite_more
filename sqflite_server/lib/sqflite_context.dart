@@ -12,5 +12,8 @@ abstract class SqfliteContext {
   bool get supportsWithoutRowId;
   bool get isAndroid;
   bool get isIOS;
+  bool get isMacOS;
+  bool get isLinux;
+  bool get isWindows;
   path.Context get pathContext;
 }

@@ -80,6 +80,11 @@ class SqfliteServerChannel {
         keyVersion: serverInfoVersion.toString(),
         keySupportsWithoutRowId:
             _sqfliteServer.sqfliteLocalContext.supportsWithoutRowId,
+        keyIsIOS: Platform.isIOS,
+        keyIsAndroid: Platform.isAndroid,
+        keyIsMacOS: Platform.isMacOS,
+        keyIsWindows: Platform.isWindows,
+        keyIsLinux: Platform.isLinux
       };
       if (_notifyCallback != null) {
         _notifyCallback(true, methodGetServerInfo, result);
@@ -266,6 +271,15 @@ class SqfliteLocalContext implements SqfliteContext {
 
   @override
   bool get isIOS => Platform.isIOS;
+
+  @override
+  bool get isMacOS => Platform.isMacOS;
+
+  @override
+  bool get isLinux => Platform.isLinux;
+
+  @override
+  bool get isWindows => Platform.isWindows;
 
   @override
   Context get pathContext => path.context;

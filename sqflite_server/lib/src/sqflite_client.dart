@@ -16,6 +16,9 @@ class ServerInfo {
   bool supportsWithoutRowId;
   bool isIOS;
   bool isAndroid;
+  bool isMacOS;
+  bool isLinux;
+  bool isWindows;
 }
 
 /// Instance of a server
@@ -46,7 +49,10 @@ class SqfliteClient {
       _serverInfo = ServerInfo()
         ..supportsWithoutRowId = parseBool(serverInfo[keySupportsWithoutRowId])
         ..isIOS = parseBool(serverInfo[keyIsIOS])
-        ..isAndroid = parseBool(serverInfo[keyIsAndroid]);
+        ..isAndroid = parseBool(serverInfo[keyIsAndroid])
+        ..isMacOS = parseBool(serverInfo[keyIsMacOS])
+        ..isLinux = parseBool(serverInfo[keyIsLinux])
+        ..isWindows = parseBool(serverInfo[keyIsWindows]);
     } catch (e) {
       await rpcClient.close();
       rethrow;
