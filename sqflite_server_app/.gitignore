@@ -14,3 +14,11 @@ gradlew
 gradlew.bat
 gradle-wrapper.jar
 /.flutter-plugins-dependencies
+
+# Project files
+/linux/
+/android/
+/ios/
+/macos/
+/windows/
+/web/

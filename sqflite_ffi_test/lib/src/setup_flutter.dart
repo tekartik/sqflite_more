@@ -1,13 +1,10 @@
 import 'package:flutter/services.dart';
-import 'package:sqflite_ffi_test/src/database_factory_ffi.dart';
-import 'package:sqflite_ffi_test/src/method_call.dart';
-import 'package:sqflite_ffi_test/src/sqflite_ffi_exception.dart';
+import 'package:sqflite_ffi_test/src/mixin/handler_mixin.dart';
 
 /// Use `sqflite_ffi` as the mock implementation for unit test or regular
-/// application using `sqflite`
 ///
-/// Currently supporting Linux.
-void sqfliteInitAsMockMethodCallHandler() {
+/// application using `sqflite`
+void sqfliteFfiInitAsMockMethodCallHandler() {
   const channel = MethodChannel('com.tekartik.sqflite');
 
   channel.setMockMethodCallHandler((MethodCall methodCall) async {
@@ -20,4 +17,9 @@ void sqfliteInitAsMockMethodCallHandler() {
           code: e.code, message: e.message, details: e.details);
     }
   });
+}
+
+/// Deprecated
+void sqfliteInitAsMockMethodCallHandler() {
+  sqfliteFfiInitAsMockMethodCallHandler();
 }

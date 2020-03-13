@@ -1,9 +1,23 @@
-import 'package:flutter/material.dart';
-import 'package:sqflite_server_app/page/main_page.dart';
+import 'dart:io';
 
-void main() => runApp(SqfliteServerApp());
+import 'package:flutter/material.dart';
+import 'package:sqflite_common/sqlite_api.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:sqflite_server_app/page/main_page.dart';
+import 'package:tekartik_app_platform/app_platform.dart';
+
+void main() => run();
+
+DatabaseFactory databaseFactory;
 
 void run() {
+  WidgetsFlutterBinding.ensureInitialized();
+  platformInit();
+  if (Platform.isWindows || Platform.isLinux) {
+    sqfliteFfiInit();
+    databaseFactory = databaseFactoryFfi;
+  }
+
   runApp(SqfliteServerApp());
 }
 

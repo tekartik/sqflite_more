@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:sqflite/sqflite.dart';
-// ignore: implementation_imports
-import 'package:sqflite_porter/src/utils.dart';
 import 'package:sqflite_porter/sqflite_porter.dart';
+import 'package:sqflite_porter/src/utils.dart'; // ignore: implementation_imports
 import 'package:sqflite_server_app/main.dart';
 import 'package:sqflite_server_app/src/app.dart';
-import 'package:tekartik_test_menu_flutter/test.dart';
 import 'package:sqflite_server_app/src/test/server_main.dart' as server;
+import 'package:tekartik_test_menu_flutter/test.dart';
 
 void main() {
   mainMenu(() {
@@ -29,7 +27,7 @@ void main() {
     group('export/import', () {
       test('export_import', () async {
         var path = await initEmptyDb('export.db');
-        var db = await openDatabase(path);
+        var db = await databaseFactory.openDatabase(path);
         try {
           var table = 'test';
           await db.execute(

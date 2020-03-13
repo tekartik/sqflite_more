@@ -5,7 +5,7 @@ description: A starting point for Dart libraries or applications.
 # author: alex <alex@tekartik.com>
 
 environment:
-  sdk: '>=2.5.0 <3.0.0'
+  sdk: '>=2.7.0 <3.0.0'
 
 dependencies:
   path: ^1.6.0
