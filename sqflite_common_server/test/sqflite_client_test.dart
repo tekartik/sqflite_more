@@ -1,5 +1,5 @@
-import 'package:sqflite/sqlite_api.dart';
-import 'package:sqflite_server/sqflite.dart';
+import 'package:sqflite_common/sqlite_api.dart';
+import 'package:sqflite_common_server/sqflite.dart';
 import 'package:test/test.dart';
 
 // This test only works when the app is running

@@ -36,6 +36,8 @@ dependency_overrides:
     path: ../sqflite_test
   sqflite_server:
     path: ../sqflite_server
+  sqflite_common_server:
+    path: ../sqflite_common_server
 # For information on the generic Dart part of this file, see the
 # following page: https://www.dartlang.org/tools/pub/pubspec
 

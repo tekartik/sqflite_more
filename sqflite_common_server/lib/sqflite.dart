@@ -1,17 +1,17 @@
 import 'dart:async';
 
 import 'package:path/path.dart' as path;
-import 'package:sqflite/sqlite_api.dart';
-import 'package:sqflite_server/sqflite_context.dart';
-import 'package:sqflite_server/src/constant.dart';
-import 'package:sqflite_server/src/factory.dart';
-import 'package:sqflite_server/src/sqflite_client.dart';
-import 'package:sqflite_server/src/utils.dart';
+import 'package:sqflite_common/sqlite_api.dart';
+import 'package:sqflite_common_server/sqflite_context.dart';
+import 'package:sqflite_common_server/src/constant.dart';
+import 'package:sqflite_common_server/src/factory.dart';
+import 'package:sqflite_common_server/src/sqflite_client.dart';
+import 'package:sqflite_common_server/src/utils.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';
 import 'package:tekartik_web_socket/web_socket.dart';
 
-export 'package:sqflite_server/src/common_public.dart';
-export 'package:sqflite_server/src/factory.dart'
+export 'package:sqflite_common_server/src/common_public.dart';
+export 'package:sqflite_common_server/src/factory.dart'
     show SqfliteServerDatabaseFactory;
 
 // overrides  SQFLITE_SERVER_PORT

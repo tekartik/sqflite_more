@@ -25,7 +25,7 @@ dependencies:
       url: git://github.com/tekartik/sqflite_more
       ref: dart2
       path: sqflite_server
-    version: '>=0.3.0'
+    version: '>=0.3.2'
   sqflite_porter:
     git:
       url: git://github.com/tekartik/sqflite_more
@@ -107,3 +107,5 @@ dependency_overrides:
     path: ../sqflite_porter
   sqflite_server:
     path: ../sqflite_server
+  sqflite_common_server:
+    path: ../sqflite_common_server

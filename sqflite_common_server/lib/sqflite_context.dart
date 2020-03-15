@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:sqflite/sqlite_api.dart';
+import 'package:sqflite_common/sqlite_api.dart';
 import 'package:path/path.dart' as path;
 
 abstract class SqfliteContext {

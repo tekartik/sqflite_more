@@ -1,6 +1,6 @@
 import 'package:path/path.dart';
-import 'package:sqflite/sqlite_api.dart';
-import 'package:sqflite_server/sqflite.dart';
+import 'package:sqflite_common/sqlite_api.dart';
+import 'package:sqflite_common_server/sqflite.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';
 import 'package:test/test.dart';
 
