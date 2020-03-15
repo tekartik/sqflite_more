@@ -38,13 +38,9 @@ dependency_overrides:
   #  path: ../../sqflite_test
   # sqflite_ffi_test:
   #  path: ../../sqflite_ffi_test
-  sqflite_common_server:
-    path: ../../sqflite_common_server
-    # git:
-    #   url: git://github.com/tekartik/sqflite_more.dart
-    #  ref: dart2
-    #  path: sqflite_common_server
-    #  version: '>=0.3.1'
+  # sqflite_common_server:
+  #  path: ../../sqflite_common_server
+
 # Here we use sqflite from git
   sqflite:
     git:

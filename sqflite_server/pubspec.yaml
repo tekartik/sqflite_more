@@ -14,7 +14,7 @@ dependencies:
   sqflite_common_ffi: '>=0.1.0-dev.2'
   sqflite_common_server:
     git:
-      url: git://github.com/tekartik/sqflite_more.dart
+      url: git://github.com/tekartik/sqflite_more
       ref: dart2
       path: sqflite_common_server
     version: '>=0.3.3'
