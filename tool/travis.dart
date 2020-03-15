@@ -23,7 +23,8 @@ dart tool/travis.dart
     'sqflite_ffi_test',
     'sqflite_test_app',
     'sqflite_server_app',
-    'alt/sqflite_github_test'
+    // Temp in develop branch
+    // 'alt/sqflite_github_test'
   ]) {
     shell = shell.pushd(dir);
     await shell.run('''
