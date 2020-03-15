@@ -3,8 +3,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:sqflite/src/constant.dart';
-import 'package:sqflite_server/sqflite_server.dart';
-import 'package:sqflite_server/src/constant.dart';
+import 'package:sqflite_common_server/sqflite_server.dart';
+import 'package:sqflite_common_server/src/constant.dart';
 import 'package:sqflite_server_app/main.dart';
 import 'package:sqflite_server_app/src/app.dart';
 import 'package:sqflite_server_app/src/prefs.dart';

@@ -1,11 +1,9 @@
 import 'dart:async';
 import 'dart:typed_data';
 
-// ignore_for_file: implementation_imports
 import 'package:pedantic/pedantic.dart';
-import 'package:sqflite_server/src/constant.dart';
-import 'package:sqflite/src/exception.dart';
-import 'package:sqflite/src/constant.dart';
+import 'package:sqflite_common_server/src/constant.dart';
+import 'package:sqflite_common_server/src/sqflite_import.dart';
 
 import 'package:tekartik_common_utils/common_utils_import.dart';
 import 'package:tekartik_web_socket_io/web_socket_io.dart';
@@ -16,6 +14,9 @@ class ServerInfo {
   bool supportsWithoutRowId;
   bool isIOS;
   bool isAndroid;
+  bool isMacOS;
+  bool isLinux;
+  bool isWindows;
 }
 
 /// Instance of a server
@@ -46,7 +47,10 @@ class SqfliteClient {
       _serverInfo = ServerInfo()
         ..supportsWithoutRowId = parseBool(serverInfo[keySupportsWithoutRowId])
         ..isIOS = parseBool(serverInfo[keyIsIOS])
-        ..isAndroid = parseBool(serverInfo[keyIsAndroid]);
+        ..isAndroid = parseBool(serverInfo[keyIsAndroid])
+        ..isMacOS = parseBool(serverInfo[keyIsMacOS])
+        ..isLinux = parseBool(serverInfo[keyIsLinux])
+        ..isWindows = parseBool(serverInfo[keyIsWindows]);
     } catch (e) {
       await rpcClient.close();
       rethrow;

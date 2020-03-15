@@ -5,11 +5,10 @@ import 'dart:typed_data';
 import 'package:json_rpc_2/json_rpc_2.dart' as json_rpc;
 import 'package:path/path.dart' as path;
 import 'package:path/path.dart';
-import 'package:sqflite/sqflite.dart' as sqflite_plugin;
-import 'package:sqflite/sqlite_api.dart';
-import 'package:sqflite_server/sqflite_context.dart';
-import 'package:sqflite_server/src/constant.dart';
-import 'package:sqflite_server/src/sqflite_import.dart';
+import 'package:sqflite_common/sqlite_api.dart';
+import 'package:sqflite_common_server/sqflite_context.dart';
+import 'package:sqflite_common_server/src/constant.dart';
+import 'package:sqflite_common_server/src/sqflite_import.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart' hide devPrint;
 import 'package:tekartik_web_socket/web_socket.dart';
 import 'package:tekartik_web_socket_io/web_socket_io.dart';
@@ -44,8 +43,7 @@ class SqfliteServer {
       dynamic address,
       int port,
       SqfliteServerNotifyCallback notifyCallback,
-      DatabaseFactory factory}) async {
-    factory ??= sqflite_plugin.databaseFactory;
+      @required DatabaseFactory factory}) async {
     webSocketChannelServerFactory ??= webSocketChannelServerFactoryIo;
     var webSocketChannelServer = await webSocketChannelServerFactory
         .serve<String>(address: address, port: port);
@@ -80,6 +78,11 @@ class SqfliteServerChannel {
         keyVersion: serverInfoVersion.toString(),
         keySupportsWithoutRowId:
             _sqfliteServer.sqfliteLocalContext.supportsWithoutRowId,
+        keyIsIOS: Platform.isIOS,
+        keyIsAndroid: Platform.isAndroid,
+        keyIsMacOS: Platform.isMacOS,
+        keyIsWindows: Platform.isWindows,
+        keyIsLinux: Platform.isLinux
       };
       if (_notifyCallback != null) {
         _notifyCallback(true, methodGetServerInfo, result);
@@ -266,6 +269,15 @@ class SqfliteLocalContext implements SqfliteContext {
 
   @override
   bool get isIOS => Platform.isIOS;
+
+  @override
+  bool get isMacOS => Platform.isMacOS;
+
+  @override
+  bool get isLinux => Platform.isLinux;
+
+  @override
+  bool get isWindows => Platform.isWindows;
 
   @override
   Context get pathContext => path.context;

@@ -5,8 +5,8 @@ import 'dart:async';
 import 'package:process_run/cmd_run.dart';
 import 'package:process_run/which.dart';
 import 'package:sqflite_common_test/sqflite_test.dart';
-import 'package:sqflite_server/sqflite.dart';
-import 'package:sqflite_server/src/sqflite_client.dart'; // ignore: implementation_imports
+import 'package:sqflite_common_server/sqflite.dart';
+import 'package:sqflite_common_server/src/sqflite_client.dart'; // ignore: implementation_imports
 import 'package:tekartik_common_utils/int_utils.dart';
 import 'package:test/test.dart';
 

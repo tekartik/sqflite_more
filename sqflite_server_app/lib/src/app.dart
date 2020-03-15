@@ -1,4 +1,4 @@
-import 'package:sqflite_server/sqflite_server.dart';
+import 'package:sqflite_common_server/sqflite_server.dart';
 import 'package:sqflite_server_app/main.dart';
 import 'package:sqflite_server_app/src/prefs.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';
@@ -18,8 +18,8 @@ class App {
   Future<SqfliteServer> startServer(int port,
       {SqfliteServerNotifyCallback notifyCallback}) async {
     await _closeServer();
-    _sqfliteServer =
-        await SqfliteServer.serve(port: port, notifyCallback: notifyCallback);
+    _sqfliteServer = await SqfliteServer.serve(
+        port: port, notifyCallback: notifyCallback, factory: databaseFactory);
     return _sqfliteServer;
   }
 

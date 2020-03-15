@@ -4,6 +4,19 @@ Future main() async {
   var shell = Shell();
 
   for (var dir in [
+    'sqflite_common_server',
+  ]) {
+    shell = shell.pushd(dir);
+    await shell.run('''
+
+pub get
+dart tool/travis.dart
+
+    ''');
+    shell = shell.popd();
+  }
+
+  for (var dir in [
     'sqflite_porter',
     'sqflite_server',
     'sqflite_test',

@@ -1,9 +1,8 @@
 import 'package:path/path.dart' as path;
-import 'package:sqflite/sqlite_api.dart';
-import 'package:sqflite_server/sqflite.dart';
-import 'package:sqflite_server/src/constant.dart';
-// ignore: implementation_imports
-import 'package:sqflite/src/mixin.dart';
+import 'package:sqflite_common/sqlite_api.dart';
+import 'package:sqflite_common_server/sqflite.dart';
+import 'package:sqflite_common_server/src/constant.dart';
+import 'package:sqflite_common_server/src/sqflite_import.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';
 import 'package:tekartik_web_socket/web_socket.dart';
 

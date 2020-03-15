@@ -1,29 +1,19 @@
-import 'package:flutter/services.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:sqflite_server/sqflite.dart';
-import 'package:sqflite_server/sqflite_server.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:sqflite_common_server/sqflite.dart';
+import 'package:sqflite_common_server/sqflite_server.dart';
 import 'package:tekartik_web_socket/web_socket.dart';
+import 'package:test/test.dart';
 
 void main() {
-  TestWidgetsFlutterBinding.ensureInitialized();
-
+  sqfliteFfiInit();
   group('sqflite', () {
-    const channel = MethodChannel('com.tekartik.sqflite');
-
-    final log = <MethodCall>[];
-    String response;
-
-    channel.setMockMethodCallHandler((MethodCall methodCall) async {
-      log.add(methodCall);
-      return response;
-    });
-
     SqfliteServerDatabaseFactory databaseFactory;
 
     setUpAll(() async {
       WebSocketChannelFactory factory = webSocketChannelFactoryMemory;
       var sqfliteServer = await SqfliteServer.serve(
-          webSocketChannelServerFactory: factory.server);
+          webSocketChannelServerFactory: factory.server,
+          factory: databaseFactoryFfi);
       databaseFactory = await SqfliteServerDatabaseFactory.connect(
           sqfliteServer.url,
           webSocketChannelClientFactory: factory.client);
@@ -33,14 +23,9 @@ void main() {
       await databaseFactory.close();
     });
 
-    tearDown(() {
-      log.clear();
-    });
-
     test('getDatabasesPath', () async {
-      response = 'path';
       var databasesPath = await databaseFactory.getDatabasesPath();
-      expect(databasesPath, 'path');
+      expect(databasesPath, isNotNull);
     });
 
     test('deleteDatabase', () async {
