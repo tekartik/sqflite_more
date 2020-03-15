@@ -17,7 +17,7 @@ dependencies:
       url: git://github.com/tekartik/sqflite_more.dart
       ref: dart2
       path: sqflite_common_server
-      version: '>=0.3.1'
+    version: '>=0.3.1'
   tekartik_web_socket_io:
     git:
       url: git://github.com/tekartik/web_socket.dart
