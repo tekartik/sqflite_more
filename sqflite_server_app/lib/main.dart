@@ -5,6 +5,7 @@ import 'package:sqflite_common/sqlite_api.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:sqflite_server_app/page/main_page.dart';
 import 'package:tekartik_app_platform/app_platform.dart';
+import 'package:sqflite/sqflite.dart' as sqflite;
 
 void main() => run();
 
@@ -16,6 +17,8 @@ void run() {
   if (Platform.isWindows || Platform.isLinux) {
     sqfliteFfiInit();
     databaseFactory = databaseFactoryFfi;
+  } else {
+    databaseFactory = sqflite.databaseFactory;
   }
 
   runApp(SqfliteServerApp());
