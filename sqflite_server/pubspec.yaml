@@ -1,6 +1,6 @@
 name: sqflite_server
 description: Sqflite server component
-version: 0.3.2
+version: 0.3.3
 publish_to: none
 
 environment:
@@ -14,10 +14,10 @@ dependencies:
   sqflite_common_ffi: '>=0.1.0-dev.2'
   sqflite_common_server:
     git:
-      url: git://github.com/tekartik/sqflite_more.dart
+      url: git://github.com/tekartik/sqflite_more
       ref: dart2
       path: sqflite_common_server
-      version: '>=0.3.1'
+    version: '>=0.3.3'
   tekartik_web_socket_io:
     git:
       url: git://github.com/tekartik/web_socket.dart
