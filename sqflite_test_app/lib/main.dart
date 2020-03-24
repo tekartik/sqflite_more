@@ -1,9 +1,8 @@
 import 'dart:io';
-import 'package:sqflite_common/src/mixin/import_mixin.dart'
+import 'package:sqflite_common/src/mixin/import_mixin.dart' // ignore: implementation_imports
     show
         SqfliteDatabaseFactory,
-        SqfliteDatabaseFactoryMixin,
-        SqfliteDatabaseMixin;
+        SqfliteDatabaseFactoryMixin;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
@@ -24,7 +23,7 @@ Future main() async {
   test.main();
 }
 
-int _sqfliteLogLevelService = 0x1000;
+// int _sqfliteLogLevelService = 0x1000;
 
 int _sqfliteLogLevel;
 Future sqfliteTestAppInit({int sqfliteLogLevel}) async {

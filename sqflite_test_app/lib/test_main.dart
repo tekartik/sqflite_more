@@ -30,7 +30,7 @@ void main() {
 }
 
 class ManualApp extends StatelessWidget {
-  final _doneCompleter = Completer();
+  //final _doneCompleter = Completer();
   Future get done => null;
 
   @override
