@@ -33,12 +33,20 @@ dev_dependencies:
     version: '>=0.0.1'
 
 dependency_overrides:
+  sqflite_test_app:
+    path: ../../../sqflite_test_app
   sqflite_server:
-    path: ../../sqflite_server
+    path: ../../../sqflite_server
   sqflite_test:
-    path: ../../sqflite_test
+    path: ../../../sqflite_test
   sqflite_ffi_test:
-    path: ../../sqflite_ffi_test
-# Here we use a local dependency assuming we sqlite and sqflite_more at the same level
+    path: ../../../sqflite_ffi_test
+  # Here we use a local dependency assuming we sqlite and sqflite_more at the same level
   sqflite:
-    path: ../../../sqflite/sqflite
+    path: ../../../../sqflite/sqflite
+  # Here we use a local dependency assuming we sqlite and sqflite_more at the same level
+  sqflite_common:
+    path: ../../../../sqflite/sqflite_common
+  sqflite_common_ffi:
+    path: ../../../../sqflite/sqflite_common_ffi
+
