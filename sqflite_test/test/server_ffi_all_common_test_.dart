@@ -9,6 +9,7 @@ import 'package:sqflite_test/sqflite_test.dart';
 Future main() async {
   // Set sqflite ffi support in test
   TestWidgetsFlutterBinding.ensureInitialized();
+  sqfliteFfiInit();
 
   var server = await SqfliteServer.serve(factory: databaseFactoryFfi);
   var databaseFactory = await SqfliteServerDatabaseFactory.connect(server.url);
