@@ -21,6 +21,9 @@ Future initFlutter() async {
   if (supportsLinux) {
     await run('flutter config --enable-linux-desktop');
   }
+  if (supportsWindows) {
+    await run('flutter config --enable-windows-desktop');
+  }
 }
 
 bool get supportsMacOS =>
@@ -28,3 +31,6 @@ bool get supportsMacOS =>
 
 bool get supportsLinux =>
     Platform.isLinux && ['master'].contains(_flutterChannel);
+
+bool get supportsWindows =>
+    Platform.isWindows && ['master'].contains(_flutterChannel);

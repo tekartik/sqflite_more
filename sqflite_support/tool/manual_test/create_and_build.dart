@@ -38,6 +38,10 @@ Future addSqfliteAndBuild(String dir) async {
     // Build for Linux
     await shell.run('flutter build linux');
   }
+  if (supportsWindows) {
+    // Build for Windows
+    await shell.run('flutter build windows');
+  }
 }
 
 Future createProject(String dir) async {

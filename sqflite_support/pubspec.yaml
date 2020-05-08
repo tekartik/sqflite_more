@@ -8,7 +8,7 @@ environment:
   sdk: '>=2.7.1 <3.0.0'
 
 dependencies:
-  process_run:
+  process_run: '>=0.10.9'
   path:
 
 dev_dependencies:
