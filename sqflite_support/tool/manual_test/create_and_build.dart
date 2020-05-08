@@ -21,22 +21,29 @@ Future addSqfliteAndBuild(String dir) async {
   // print(content);
   await pubspecFile.writeAsString(content);
 
-  // Build for Android!
-  await shell.run('flutter build apk');
-
   if (Platform.isMacOS) {
     // Build for iOS
     await shell.run('flutter build ios');
+    if (supportsMacOS) {
+      // Build for MacOS
+      await shell.run('''
+      flutter build macos
+      ''');
+    }
   }
+  // Build for Android!
+  await shell.run('flutter build apk');
+}
+
+Future createProject(String dir) async {
+  await createEmptyDir(dir);
+  await initFlutter();
+  var shell = Shell(workingDirectory: dir);
+  await shell.run('flutter create .');
 }
 
 Future main() async {
   var dir = join('.dart_tool', 'sqflite', 'project');
-  await createEmptyDir(dir);
-
-  var shell = Shell(workingDirectory: dir);
-
-  await shell.run('flutter create .');
-
+  await createProject(dir);
   await addSqfliteAndBuild(dir);
 }
