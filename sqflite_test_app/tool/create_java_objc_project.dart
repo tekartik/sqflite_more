@@ -5,5 +5,5 @@ import 'create_project.dart';
 Future main() async {
   var shell = Shell();
   await cleanUpProjects();
-  await shell.run('flutter create .');
+  await shell.run('flutter create -a java -i objc .');
 }
