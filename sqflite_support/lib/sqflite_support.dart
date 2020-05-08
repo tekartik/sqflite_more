@@ -18,7 +18,13 @@ Future initFlutter() async {
   if (supportsMacOS) {
     await run('flutter config --enable-macos-desktop');
   }
+  if (supportsLinux) {
+    await run('flutter config --enable-linux-desktop');
+  }
 }
 
 bool get supportsMacOS =>
     Platform.isMacOS && [dartChannelDev, 'master'].contains(_flutterChannel);
+
+bool get supportsLinux =>
+    Platform.isLinux && ['master'].contains(_flutterChannel);

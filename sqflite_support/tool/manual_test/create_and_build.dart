@@ -33,6 +33,11 @@ Future addSqfliteAndBuild(String dir) async {
   }
   // Build for Android!
   await shell.run('flutter build apk');
+
+  if (supportsLinux) {
+    // Build for Linux
+    await shell.run('flutter build linux');
+  }
 }
 
 Future createProject(String dir) async {
