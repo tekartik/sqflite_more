@@ -13,7 +13,6 @@ void main() {
   // Set sqflite ffi support in test
   //TestWidgetsFlutterBinding.ensureInitialized();
   sqfliteFfiInit();
-  // ignore: deprecated_member_use
   setMockDatabaseFactory(databaseFactoryFfi);
 
   test('simplest', () async {

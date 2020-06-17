@@ -16,5 +16,5 @@ Future cleanUpProjects() async {
 Future main() async {
   var shell = Shell();
   await cleanUpProjects();
-  await shell.run('flutter create -a java -i objc .');
+  await shell.run('flutter create .');
 }

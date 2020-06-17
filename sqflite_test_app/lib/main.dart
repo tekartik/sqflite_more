@@ -1,13 +1,13 @@
 import 'dart:io';
-import 'package:sqflite_common/src/mixin/import_mixin.dart' // ignore: implementation_imports
-    show
-        SqfliteDatabaseFactory,
-        SqfliteDatabaseFactoryMixin;
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common/sqflite_dev.dart';
-import 'package:sqflite/sqflite_dev.dart';
+import 'package:sqflite_common/src/mixin/import_mixin.dart' // ignore: implementation_imports
+    show
+        SqfliteDatabaseFactory,
+        SqfliteDatabaseFactoryMixin;
 import 'package:sqflite_ffi_test/sqflite.dart';
 import 'package:tekartik_app_platform/app_platform.dart';
 import 'package:tekartik_test_menu_flutter/test.dart';
@@ -26,6 +26,7 @@ Future main() async {
 // int _sqfliteLogLevelService = 0x1000;
 
 int _sqfliteLogLevel;
+
 Future sqfliteTestAppInit({int sqfliteLogLevel}) async {
   _sqfliteLogLevel = sqfliteLogLevel;
   WidgetsFlutterBinding.ensureInitialized();
@@ -33,8 +34,7 @@ Future sqfliteTestAppInit({int sqfliteLogLevel}) async {
   if (Platform.isWindows || Platform.isLinux) {
     sqfliteInit();
   }
-  // ignore: deprecated_member_use
-  setMockDatabaseFactory(FactoryDelegate(factory: databaseFactory));
+  databaseFactory = FactoryDelegate(factory: databaseFactory);
   if (sqfliteLogLevel != null && sqfliteLogLevel != sqfliteLogLevelNone) {
     try {
       // ignore: deprecated_member_use
@@ -54,6 +54,7 @@ Future run({int sqfliteLogLevel}) async {
 
 class FactoryDelegate with SqfliteDatabaseFactoryMixin {
   final SqfliteDatabaseFactory _factory;
+
   SqfliteDatabaseFactory get factory => _factory;
 
   FactoryDelegate({@required DatabaseFactory factory})

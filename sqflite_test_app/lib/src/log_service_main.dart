@@ -1,5 +1,4 @@
 import 'package:sqflite/sqflite.dart';
-import 'package:sqflite/sqflite_dev.dart';
 import 'package:sqflite_common/sqflite_dev.dart';
 import 'package:sqflite_test_app/main.dart';
 import 'package:tekartik_test_menu/test.dart';
@@ -15,14 +14,13 @@ void logServiceMain() {
         await (databaseFactory as SqfliteDatabaseFactory)
             // ignore: deprecated_member_use
             .setLogLevel(sqfliteLogLevelVerbose);
-        // ignore: deprecated_member_use
-        setMockDatabaseFactory(FactoryDelegate(factory: databaseFactory));
+
+        databaseFactory = FactoryDelegate(factory: databaseFactory);
       }
     });
     item('Turn off', () async {
       if (databaseFactory is FactoryDelegate) {
-        // ignore: deprecated_member_use
-        setMockDatabaseFactory((databaseFactory as FactoryDelegate).factory);
+        databaseFactory = (databaseFactory as FactoryDelegate).factory;
       }
     });
     test('open/close in memory single instance false', () async {
