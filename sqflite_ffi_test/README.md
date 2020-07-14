@@ -1,6 +1,6 @@
 # sqflite ffi test
 
-[sqflite](https://pub.dev/packages/sqflite) based source unit testing using ffi. Based on [`moor_ffi`](https://pub.dev/packages/moor_ffi). Thanks to [Simon Binder](https://github.com/simolus3)
+[sqflite](https://pub.dev/packages/sqflite) based source unit testing using ffi. Based on [`sqflite_common_ffi`](https://pub.dev/packages/sqflite_common_ffi). Thanks to [Simon Binder](https://github.com/simolus3)
 
 It allows mocking sqflite during regular flutter unit test (i.e. not using the emulator/simulator).
 One goal is make it stricter than sqflite to encourage good practices.

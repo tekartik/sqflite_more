@@ -27,10 +27,12 @@ Future initFlutter() async {
 }
 
 bool get supportsMacOS =>
-    Platform.isMacOS && [dartChannelDev, 'master'].contains(_flutterChannel);
+    Platform.isMacOS &&
+    [dartChannelDev, dartChannelMaster].contains(_flutterChannel);
 
 bool get supportsLinux =>
-    Platform.isLinux && ['master'].contains(_flutterChannel);
+    Platform.isLinux &&
+    [dartChannelDev, dartChannelMaster].contains(_flutterChannel);
 
 bool get supportsWindows =>
-    Platform.isWindows && ['master'].contains(_flutterChannel);
+    Platform.isWindows && [dartChannelMaster].contains(_flutterChannel);
