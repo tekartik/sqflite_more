@@ -54,5 +54,27 @@ int,double,String,bool,Uint8List
 1,2.0,text,true,"[1, 2, 3]"
 ''');
     });
+
+    test('csvnull value', () {
+      var csv = mapListToCsv([
+        {'test': null}
+      ]);
+      print(jsonEncode(csv));
+      expect(csv, 'test\r\nnull');
+    });
+    test('csvnull escaped string', () {
+      var csv = mapListToCsv([
+        {'test': '"null"'}
+      ]);
+      print(jsonEncode(csv));
+      expect(csv, 'test\r\n\"\"\"null\"\"\"');
+    });
+    test('csvnull string', () {
+      var csv = mapListToCsv([
+        {'test': 'null'}
+      ]);
+      print(jsonEncode(csv));
+      expect(csv, 'test\r\nnull');
+    });
   });
 }
