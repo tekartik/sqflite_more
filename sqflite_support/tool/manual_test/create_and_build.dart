@@ -52,7 +52,7 @@ Future createProject(String dir) async {
 }
 
 Future main() async {
-  var dir = join('.dart_tool', 'sqflite', 'project');
+  var dir = join('.dart_tool', 'sqflite', 'test', 'project');
   await createProject(dir);
   await addSqfliteAndBuild(dir);
 }

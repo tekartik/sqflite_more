@@ -37,7 +37,7 @@ Future main() async {
       dir: 'tmp/sqflite_example',
       url: 'git@github.com:tekartik/sqflite.git',
       remoteDirs: ['example']);
-  exit(0);
+
   await Directory(dir).create(recursive: true);
   await Directory(dir).delete(recursive: true);
   await Directory(dir).create(recursive: true);
