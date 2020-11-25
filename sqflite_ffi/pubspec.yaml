@@ -1,11 +1,12 @@
 name: sqflite_ffi
 description: A starting point for Dart libraries or applications.
+publish_to: none
 # version: 1.0.0
 # homepage: https://www.example.com
 # author: alex <alex@tekartik.com>
 
 environment:
-  sdk: '>=2.7.0 <3.0.0'
+  sdk: '>=2.10.0-0 <3.0.0'
 
 dependencies:
   path: ^1.6.0

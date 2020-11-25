@@ -6,7 +6,7 @@ publish_to: none
 # author: alex <email@example.com>
 
 environment:
-  sdk: '>=2.7.0 <3.0.0'
+  sdk: '>=2.10.0-0 <3.0.0'
 
 dependencies:
   sqflite:
@@ -49,4 +49,3 @@ dependency_overrides:
     path: ../../../../sqflite/sqflite_common
   sqflite_common_ffi:
     path: ../../../../sqflite/sqflite_common_ffi
-

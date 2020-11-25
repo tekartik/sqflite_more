@@ -6,7 +6,7 @@ publish_to: none
 #author: alex <email@example.com>
 
 environment:
-  sdk: '>=2.7.0-dev <3.0.0'
+  sdk: '>=2.10.0-0 <3.0.0'
 
 dev_dependencies:
   test: ">=1.2.0"
@@ -21,4 +21,3 @@ dev_dependencies:
     git:
       url: git://github.com/tekartik/travis_ci_flutter.dart
       ref: dart2
-
