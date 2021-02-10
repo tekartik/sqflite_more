@@ -31,7 +31,7 @@ dev_dependencies:
   process_run: '>=0.10.3'
 
 dependency_overrides:
-  pedantic: '>=1.9.0'
+  # pedantic: '>=1.9.0'
   sqflite_test:
     path: ../sqflite_test
   sqflite_server:
