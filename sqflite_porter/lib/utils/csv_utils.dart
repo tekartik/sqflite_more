@@ -24,7 +24,7 @@ String mapListToCsv(List<Map<String, dynamic>> mapList,
 
   for (var map in mapList) {
     // This list might grow if a new key is found
-    var dataRow = List(keyIndexMap.length);
+    var dataRow = List<dynamic>.filled(keyIndexMap.length, null);
     // Fix missing key
     map.forEach((key, value) {
       var keyIndex = keyIndexMap[key];

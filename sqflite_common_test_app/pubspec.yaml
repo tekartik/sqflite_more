@@ -2,9 +2,10 @@ name: sqflite_common_test_app
 description: A simple command-line application.
 version: 1.0.0
 homepage: https://github.com/tekartik/sqflite_more/tree/master/sqflite_common_test_app
+publish_to: none
 
 environment:
-  sdk: '>=2.7.0 <3.0.0'
+  sdk: '>=2.10.0-0 <3.0.0'
 
 dependencies:
   sqflite_common:
