@@ -20,6 +20,11 @@ class DatabaseFactoryMock implements DatabaseFactory {
   Future<Database> openDatabase(String path, {OpenDatabaseOptions options}) {
     return null;
   }
+
+  @override
+  Future<void> setDatabasesPath(String path) {
+    throw UnimplementedError();
+  }
 }
 
 final databaseFactoryMock = DatabaseFactoryMock();

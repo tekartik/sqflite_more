@@ -1,3 +1,4 @@
+import 'package:path/path.dart';
 import 'package:process_run/shell.dart';
 
 Future main() async {
@@ -7,7 +8,7 @@ Future main() async {
     'sqflite_common_server',
     'sqflite_common_test_app',
   ]) {
-    shell = shell.pushd(dir);
+    shell = shell.pushd(join('..', dir));
     await shell.run('''
 
 pub get
@@ -26,7 +27,7 @@ dart tool/travis.dart
     'sqflite_server_app',
     'alt/sqflite_github_test'
   ]) {
-    shell = shell.pushd(dir);
+    shell = shell.pushd(join('..', dir));
     await shell.run('''
 
 flutter packages get
