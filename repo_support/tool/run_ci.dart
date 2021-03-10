@@ -1,4 +1,5 @@
 import 'package:dev_test/package.dart';
+import 'package:path/path.dart';
 
 Future main() async {
   for (var dir in [
@@ -10,8 +11,8 @@ Future main() async {
     'sqflite_ffi_test',
     'sqflite_test_app',
     'sqflite_server_app',
-    'alt/sqflite_github_test'
   ]) {
-    await packageRunCi(dir);
+    await packageRunCi(join('..', dir));
   }
+  await packageRunCi('.');
 }

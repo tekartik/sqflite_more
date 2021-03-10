@@ -1,0 +1,26 @@
+name: sqflite_more_repo_support
+description: App flutter utils repo (tools)
+version: 0.2.0
+publish_to: none
+
+environment:
+  sdk: '>=2.10.0-0 <3.0.0'
+
+dev_dependencies:
+  path:
+  pub_semver:
+  tekartik_travis_ci_flutter:
+    git:
+      url: git://github.com/tekartik/travis_ci_flutter.dart
+      ref: dart2
+    version: '>=0.1.0'
+  tekartik_build_utils:
+    git:
+      url: git://github.com/tekartik/build_utils.dart
+      ref: dart2
+    version: '>=0.7.0'
+  test:
+  dev_test:
+  pedantic:
+
+

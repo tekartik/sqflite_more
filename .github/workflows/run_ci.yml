@@ -10,7 +10,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     defaults:
       run:
-        working-directory: .
+        working-directory: repo_support
     strategy:
       fail-fast: false
       matrix:
@@ -24,8 +24,8 @@ jobs:
       - uses: subosito/flutter-action@v1
         with:
           channel: ${{ matrix.flutter }}
-      - run: dart --version
       - run: flutter --version
       - run: flutter upgrade
+      - run: dart --version
       - run: dart pub get
       - run: dart run tool/run_ci.dart

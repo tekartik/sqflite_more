@@ -97,8 +97,9 @@ class _SqfliteServerHomePageState extends State<SqfliteServerHomePage> {
                         keyboardType: TextInputType.number,
                       )),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      RaisedButton(
+                      ElevatedButton(
                         onPressed: () async {
                           if (!app.sqfliteServerStarted) {
                             await startServer();
@@ -110,7 +111,6 @@ class _SqfliteServerHomePageState extends State<SqfliteServerHomePage> {
                             Text(app.sqfliteServerStarted ? 'STOP' : 'START'),
                       ),
                     ],
-                    mainAxisAlignment: MainAxisAlignment.center,
                   )
                 ];
                 /*
@@ -227,7 +227,7 @@ class _SqfliteServerHomePageState extends State<SqfliteServerHomePage> {
               }
             }
           } else if (method == methodSqfliteDeleteDatabase) {
-            log('delete ${param}');
+            log('delete $param');
           }
         }
         // print('$response $method $param');

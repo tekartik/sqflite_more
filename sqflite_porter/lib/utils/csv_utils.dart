@@ -40,7 +40,5 @@ String mapListToCsv(List<Map<String, dynamic>> mapList,
     });
     data.add(dataRow);
   }
-  return converter.convert(<List>[]
-    ..add(keys)
-    ..addAll(data));
+  return converter.convert(<List>[keys, ...data]);
 }

@@ -69,11 +69,11 @@ class FactoryDelegate with SqfliteDatabaseFactoryMixin {
     // For now assume sqfliteLogLevelService (bit field)
     var shouldLogLevelService = _sqfliteLogLevel == sqfliteLogLevelVerbose;
     if (shouldLogLevelService) {
-      write('IN: ${map}');
+      write('IN: $map');
     }
     var result = await _factory.invokeMethod<T>(method, arguments);
     if (shouldLogLevelService) {
-      write('OUT: ${result}');
+      write('OUT: $result');
     }
     return result;
   }
