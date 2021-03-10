@@ -11,7 +11,6 @@ Future main() async {
     'sqflite_ffi_test',
     'sqflite_test_app',
     'sqflite_server_app',
-    'alt/sqflite_github_test'
   ]) {
     await packageRunCi(join('..', dir));
   }
