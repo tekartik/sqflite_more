@@ -219,7 +219,7 @@ Android:
   }
 
   @override
-  Future<T?> sendRequest<T>(String method, dynamic param) async {
+  Future<T?> sendRequest<T>(String method, Object? param) async {
     if (_debugModeOn) {
       print('$param');
     }
@@ -231,7 +231,7 @@ Android:
   }
 
   @override
-  Future<T> invoke<T>(String method, dynamic param) async {
+  Future<T> invoke<T>(String method, Object? param) async {
     var t = await super.invoke<T>(method, param);
     return t;
   }

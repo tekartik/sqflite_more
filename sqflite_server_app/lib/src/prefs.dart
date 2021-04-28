@@ -41,7 +41,7 @@ class Prefs {
     return _db;
   }
 
-  Future<List<Map<String, dynamic>>> load() async {
+  Future<List<Map<String, Object?>>> load() async {
     var db = await (this.db as FutureOr<Database>);
     var list =
         await db.query('Pref', columns: ['name', 'textValue', 'intValue']);
@@ -65,7 +65,7 @@ class Prefs {
 
   @override
   String toString() {
-    return <String, dynamic>{
+    return <String, Object?>{
       'port': port,
       'showConsole': showConsole,
       'autoStart': autoStart
@@ -104,6 +104,6 @@ class Prefs {
   Future _setIntValue(String name, int? intValue) async {
     await _db!.execute(
         'INSERT OR REPLACE INTO Pref(name, intValue) VALUES (?, ?)',
-        <dynamic>[name, intValue]);
+        <Object?>[name, intValue]);
   }
 }

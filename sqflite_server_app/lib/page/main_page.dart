@@ -180,7 +180,7 @@ class _SqfliteServerHomePageState extends State<SqfliteServerHomePage> {
   Future startApp() async {
     if (!app.started) {
       app.started = true;
-      await Future<dynamic>.delayed(const Duration());
+      await Future<Object?>.delayed(const Duration());
       //devPrint('startApp');
       portInputController.text = (app.prefs!.port ?? 0).toString();
       if (app.prefs!.autoStart) {
@@ -196,7 +196,7 @@ class _SqfliteServerHomePageState extends State<SqfliteServerHomePage> {
     });
     try {
       await app.startServer(port,
-          notifyCallback: (bool response, String method, dynamic param) {
+          notifyCallback: (bool response, String method, Object? param) {
         if (response == false) {
           void _logOperation(Map map) {
             var sql = (map['sql'] as String?)?.trim();
@@ -210,8 +210,9 @@ class _SqfliteServerHomePageState extends State<SqfliteServerHomePage> {
           }
 
           if (method == methodSqflite) {
-            var sqfliteMethod = param['method'] as String?;
-            dynamic sqfliteParam = param['param'];
+            var paramMap = param as Map;
+            var sqfliteMethod = paramMap['method'] as String?;
+            var sqfliteParam = paramMap['param'];
             if (sqfliteMethod == methodOpenDatabase) {
               log('open ${(sqfliteParam as Map)['path']}');
             } else if (sqfliteMethod == methodBatch) {

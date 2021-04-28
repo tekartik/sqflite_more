@@ -16,8 +16,8 @@ Future main() async {
         )
         ''');
       print('adding 2 products...');
-      await db.insert('Product', <String, dynamic>{'title': 'Product 1'});
-      await db.insert('Product', <String, dynamic>{'title': 'Product 2'});
+      await db.insert('Product', <String, Object?>{'title': 'Product 1'});
+      await db.insert('Product', <String, Object?>{'title': 'Product 2'});
 
       var results = await db.query('Product');
       expect(results, [
@@ -41,9 +41,9 @@ Future main() async {
         )
         ''');
                 batch
-                    .insert('Product', <String, dynamic>{'title': 'Product 1'});
+                    .insert('Product', <String, Object?>{'title': 'Product 1'});
                 batch
-                    .insert('Product', <String, dynamic>{'title': 'Product 2'});
+                    .insert('Product', <String, Object?>{'title': 'Product 2'});
                 var result = await batch.commit();
                 expect(result.length, 3);
               }));

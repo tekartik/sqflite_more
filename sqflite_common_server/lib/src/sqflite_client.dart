@@ -58,7 +58,7 @@ class SqfliteClient {
     return SqfliteClient._(rpcClient, _serverInfo);
   }
 
-  Future<T> sendRequest<T>(String method, dynamic param) async {
+  Future<T> sendRequest<T>(String method, Object? param) async {
     late T t;
     try {
       t = await _client.sendRequest(method, param) as T;
@@ -70,11 +70,11 @@ class SqfliteClient {
   }
 
   static void fixResult<T>(T result) {
-    bool shouldFix(dynamic value) {
+    bool shouldFix(Object? value) {
       return value is List && (!(value is Uint8List));
     }
 
-    Uint8List fix(dynamic value) {
+    Uint8List fix(List value) {
       var list = <int?>[];
       for (var item in value) {
         list.add(parseInt(item));
@@ -88,11 +88,11 @@ class SqfliteClient {
     if (result is List) {
       for (var item in result) {
         if (item is Map) {
-          var changed = <String, dynamic>{};
-          var map = item.cast<String, dynamic>();
-          map.forEach((String key, dynamic value) {
+          var changed = <String, Object?>{};
+          var map = item.cast<String, Object?>();
+          map.forEach((String key, Object? value) {
             if (shouldFix(value)) {
-              changed[key] = fix(value);
+              changed[key] = fix(value as List);
             }
           });
           map.addAll(changed);
@@ -100,14 +100,14 @@ class SqfliteClient {
       }
     } else if (result is Map) {
       // print(result);
-      dynamic _rows = result['rows'];
+      Object? _rows = result['rows'];
       if (_rows is List) {
         var rows = _rows.cast<List>();
         for (var row in rows) {
           for (var i = 0; i < row.length; i++) {
-            dynamic value = row[i];
+            Object? value = row[i];
             if (shouldFix(value)) {
-              row[i] = fix(value);
+              row[i] = fix(value as List);
             }
           }
         }
@@ -118,14 +118,14 @@ class SqfliteClient {
     // devPrint('result2: $result');
   }
 
-  Future<T> invoke<T>(String method, dynamic param) async {
-    var map = <String, dynamic>{keyMethod: method, keyParam: param};
+  Future<T> invoke<T>(String method, Object? param) async {
+    var map = <String, Object?>{keyMethod: method, keyParam: param};
     var result = await sendRequest<T>(methodSqflite, map);
 
     if (method == methodBatch) {
       if (result is List) {
         for (var line in result) {
-          fixResult<dynamic>(line);
+          fixResult<Object?>(line);
         }
       }
     } else {

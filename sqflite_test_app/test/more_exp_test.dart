@@ -128,8 +128,8 @@ Future main() async {
         var table = 'test';
         await db
             .execute('CREATE TABLE $table (id INTEGER PRIMARY KEY, name TEXT)');
-        var id = await db.insert(table, <String, dynamic>{'name': 'test'});
-        var id2 = await db.insert(table, <String, dynamic>{'name': 'test'});
+        var id = await db.insert(table, <String, Object?>{'name': 'test'});
+        var id2 = await db.insert(table, <String, Object?>{'name': 'test'});
 
         print('inserted $id, $id2');
         // inserted in a wrong order to check ASC/DESC
@@ -148,8 +148,8 @@ Future main() async {
         var table = 'test';
         await db
             .execute('CREATE TABLE $table (id INTEGER PRIMARY KEY, name TEXT)');
-        var id = await db.insert(table, <String, dynamic>{'name': 'test'});
-        var id2 = await db.insert(table, <String, dynamic>{'name': 'test'});
+        var id = await db.insert(table, <String, Object?>{'name': 'test'});
+        var id2 = await db.insert(table, <String, Object?>{'name': 'test'});
 
         print('inserted $id, $id2');
         // inserted in a wrong order to check ASC/DESC
@@ -363,8 +363,8 @@ class Item {
   int? id;
   String? name;
 
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{'name': name};
+  Map<String, Object?> toMap() {
+    return <String, Object?>{'name': name};
   }
 }
 
@@ -488,12 +488,6 @@ class DbHelper {
 
   Future<User?> retrieveUser(int id) async {
     var dbClient = await db;
-    if (id == null) {
-      print('The ID is null, cannot find user with Id null');
-      var nullResult =
-          await (dbClient!.rawQuery('SELECT * FROM MYTABLE WHERE ID is null') as FutureOr<List<Map<String, Object>>>);
-      return User.fromMap(nullResult.first);
-    }
     var sql = 'SELECT * FROM MYTABLE WHERE ID = $id';
     var result = await dbClient!.rawQuery(sql);
     print(result);
@@ -515,12 +509,12 @@ class User {
 
   User(this._userName, [this._id]);
 
-  User.map(dynamic obj) {
-    _userName = obj['userName'] as String?;
+  User.map(Object? obj) {
+    _userName = (obj as Map)['userName'] as String?;
     _id = obj['id'] as int?;
   }
 
-  User.fromMap(Map<String, dynamic> map) {
+  User.fromMap(Map<String, Object?> map) {
     _userName = map['userName'] as String?;
     if (map['id'] != null) {
       _id = map['id'] as int?;
@@ -529,8 +523,8 @@ class User {
     }
   }
 
-  Map<String, dynamic> toMap() {
-    var map = <String, dynamic>{};
+  Map<String, Object?> toMap() {
+    var map = <String, Object?>{};
     map['userName'] = _userName;
     if (_id != null) {
       map['id'] = _id;

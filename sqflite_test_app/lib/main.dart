@@ -62,7 +62,7 @@ class FactoryDelegate with SqfliteDatabaseFactoryMixin {
 
   @override
   Future<T> invokeMethod<T>(String method, [arguments]) async {
-    var map = <String, dynamic>{
+    var map = <String, Object?>{
       'method': method,
       if (arguments != null) 'arguments': arguments
     };

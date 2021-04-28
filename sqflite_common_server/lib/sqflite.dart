@@ -70,12 +70,12 @@ class SqfliteServerContext implements SqfliteContext {
   bool get supportsWithoutRowId =>
       client!.serverInfo.supportsWithoutRowId == true;
 
-  Future<T?> sendRequest<T>(String method, dynamic param) async {
+  Future<T?> sendRequest<T>(String method, Object? param) async {
     return await _client!.sendRequest<T>(method, param);
   }
 
-  Future<T> invoke<T>(String method, dynamic param) async {
-    //var map = <String, dynamic>{keyMethod: method, keyParam: param};
+  Future<T> invoke<T>(String method, Object? param) async {
+    //var map = <String, Object?>{keyMethod: method, keyParam: param};
     var result = await _client!.invoke<T>(method, param);
     return result;
   }
@@ -97,13 +97,13 @@ class SqfliteServerContext implements SqfliteContext {
   @override
   Future<String> createDirectory(String? path) async {
     return await _client!.sendRequest<String>(
-        methodCreateDirectory, <String, dynamic>{keyPath: path});
+        methodCreateDirectory, <String, Object?>{keyPath: path});
   }
 
   @override
   Future<String> deleteDirectory(String? path) async {
     return await _client!.sendRequest<String>(
-        methodDeleteDirectory, <String, dynamic>{keyPath: path});
+        methodDeleteDirectory, <String, Object?>{keyPath: path});
   }
 
   static Future<SqfliteServerContext> connect(String url,
@@ -141,13 +141,13 @@ class SqfliteServerContext implements SqfliteContext {
   @override
   Future<List<int>?> readFile(String? path) async {
     return (await _client!.sendRequest<List>(
-            methodReadFile, <String, dynamic>{keyPath: path}))
+            methodReadFile, <String, Object?>{keyPath: path}))
         .cast<int>();
   }
 
   @override
   Future<String> writeFile(String? path, List<int>? data) async {
     return await _client!.sendRequest<String>(
-        methodWriteFile, <String, dynamic>{keyPath: path, keyContent: data});
+        methodWriteFile, <String, Object?>{keyPath: path, keyContent: data});
   }
 }

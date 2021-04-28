@@ -14,7 +14,7 @@ import 'package:tekartik_web_socket/web_socket.dart';
 import 'package:tekartik_web_socket_io/web_socket_io.dart';
 
 typedef SqfliteServerNotifyCallback = void Function(
-    bool response, String method, dynamic params);
+    bool response, String method, Object? params);
 
 /// Web socket server
 class SqfliteServer {
@@ -40,7 +40,7 @@ class SqfliteServer {
 
   static Future<SqfliteServer> serve(
       {WebSocketChannelServerFactory? webSocketChannelServerFactory,
-      dynamic address,
+      Object? address,
       int? port,
       SqfliteServerNotifyCallback? notifyCallback,
       required DatabaseFactory factory}) async {
@@ -70,7 +70,7 @@ class SqfliteServerChannel {
       if (_notifyCallback != null) {
         _notifyCallback!(false, methodGetServerInfo, parameters.value);
       }
-      var result = <String, dynamic>{
+      var result = <String, Object?>{
         keyName: serverInfoName,
         keyVersion: serverInfoVersion.toString(),
         keySupportsWithoutRowId:
@@ -171,8 +171,8 @@ class SqfliteServerChannel {
         sqfliteParam = fixParam(sqfliteMethod, sqfliteParam);
       }
 
-      dynamic result = await _sqfliteServer.invokeHandler
-          .invokeMethod<dynamic>(sqfliteMethod, sqfliteParam);
+      var result = await _sqfliteServer.invokeHandler
+          .invokeMethod<Object?>(sqfliteMethod, sqfliteParam);
       if (_notifyCallback != null) {
         _notifyCallback!(true, methodSqflite, result);
       }
@@ -200,7 +200,7 @@ class SqfliteServerChannel {
     _rpcServer.done.then((_) async {
       for (var databaseId in _openDatabaseIds) {
         try {
-          await _sqfliteServer.invokeHandler.invokeMethod<dynamic>(
+          await _sqfliteServer.invokeHandler.invokeMethod<Object?>(
               methodCloseDatabase, {paramId: databaseId});
         } catch (e) {
           print('error cleaning up database $databaseId');

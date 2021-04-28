@@ -15,7 +15,7 @@ void main() {
       // null
       expect(mapListToCsv(null), isNull);
       // empty
-      expect(mapListToCsv(<Map<String, dynamic>>[]), '');
+      expect(mapListToCsv(<Map<String, Object?>>[]), '');
 
       // simple
       expectCsv(
