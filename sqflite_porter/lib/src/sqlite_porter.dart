@@ -19,7 +19,7 @@ bool isSystemTable(String table) {
   return table.startsWith('sqlite_') || table == 'android_metadata';
 }
 
-String extractTableName(String sqlTableStatement) {
+String? extractTableName(String? sqlTableStatement) {
   var parser = SqlParser(sqlTableStatement);
   if (parser.parseTokens(['create', 'table'])) {
     // optional
@@ -55,10 +55,10 @@ Future<List<String>> dbExportSql(Database db) async {
 
     // First handle all the regular tables
     for (var tableRow in tableRows) {
-      var sql = tableRow.values.first as String;
+      var sql = tableRow.values.first as String?;
       var table = extractTableName(sql);
       if (table != null && !isSystemTable(unescapeText(table))) {
-        statements.add(fixStatement(sql));
+        statements.add(fixStatement(sql!));
         await exportTable(table);
       }
     }
@@ -69,11 +69,11 @@ Future<List<String>> dbExportSql(Database db) async {
 
     // handle views and trigger
     for (var tableRow in tableRows) {
-      var sql = tableRow.values.first as String;
+      var sql = tableRow.values.first as String?;
       var table = extractTableName(sql);
       if (table == null) {
         // We know this is not a table
-        statements.add(fixStatement(sql));
+        statements.add(fixStatement(sql!));
       }
     }
   });

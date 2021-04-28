@@ -36,14 +36,14 @@ INSERT INTO Test(name, value, num, binary) VALUES('other name', 1234, 456.789, x
       await batch.commit();
 
       var result = await db.query('Test');
-      var csv = mapListToCsv(result);
+      var csv = mapListToCsv(result)!;
       expectCsv(csv, '''
 id,name,value,num,binary
 1,some name,1234,456.789,"[1, 2, 3]"
 2,other name,1234,456.789,"[255, 254]"
 ''');
     } finally {
-      await db?.close();
+      await db.close();
     }
   });
 }
