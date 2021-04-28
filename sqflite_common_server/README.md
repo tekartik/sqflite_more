@@ -33,7 +33,7 @@ dependencies:
   sqflite_server:
     git:
       url: git://github.com/tekartik/sqflite_more
-      ref: dart2
+      ref: null_safety
       path: sqflite_server
     version: '>=0.3.0'
 ````

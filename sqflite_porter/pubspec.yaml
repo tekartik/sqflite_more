@@ -14,12 +14,12 @@ dependencies:
   tekartik_common_utils:
     git:
       url: git://github.com/tekartik/common_utils.dart
-      ref: dart2
+      ref: null_safety
     version: '>=0.9.7+1'
   sqflite_test:
     git:
       url: git://github.com/tekartik/sqflite_more
-      ref: dart2
+      ref: null_safety
       path: sqflite_test
     version: '>=0.1.0'
   csv:

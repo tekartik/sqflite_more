@@ -27,7 +27,7 @@ dependencies:
   tekartik_test_menu_flutter:
     git:
       url: git://github.com/tekartik/test_menu_flutter
-      ref: dart2
+      ref: null_safety
       path: test_menu_flutter
     version: '>=0.2.5'
   flutter_isolate:

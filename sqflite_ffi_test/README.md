@@ -20,7 +20,7 @@ dev_dependencies:
   sqflite_ffi_test:
     git:
       url: git://github.com/tekartik/sqflite_more
-      ref: dart2
+      ref: null_safety
       path: sqflite_ffi_test
 ```
 

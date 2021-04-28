@@ -20,42 +20,42 @@ dependencies:
   sqflite_porter:
     git:
       url: git://github.com/tekartik/sqflite_more
-      ref: dart2
+      ref: null_safety
       path: sqflite_porter
     version: '>=0.1.0'
   sqflite_server:
     git:
       url: git://github.com/tekartik/sqflite_more
-      ref: dart2
+      ref: null_safety
       path: sqflite_server
     version: '>=0.3.2'
   sqflite_test:
     git:
       url: git://github.com/tekartik/sqflite_more
-      ref: dart2
+      ref: null_safety
       path: sqflite_test
     version: '>=0.1.0'
   tekartik_test_menu_flutter:
     git:
       url: git://github.com/tekartik/test_menu_flutter
-      ref: dart2
+      ref: null_safety
       path: test_menu_flutter
     version: '>=0.3.0'
   tekartik_app_platform:
     git:
       url: git://github.com/tekartik/app_flutter_utils.dart
-      ref: dart2
+      ref: null_safety
       path: app_platform
     version: '>=0.1.0'
   sqflite_ffi_test:
     git:
       url: git://github.com/tekartik/sqflite_more
-      ref: dart2
+      ref: null_safety
       path: sqflite_ffi_test
   tekartik_app_roboto:
     git:
       url: git://github.com/tekartik/app_flutter_utils.dart
-      ref: dart2
+      ref: null_safety
       path: app_roboto
       version: '>=0.1.0'
   sqflite_example:
