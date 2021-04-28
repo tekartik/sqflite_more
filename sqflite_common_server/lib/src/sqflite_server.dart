@@ -106,7 +106,7 @@ class SqfliteServerChannel {
         _notifyCallback!(false, methodCreateDirectory, parameters.value);
       }
       var path = await _sqfliteServer.sqfliteLocalContext
-          .createDirectory((parameters.value as Map)[keyPath] as String?);
+          .createDirectory((parameters.value as Map)[keyPath] as String);
       if (_notifyCallback != null) {
         _notifyCallback!(true, methodCreateDirectory, path);
       }
@@ -119,7 +119,7 @@ class SqfliteServerChannel {
         _notifyCallback!(false, methodDeleteDirectory, parameters.value);
       }
       var path = await _sqfliteServer.sqfliteLocalContext
-          .deleteDirectory((parameters.value as Map)[keyPath] as String?);
+          .deleteDirectory((parameters.value as Map)[keyPath] as String);
       if (_notifyCallback != null) {
         _notifyCallback!(true, methodDeleteDirectory, path);
       }
@@ -132,8 +132,8 @@ class SqfliteServerChannel {
         _notifyCallback!(false, methodWriteFile, parameters.value);
       }
       final map = parameters.value as Map;
-      var path = map[keyPath]?.toString();
-      var content = (map[keyContent] as List?)?.cast<int>();
+      var path = map[keyPath].toString();
+      var content = (map[keyContent] as List).cast<int>();
       path = await _sqfliteServer.sqfliteLocalContext.writeFile(path, content);
       if (_notifyCallback != null) {
         _notifyCallback!(true, methodWriteFile, path);
@@ -147,7 +147,7 @@ class SqfliteServerChannel {
         _notifyCallback!(false, methodReadFile, parameters.value);
       }
       final map = parameters.value as Map;
-      final path = map[keyPath] as String?;
+      final path = map[keyPath] as String;
 
       var content = await _sqfliteServer.sqfliteLocalContext.readFile(path);
       if (_notifyCallback != null) {
@@ -223,7 +223,7 @@ class SqfliteLocalContext implements SqfliteContext {
   SqfliteLocalContext({required this.databaseFactory});
 
   @override
-  Future<String?> createDirectory(String? path) async {
+  Future<String> createDirectory(String path) async {
     try {
       path = await fixPath(path);
       await Directory(path).create(recursive: true);
@@ -234,7 +234,7 @@ class SqfliteLocalContext implements SqfliteContext {
   }
 
   @override
-  Future<String?> deleteDirectory(String? path) async {
+  Future<String> deleteDirectory(String path) async {
     try {
       path = await fixPath(path);
       await Directory(path).delete(recursive: true);
@@ -284,7 +284,7 @@ class SqfliteLocalContext implements SqfliteContext {
       File(await fixPath(path)).readAsBytes();
 
   @override
-  Future<String?> writeFile(String? path, List<int>? data) async {
+  Future<String> writeFile(String? path, List<int>? data) async {
     path = await fixPath(path);
     await File(await fixPath(path)).writeAsBytes(data!, flush: true);
     return path;

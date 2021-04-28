@@ -139,7 +139,7 @@ class SqfliteServerContext implements SqfliteContext {
   path.Context get pathContext => path.posix;
 
   @override
-  Future<List<int>?> readFile(String? path) async {
+  Future<List<int>> readFile(String path) async {
     return (await _client!.sendRequest<List>(
             methodReadFile, <String, Object?>{keyPath: path}))
         .cast<int>();
