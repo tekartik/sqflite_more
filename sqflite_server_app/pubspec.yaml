@@ -11,7 +11,7 @@ publish_to: none
 version: 0.1.0
 
 environment:
-  sdk: '>=2.10.0-0 <3.0.0'
+  sdk: '>=2.12.0 <3.0.0'
 
 dependencies:
   flutter:
@@ -107,3 +107,5 @@ dependency_overrides:
     path: ../sqflite_porter
   sqflite_common_server:
     path: ../sqflite_common_server
+  sqflite_test:
+    path: ../sqflite_test

@@ -5,7 +5,7 @@ import 'package:sqflite_common_server/sqflite_server.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';
 
 class Prefs {
-  Prefs({@required DatabaseFactory databaseFactory, String dbName})
+  Prefs({required DatabaseFactory? databaseFactory, String? dbName})
       : _databaseFactory = databaseFactory ?? sqflite.databaseFactory,
         dbName = dbName ?? defaultDbName;
 
@@ -15,13 +15,13 @@ class Prefs {
   final _openLock = Lock();
 
   // server port
-  int port = sqfliteServerDefaultPort;
+  int? port = sqfliteServerDefaultPort;
   bool showConsole = true;
   bool autoStart = false;
 
-  Database _db;
+  Database? _db;
 
-  Future<Database> get db async {
+  Future<Database?> get db async {
     if (_db == null) {
       return await _openLock.synchronized(() async {
         if (_db == null) {
@@ -42,15 +42,15 @@ class Prefs {
   }
 
   Future<List<Map<String, dynamic>>> load() async {
-    var db = await this.db;
+    var db = await (this.db as FutureOr<Database>);
     var list =
         await db.query('Pref', columns: ['name', 'textValue', 'intValue']);
     //devPrint(list);
     for (var item in list) {
-      var prefName = item['name'] as String;
+      var prefName = item['name'] as String?;
       switch (prefName) {
         case 'port':
-          port = item['intValue'] as int;
+          port = item['intValue'] as int?;
           break;
         case 'showConsole':
           showConsole = item['intValue'] == 1;
@@ -76,7 +76,7 @@ class Prefs {
   // close and delete
   Future delete() async {
     if (_db != null) {
-      await _db.close();
+      await _db!.close();
       _db = null;
     }
     var databasePath = await _databaseFactory.getDatabasesPath();
@@ -84,7 +84,7 @@ class Prefs {
     await _databaseFactory.deleteDatabase(dbPath);
   }
 
-  Future setPort(int port) async {
+  Future setPort(int? port) async {
     this.port = port;
     await _setIntValue('port', port);
   }
@@ -101,8 +101,8 @@ class Prefs {
     await _setIntValue('autoStart', intValue);
   }
 
-  Future _setIntValue(String name, int intValue) async {
-    await _db.execute(
+  Future _setIntValue(String name, int? intValue) async {
+    await _db!.execute(
         'INSERT OR REPLACE INTO Pref(name, intValue) VALUES (?, ?)',
         <dynamic>[name, intValue]);
   }

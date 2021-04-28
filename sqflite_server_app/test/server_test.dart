@@ -11,7 +11,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('prefs', () {
-    SqfliteServerDatabaseFactory databaseFactory;
+    SqfliteServerDatabaseFactory? databaseFactory;
 
     test('factory', () async {
       // run in test to display information in console

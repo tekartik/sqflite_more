@@ -7,19 +7,19 @@ Version _appVersion = Version(0, 1, 0);
 
 class App {
   bool started = false;
-  Prefs prefs;
-  SqfliteServer _sqfliteServer;
-  SqfliteServer get sqfliteServer => _sqfliteServer;
+  Prefs? prefs;
+  SqfliteServer? _sqfliteServer;
+  SqfliteServer? get sqfliteServer => _sqfliteServer;
 
   bool get sqfliteServerStarted => _sqfliteServer != null;
 
   Version get version => _appVersion;
 
-  Future<SqfliteServer> startServer(int port,
-      {SqfliteServerNotifyCallback notifyCallback}) async {
+  Future<SqfliteServer?> startServer(int? port,
+      {SqfliteServerNotifyCallback? notifyCallback}) async {
     await _closeServer();
     _sqfliteServer = await SqfliteServer.serve(
-        port: port, notifyCallback: notifyCallback, factory: databaseFactory);
+        port: port, notifyCallback: notifyCallback, factory: databaseFactory!);
     return _sqfliteServer;
   }
 
@@ -27,14 +27,14 @@ class App {
 
   Future _closeServer() async {
     if (_sqfliteServer != null) {
-      var done = _sqfliteServer.close();
+      var done = _sqfliteServer!.close();
       _sqfliteServer = null;
       await done;
     }
   }
 }
 
-App _app;
+App? _app;
 App get app => _app ??= App();
 
 Future clearApp() async {

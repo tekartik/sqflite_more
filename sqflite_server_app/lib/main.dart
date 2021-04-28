@@ -9,7 +9,7 @@ import 'package:sqflite/sqflite.dart' as sqflite;
 
 void main() => run();
 
-DatabaseFactory databaseFactory;
+DatabaseFactory? databaseFactory;
 
 void run() {
   WidgetsFlutterBinding.ensureInitialized();
