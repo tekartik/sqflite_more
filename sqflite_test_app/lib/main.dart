@@ -8,7 +8,7 @@ import 'package:sqflite_common/src/mixin/import_mixin.dart' // ignore: implement
     show
         SqfliteDatabaseFactory,
         SqfliteDatabaseFactoryMixin;
-import 'package:sqflite_ffi_test/sqflite.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:tekartik_app_platform/app_platform.dart';
 import 'package:tekartik_test_menu_flutter/test.dart';
 
@@ -18,7 +18,7 @@ Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   platformInit();
   if (Platform.isWindows || Platform.isLinux) {
-    sqfliteInit();
+    sqfliteFfiInit();
   }
   test.main();
 }
@@ -32,7 +32,7 @@ Future sqfliteTestAppInit({int sqfliteLogLevel}) async {
   WidgetsFlutterBinding.ensureInitialized();
   platformInit();
   if (Platform.isWindows || Platform.isLinux) {
-    sqfliteInit();
+    sqfliteFfiInit();
   }
   databaseFactory = FactoryDelegate(factory: databaseFactory);
   if (sqfliteLogLevel != null && sqfliteLogLevel != sqfliteLogLevelNone) {

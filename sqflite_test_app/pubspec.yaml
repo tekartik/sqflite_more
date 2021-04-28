@@ -61,7 +61,7 @@ dependencies:
   sqflite_example:
     git:
       url: git://github.com/tekartik/sqflite
-      ref: develop
+      ref: null_safety
       path: sqflite/example/
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

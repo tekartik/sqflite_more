@@ -34,8 +34,6 @@ dependency_overrides:
   # pedantic: '>=1.9.0'
   sqflite_test:
     path: ../sqflite_test
-  sqflite_server:
-    path: ../sqflite_server
   sqflite_common_server:
     path: ../sqflite_common_server
 # For information on the generic Dart part of this file, see the

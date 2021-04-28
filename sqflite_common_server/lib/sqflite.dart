@@ -92,21 +92,21 @@ class SqfliteServerContext implements SqfliteContext {
   }
 
   @override
-  DatabaseFactory? get databaseFactory => _databaseFactory;
+  DatabaseFactory get databaseFactory => _databaseFactory!;
 
   @override
-  Future<String?> createDirectory(String? path) async {
+  Future<String> createDirectory(String? path) async {
     return await _client!.sendRequest<String>(
         methodCreateDirectory, <String, dynamic>{keyPath: path});
   }
 
   @override
-  Future<String?> deleteDirectory(String? path) async {
+  Future<String> deleteDirectory(String? path) async {
     return await _client!.sendRequest<String>(
         methodDeleteDirectory, <String, dynamic>{keyPath: path});
   }
 
-  static Future<SqfliteServerContext?> connect(String url,
+  static Future<SqfliteServerContext> connect(String url,
       {WebSocketChannelClientFactory? webSocketChannelClientFactory}) async {
     var context = SqfliteServerContext();
     await (context.connectClient(url,
@@ -146,7 +146,7 @@ class SqfliteServerContext implements SqfliteContext {
   }
 
   @override
-  Future<String?> writeFile(String? path, List<int>? data) async {
+  Future<String> writeFile(String? path, List<int>? data) async {
     return await _client!.sendRequest<String>(
         methodWriteFile, <String, dynamic>{keyPath: path, keyContent: data});
   }

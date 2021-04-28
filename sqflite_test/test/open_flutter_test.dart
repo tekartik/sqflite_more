@@ -113,7 +113,7 @@ void run(SqfliteTestContext context) {
       var path = join(databasesPath, 'demo_asset_example.db');
 
       // try opening (will work if it exists)
-      Database db;
+      Database? db;
       try {
         db = await factory.openDatabase(path,
             options: OpenDatabaseOptions(readOnly: true));

@@ -11,14 +11,12 @@ class SqfliteServerDatabaseFactory extends SqfliteDatabaseFactoryBase {
 
   final SqfliteServerContext context;
 
-  static Future<SqfliteServerDatabaseFactory?> connect(String url,
+  static Future<SqfliteServerDatabaseFactory> connect(String url,
       {WebSocketChannelClientFactory? webSocketChannelClientFactory}) async {
     var sqfliteContext = await SqfliteServerContext.connect(url,
         webSocketChannelClientFactory: webSocketChannelClientFactory);
-    if (sqfliteContext != null) {
-      return SqfliteServerDatabaseFactory(sqfliteContext);
-    }
-    return null;
+
+    return SqfliteServerDatabaseFactory(sqfliteContext);
   }
 
   path.Context get pathContext => context.pathContext;
