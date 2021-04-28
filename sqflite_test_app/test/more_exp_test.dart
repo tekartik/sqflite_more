@@ -67,7 +67,7 @@ Future main() async {
       // Try to insert string with quote
       var path = await context.initDeleteDb('exp_issue_144.db');
       var rootBundle = TestAssetBundle();
-      Database db;
+      Database? db;
       print('current dir: ${absolute(Directory.current.path)}');
       print('path: $path');
       try {
@@ -360,8 +360,8 @@ String tableTeacher = tableItem;
 String tableStudent = tableItem;
 
 class Item {
-  int id;
-  String name;
+  int? id;
+  String? name;
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{'name': name};
@@ -369,20 +369,20 @@ class Item {
 }
 
 class Classroom extends Item {
-  Teacher _teacher;
-  List<Student> _students;
+  Teacher? _teacher;
+  List<Student>? _students;
 
-  Teacher getTeacher() => _teacher;
+  Teacher? getTeacher() => _teacher;
 
-  List<Student> getStudents() => _students;
+  List<Student>? getStudents() => _students;
 }
 
 class Teacher extends Item {}
 
 class Student extends Item {}
 
-TeacherProvider _teacherProvider;
-StudentProvider _studentProvider;
+late TeacherProvider _teacherProvider;
+late StudentProvider _studentProvider;
 
 Future issue146(SqfliteServerTestContext context) async {
   //context.devSetDebugModeOn(true);
@@ -409,14 +409,14 @@ Future issue146(SqfliteServerTestContext context) async {
   }
 }
 
-Database database;
+Database? database;
 
 class ClassroomProvider {
   Future<Classroom> insert(Classroom room) async {
-    return database.transaction((txn) async {
-      await _teacherProvider.txnInsert(txn, room.getTeacher());
+    return database!.transaction((txn) async {
+      await _teacherProvider.txnInsert(txn, room.getTeacher()!);
       await _studentProvider.txnBulkInsert(
-          txn, room.getStudents()); // nest transaction here
+          txn, room.getStudents()!); // nest transaction here
       // Insert room last to save the teacher and students ids
       room.id = await txn.insert(tableClassroom, room.toMap());
       return room;
@@ -426,7 +426,7 @@ class ClassroomProvider {
 
 class TeacherProvider {
   Future<Teacher> insert(Teacher teacher) =>
-      database.transaction((txn) => txnInsert(txn, teacher));
+      database!.transaction((txn) => txnInsert(txn, teacher));
 
   Future<Teacher> txnInsert(Transaction txn, Teacher teacher) async {
     teacher.id = await txn.insert(tableTeacher, teacher.toMap());
@@ -436,7 +436,7 @@ class TeacherProvider {
 
 class StudentProvider {
   Future<List<Student>> bulkInsert(List<Student> students) =>
-      database.transaction((txn) => txnBulkInsert(txn, students));
+      database!.transaction((txn) => txnBulkInsert(txn, students));
 
   Future<List<Student>> txnBulkInsert(
       Transaction txn, List<Student> students) async {
@@ -451,7 +451,7 @@ class StudentProvider {
 
 class DbHelper {
   final SqfliteServerTestContext context;
-  static Database _db;
+  static Database? _db;
 
   DbHelper(this.context);
 
@@ -469,7 +469,7 @@ class DbHelper {
     return newDB;
   }
 
-  Future<Database> get db async {
+  Future<Database?> get db async {
     if (_db != null) {
       return _db;
     } else {
@@ -479,23 +479,23 @@ class DbHelper {
   }
 
   Future<int> saveUser(User user) async {
-    var dbClient = await db;
+    var dbClient = await (db as FutureOr<Database>);
     int result;
     var userMap = user.toMap();
     result = await dbClient.insert('MYTABLE', userMap);
     return result;
   }
 
-  Future<User> retrieveUser(int id) async {
+  Future<User?> retrieveUser(int id) async {
     var dbClient = await db;
     if (id == null) {
       print('The ID is null, cannot find user with Id null');
       var nullResult =
-          await dbClient.rawQuery('SELECT * FROM MYTABLE WHERE ID is null');
+          await (dbClient!.rawQuery('SELECT * FROM MYTABLE WHERE ID is null') as FutureOr<List<Map<String, Object>>>);
       return User.fromMap(nullResult.first);
     }
     var sql = 'SELECT * FROM MYTABLE WHERE ID = $id';
-    var result = await dbClient.rawQuery(sql);
+    var result = await dbClient!.rawQuery(sql);
     print(result);
     if (result.isNotEmpty) {
       return User.fromMap(result.first);
@@ -506,24 +506,24 @@ class DbHelper {
 }
 
 class User {
-  String _userName;
-  int _id;
+  String? _userName;
+  int? _id;
 
-  String get userName => _userName;
+  String? get userName => _userName;
 
-  int get id => _id;
+  int? get id => _id;
 
   User(this._userName, [this._id]);
 
   User.map(dynamic obj) {
-    _userName = obj['userName'] as String;
-    _id = obj['id'] as int;
+    _userName = obj['userName'] as String?;
+    _id = obj['id'] as int?;
   }
 
   User.fromMap(Map<String, dynamic> map) {
-    _userName = map['userName'] as String;
+    _userName = map['userName'] as String?;
     if (map['id'] != null) {
-      _id = map['id'] as int;
+      _id = map['id'] as int?;
     } else {
       print('in fromMap, Id is null');
     }

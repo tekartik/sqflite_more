@@ -7,7 +7,7 @@ import 'package:tekartik_test_menu/test.dart';
 import 'package:tekartik_test_menu_flutter/test.dart';
 
 void porterMain() {
-  dumpSetPrint(write);
+  dumpSetPrint(write as dynamic Function(dynamic));
 
   group('export/import', () {
     test('export_import', () async {

@@ -25,9 +25,9 @@ Future main() async {
 
 // int _sqfliteLogLevelService = 0x1000;
 
-int _sqfliteLogLevel;
+int? _sqfliteLogLevel;
 
-Future sqfliteTestAppInit({int sqfliteLogLevel}) async {
+Future sqfliteTestAppInit({int? sqfliteLogLevel}) async {
   _sqfliteLogLevel = sqfliteLogLevel;
   WidgetsFlutterBinding.ensureInitialized();
   platformInit();
@@ -47,7 +47,7 @@ Future sqfliteTestAppInit({int sqfliteLogLevel}) async {
   }
 }
 
-Future run({int sqfliteLogLevel}) async {
+Future run({int? sqfliteLogLevel}) async {
   await sqfliteTestAppInit(sqfliteLogLevel: sqfliteLogLevel);
   test.main();
 }
@@ -57,7 +57,7 @@ class FactoryDelegate with SqfliteDatabaseFactoryMixin {
 
   SqfliteDatabaseFactory get factory => _factory;
 
-  FactoryDelegate({@required DatabaseFactory factory})
+  FactoryDelegate({required DatabaseFactory factory})
       : _factory = factory as SqfliteDatabaseFactory;
 
   @override
