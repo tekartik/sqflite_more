@@ -11,12 +11,12 @@ import 'package:tekartik_web_socket/web_socket.dart';
 import 'package:json_rpc_2/json_rpc_2.dart' as json_rpc;
 
 class ServerInfo {
-  bool supportsWithoutRowId;
-  bool isIOS;
-  bool isAndroid;
-  bool isMacOS;
-  bool isLinux;
-  bool isWindows;
+  bool? supportsWithoutRowId;
+  bool? isIOS;
+  bool? isAndroid;
+  bool? isMacOS;
+  bool? isLinux;
+  bool? isWindows;
 }
 
 /// Instance of a server
@@ -28,7 +28,7 @@ class SqfliteClient {
 
   static Future<SqfliteClient> connect(
     String url, {
-    WebSocketChannelClientFactory webSocketChannelClientFactory,
+    WebSocketChannelClientFactory? webSocketChannelClientFactory,
   }) async {
     webSocketChannelClientFactory ??= webSocketChannelClientFactoryIo;
     var webSocketChannel = webSocketChannelClientFactory.connect<String>(url);
@@ -59,7 +59,7 @@ class SqfliteClient {
   }
 
   Future<T> sendRequest<T>(String method, dynamic param) async {
-    T t;
+    late T t;
     try {
       t = await _client.sendRequest(method, param) as T;
     } on json_rpc.RpcException catch (e) {
@@ -75,12 +75,12 @@ class SqfliteClient {
     }
 
     Uint8List fix(dynamic value) {
-      var list = <int>[];
+      var list = <int?>[];
       for (var item in value) {
         list.add(parseInt(item));
       }
       // devPrint('fix: $value ${value.runtimeType}');
-      return Uint8List.fromList(list);
+      return Uint8List.fromList(list as List<int>);
     }
 
     // devPrint('result1: $result');

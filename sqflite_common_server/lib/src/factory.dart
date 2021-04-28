@@ -11,8 +11,8 @@ class SqfliteServerDatabaseFactory extends SqfliteDatabaseFactoryBase {
 
   final SqfliteServerContext context;
 
-  static Future<SqfliteServerDatabaseFactory> connect(String url,
-      {WebSocketChannelClientFactory webSocketChannelClientFactory}) async {
+  static Future<SqfliteServerDatabaseFactory?> connect(String url,
+      {WebSocketChannelClientFactory? webSocketChannelClientFactory}) async {
     var sqfliteContext = await SqfliteServerContext.connect(url,
         webSocketChannelClientFactory: webSocketChannelClientFactory);
     if (sqfliteContext != null) {
@@ -40,9 +40,7 @@ class SqfliteServerDatabaseFactory extends SqfliteDatabaseFactoryBase {
   // overrident to use the proper path context
   @override
   Future<String> fixPath(String path) async {
-    if (path == null) {
-      path = await getDatabasesPath();
-    } else if (path == inMemoryDatabasePath) {
+    if (path == inMemoryDatabasePath) {
       // nothing
     } else {
       if (context.pathContext.isRelative(path)) {

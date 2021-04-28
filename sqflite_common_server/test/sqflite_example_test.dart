@@ -6,7 +6,7 @@ import 'package:test/test.dart';
 
 void main() {
   group('example', () {
-    SqfliteServerDatabaseFactory databaseFactory;
+    SqfliteServerDatabaseFactory? databaseFactory;
     setUpAll(() async {
       databaseFactory = await initSqfliteServerDatabaseFactory();
     });
@@ -23,11 +23,11 @@ void main() {
     test('simple', () async {
       // Always test if the factory is available before each test
       if (databaseFactory != null) {
-        var path = join(await databaseFactory.getDatabasesPath(),
+        var path = join(await databaseFactory!.getDatabasesPath(),
             'sqlite_server_example.db');
-        await databaseFactory.deleteDatabase(path);
+        await databaseFactory!.deleteDatabase(path);
 
-        var database = await databaseFactory.openDatabase(path,
+        var database = await databaseFactory!.openDatabase(path,
             options: OpenDatabaseOptions(version: 1));
         expect(await database.getVersion(), 1);
 

@@ -7,7 +7,7 @@ import 'package:test/test.dart';
 void main() {
   sqfliteFfiInit();
   group('sqflite', () {
-    SqfliteServerDatabaseFactory databaseFactory;
+    SqfliteServerDatabaseFactory? databaseFactory;
 
     setUpAll(() async {
       WebSocketChannelFactory factory = webSocketChannelFactoryMemory;
@@ -20,16 +20,16 @@ void main() {
     });
 
     tearDownAll(() async {
-      await databaseFactory.close();
+      await databaseFactory!.close();
     });
 
     test('getDatabasesPath', () async {
-      var databasesPath = await databaseFactory.getDatabasesPath();
+      var databasesPath = await databaseFactory!.getDatabasesPath();
       expect(databasesPath, isNotNull);
     });
 
     test('deleteDatabase', () async {
-      await databaseFactory.deleteDatabase('dummy');
+      await databaseFactory!.deleteDatabase('dummy');
     });
   });
 }
