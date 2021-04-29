@@ -49,7 +49,7 @@ String unescapeText(String name) {
 }
 
 class SqlParserIndex {
-  int position;
+  int? position;
 
   @override
   String toString() {
@@ -60,17 +60,17 @@ class SqlParserIndex {
 class SqlParser {
   SqlParser(this.sql);
 
-  final String sql;
-  int position = 0;
+  final String? sql;
+  int? position = 0;
 
-  void skipWhitespaces({bool skip, SqlParserIndex index}) {
+  void skipWhitespaces({bool? skip, SqlParserIndex? index}) {
     var position = index?.position ?? this.position;
 
     while (true) {
       if (atEnd(position)) {
         break;
       }
-      var codeUnit = sql.codeUnitAt(position);
+      var codeUnit = sql!.codeUnitAt(position!);
       if (isWhitespace(codeUnit)) {
         position++;
       } else {
@@ -85,24 +85,24 @@ class SqlParser {
     }
   }
 
-  bool atEnd([int position]) {
-    return (position ?? this.position) == sql.length;
+  bool atEnd([int? position]) {
+    return (position ?? this.position) == sql!.length;
   }
 
-  String getNextToken({bool skip, SqlParserIndex index}) {
+  String? getNextToken({bool? skip, SqlParserIndex? index}) {
     index ??= SqlParserIndex();
     index.position ??= position;
     skipWhitespaces(skip: skip, index: index);
     if (!atEnd(index.position)) {
       var sb = StringBuffer();
 
-      var codeUnit = sql.codeUnitAt(index.position);
-      int startCodeUnit;
+      var codeUnit = sql!.codeUnitAt(index.position!);
+      int? startCodeUnit;
       if (isStringWrapper(codeUnit)) {
         startCodeUnit = codeUnit;
       }
       sb.writeCharCode(codeUnit);
-      index.position++;
+      index.position = index.position! + 1;
 
       // is separator ?
       var isTokenSeparator = false;
@@ -121,7 +121,7 @@ class SqlParser {
               break;
             }
           }
-          codeUnit = sql.codeUnitAt(index.position);
+          codeUnit = sql!.codeUnitAt(index.position!);
           if (startCodeUnit != null) {
             sb.writeCharCode(codeUnit);
           } else {
@@ -131,7 +131,7 @@ class SqlParser {
               sb.writeCharCode(codeUnit);
             }
           }
-          index.position++;
+          index.position = index.position! + 1;
           if (codeUnit == startCodeUnit) {
             break;
           }
@@ -170,17 +170,17 @@ class SqlParser {
     return true;
   }
 
-  String getNextStatement({bool skip, SqlParserIndex index}) {
+  String getNextStatement({bool? skip, SqlParserIndex? index}) {
     skipWhitespaces(skip: skip, index: index);
     index ??= SqlParserIndex()..position = position;
     var startPosition = index.position;
     var sb = StringBuffer();
-    String currentTriggerStatement;
-    String previousToken;
+    String? currentTriggerStatement;
+    String? previousToken;
     while (true) {
       var token = getNextToken(skip: skip, index: index);
       if (token == ';' || token == null) {
-        sb.write(sql.substring(startPosition, index.position));
+        sb.write(sql!.substring(startPosition!, index.position));
 
         var statement = sb.toString();
 
@@ -192,7 +192,7 @@ class SqlParser {
         }
 
         if (currentTriggerStatement != null) {
-          if (previousToken.toLowerCase() == 'end') {
+          if (previousToken!.toLowerCase() == 'end') {
             return currentTriggerStatement;
           }
         } else {
@@ -205,7 +205,7 @@ class SqlParser {
   }
 }
 
-List<String> parseStatements(String sql) {
+List<String> parseStatements(String? sql) {
   var allParser = SqlParser(sql);
   var index = SqlParserIndex()..position = allParser.position;
   var statements = <String>[];

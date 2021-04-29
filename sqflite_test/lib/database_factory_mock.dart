@@ -13,12 +13,12 @@ class DatabaseFactoryMock implements DatabaseFactory {
 
   @override
   Future<String> getDatabasesPath() async {
-    return null;
+    throw UnimplementedError();
   }
 
   @override
-  Future<Database> openDatabase(String path, {OpenDatabaseOptions options}) {
-    return null;
+  Future<Database> openDatabase(String path, {OpenDatabaseOptions? options}) {
+    throw UnimplementedError();
   }
 
   @override

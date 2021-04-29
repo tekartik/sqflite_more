@@ -8,7 +8,6 @@ Future main() async {
     'sqflite_porter',
     'sqflite_server',
     'sqflite_test',
-    'sqflite_ffi_test',
     'sqflite_test_app',
     'sqflite_server_app',
   ]) {

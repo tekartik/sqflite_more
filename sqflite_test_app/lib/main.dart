@@ -8,7 +8,7 @@ import 'package:sqflite_common/src/mixin/import_mixin.dart' // ignore: implement
     show
         SqfliteDatabaseFactory,
         SqfliteDatabaseFactoryMixin;
-import 'package:sqflite_ffi_test/sqflite.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:tekartik_app_platform/app_platform.dart';
 import 'package:tekartik_test_menu_flutter/test.dart';
 
@@ -18,21 +18,21 @@ Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   platformInit();
   if (Platform.isWindows || Platform.isLinux) {
-    sqfliteInit();
+    sqfliteFfiInit();
   }
   test.main();
 }
 
 // int _sqfliteLogLevelService = 0x1000;
 
-int _sqfliteLogLevel;
+int? _sqfliteLogLevel;
 
-Future sqfliteTestAppInit({int sqfliteLogLevel}) async {
+Future sqfliteTestAppInit({int? sqfliteLogLevel}) async {
   _sqfliteLogLevel = sqfliteLogLevel;
   WidgetsFlutterBinding.ensureInitialized();
   platformInit();
   if (Platform.isWindows || Platform.isLinux) {
-    sqfliteInit();
+    sqfliteFfiInit();
   }
   databaseFactory = FactoryDelegate(factory: databaseFactory);
   if (sqfliteLogLevel != null && sqfliteLogLevel != sqfliteLogLevelNone) {
@@ -47,7 +47,7 @@ Future sqfliteTestAppInit({int sqfliteLogLevel}) async {
   }
 }
 
-Future run({int sqfliteLogLevel}) async {
+Future run({int? sqfliteLogLevel}) async {
   await sqfliteTestAppInit(sqfliteLogLevel: sqfliteLogLevel);
   test.main();
 }
@@ -57,12 +57,12 @@ class FactoryDelegate with SqfliteDatabaseFactoryMixin {
 
   SqfliteDatabaseFactory get factory => _factory;
 
-  FactoryDelegate({@required DatabaseFactory factory})
+  FactoryDelegate({required DatabaseFactory factory})
       : _factory = factory as SqfliteDatabaseFactory;
 
   @override
   Future<T> invokeMethod<T>(String method, [arguments]) async {
-    var map = <String, dynamic>{
+    var map = <String, Object?>{
       'method': method,
       if (arguments != null) 'arguments': arguments
     };

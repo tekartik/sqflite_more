@@ -9,7 +9,7 @@ import 'package:sqflite/sqflite.dart' as sqflite;
 
 void main() => run();
 
-DatabaseFactory databaseFactory;
+DatabaseFactory? databaseFactory;
 
 void run() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -39,7 +39,7 @@ class SqfliteServerApp extends StatelessWidget {
   }
 }
 
-MaterialPageRoute<dynamic> get homePageRoute =>
-    MaterialPageRoute<dynamic>(builder: (BuildContext context) {
+MaterialPageRoute<Object?> get homePageRoute =>
+    MaterialPageRoute<Object?>(builder: (BuildContext context) {
       return SqfliteServerHomePage(title: 'SQFlite server page');
     });

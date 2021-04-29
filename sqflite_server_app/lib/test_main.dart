@@ -8,15 +8,15 @@ import 'package:tekartik_test_menu_flutter/test.dart';
 
 void main() {
   mainMenu(() {
-    dumpSetPrint(write);
+    dumpSetPrint(write as Object? Function(Object?));
     menu('run', () {
       item('go home', () {
-        Navigator.of(buildContext).push<dynamic>(homePageRoute);
+        Navigator.of(buildContext!).push<Object?>(homePageRoute);
       });
       item('go home (restart app)', () async {
         //Sqflite.devSetDebugModeOn(true);
         await clearApp();
-        await Navigator.of(buildContext).push<dynamic>(homePageRoute);
+        await Navigator.of(buildContext!).push<Object?>(homePageRoute);
       });
       item('app', () {
         run();
@@ -27,7 +27,7 @@ void main() {
     group('export/import', () {
       test('export_import', () async {
         var path = await initEmptyDb('export.db');
-        var db = await databaseFactory.openDatabase(path);
+        var db = await databaseFactory!.openDatabase(path);
         try {
           var table = 'test';
           await db.execute(
@@ -44,7 +44,7 @@ void main() {
 
           await db.execute(
               'INSERT INTO $table (column_1, column_2, column_3) VALUES (11, ?, ?)',
-              <dynamic>[
+              <Object?>[
                 'Some \' test \n',
                 [1, 2, 3, 4]
               ]);

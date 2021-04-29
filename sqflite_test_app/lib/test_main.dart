@@ -31,7 +31,7 @@ void main() {
 
 class ManualApp extends StatelessWidget {
   //final _doneCompleter = Completer();
-  Future get done => null;
+  Future? get done => null;
 
   @override
   Widget build(BuildContext context) {
@@ -42,9 +42,9 @@ class ManualApp extends StatelessWidget {
 }
 
 class HomePage extends StatefulWidget {
-  final Completer doneCompleter;
+  final Completer? doneCompleter;
 
-  const HomePage({Key key, this.doneCompleter}) : super(key: key);
+  const HomePage({Key? key, this.doneCompleter}) : super(key: key);
   @override
   _HomePageState createState() => _HomePageState();
 }

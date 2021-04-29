@@ -33,44 +33,44 @@ Future<Database> openEmptyDatabase(String dbName) async {
   return db;
 }
 
-Iterable<String> rowsToLines(Iterable<dynamic> rows) {
-  return rows.map((dynamic row) => row?.toString());
+Iterable<String> rowsToLines(Iterable<Object?> rows) {
+  return rows.map((Object? row) => row.toString());
 }
 
 String formatLines(List rows) {
   return '[${rowsToLines(rows).join(',\n')}]';
 }
 
-Function(dynamic message) _print = core.print;
+Function(Object? message) _print = core.print;
 
-void dumpSetPrint(Function(dynamic message) print) {
+void dumpSetPrint(Function(Object? message) print) {
   _print = print;
 }
 
-void dumpLines(List rows, {Function(dynamic message) print}) {
+void dumpLines(List rows, {Function(Object? message)? print}) {
   print ??= _print;
   rowsToLines(rows).toList().forEach((line) {
-    print(line);
+    print!(line);
   });
 }
 
-void dumpLine(dynamic line, {Function(dynamic message) print}) {
+void dumpLine(Object? line, {Function(Object? message)? print}) {
   print ??= _print;
   print(line);
 }
 
 Future dumpTableDefinitions(Database db,
-    {Function(dynamic message) print}) async {
+    {Function(Object? message)? print}) async {
   dumpLines(await db.query('sqlite_master'), print: print);
 }
 
 Future dumpTable(Database db, String table,
-    {Function(dynamic message) print}) async {
+    {Function(Object? message)? print}) async {
   dumpLine('TABLE: $table', print: print);
   dumpLines(await db.query(table), print: print);
 }
 
-Future dumpTables(Database db, {Function(dynamic message) print}) async {
+Future dumpTables(Database db, {Function(Object? message)? print}) async {
   for (var row in await db.query('sqlite_master', columns: ['name'])) {
     var table = row.values.first as String;
     await dumpTable(db, table, print: print);
@@ -78,15 +78,12 @@ Future dumpTables(Database db, {Function(dynamic message) print}) async {
 }
 
 Future<Database> importSqlDatabase(String dbName,
-    {String sql, List<String> sqlStatements}) async {
+    {String? sql, List<String>? sqlStatements}) async {
   sqlStatements ??= parseStatements(sql);
-  if (sqlStatements == null) {
-    throw ArgumentError('sql or sqlStatements is required');
-  }
   var path = await initEmptyDb(dbName);
   var db = await openDatabase(path, version: 1,
       onCreate: (Database db, int version) async {
-    await dbImportSql(db, sqlStatements);
+    await dbImportSql(db, sqlStatements!);
   });
   return db;
 }

@@ -12,11 +12,11 @@ Future main() async {
 
   group('client', () {
     test('init', () async {
-      var db = await factory.openDatabase(inMemoryDatabasePath);
+      var db = await factory!.openDatabase(inMemoryDatabasePath);
       try {
         expect(await db.getVersion(), 0);
       } finally {
-        await db?.close();
+        await db.close();
       }
 
       // await sqfliteServer.close();

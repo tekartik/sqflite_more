@@ -11,7 +11,7 @@ publish_to: none
 version: 0.1.0
 
 environment:
-  sdk: '>=2.10.0-0 <3.0.0'
+  sdk: '>=2.12.0 <3.0.0'
 
 dependencies:
   flutter:
@@ -20,28 +20,28 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2
-  sqflite_server:
+  sqflite_common_server:
     git:
       url: git://github.com/tekartik/sqflite_more
-      ref: dart2
-      path: sqflite_server
+      ref: null_safety
+      path: sqflite_common_server
     version: '>=0.3.2'
   sqflite_porter:
     git:
       url: git://github.com/tekartik/sqflite_more
-      ref: dart2
+      ref: null_safety
       path: sqflite_porter
     version: '>=0.2.0'
   tekartik_app_platform:
     git:
       url: git://github.com/tekartik/app_flutter_utils.dart
-      ref: dart2
+      ref: null_safety
       path: app_platform
     version: '>=0.1.0'
   sqflite_test:
     git:
       url: git://github.com/tekartik/sqflite_more
-      ref: dart2
+      ref: null_safety
       path: sqflite_test
     version: '>=0.2.0'
 
@@ -51,10 +51,11 @@ dev_dependencies:
   tekartik_test_menu_flutter:
     git:
       url: git://github.com/tekartik/test_menu_flutter
-      ref: dart2
+      ref: null_safety
       path: test_menu_flutter
     version: '>=0.2.4'
   flutter_launcher_icons: ">=0.6.1"
+  dev_test:
 
 flutter_icons:
   android: true
@@ -105,7 +106,7 @@ dependency_overrides:
   # pedantic: '>=1.9.0'
   sqflite_porter:
     path: ../sqflite_porter
-  sqflite_server:
-    path: ../sqflite_server
   sqflite_common_server:
     path: ../sqflite_common_server
+  sqflite_test:
+    path: ../sqflite_test

@@ -15,13 +15,13 @@ void main() {
       // null
       expect(mapListToCsv(null), isNull);
       // empty
-      expect(mapListToCsv(<Map<String, dynamic>>[]), '');
+      expect(mapListToCsv(<Map<String, Object?>>[]), '');
 
       // simple
       expectCsv(
           mapListToCsv([
             {'test': 1}
-          ]),
+          ])!,
           '''
 test
 1
@@ -32,7 +32,7 @@ test
           mapListToCsv([
             {'test': 1},
             {'value': 2}
-          ]),
+          ])!,
           '''
 test,value
 1,null
@@ -48,7 +48,7 @@ null,2
               'bool': true,
               'Uint8List': Uint8List.fromList([1, 2, 3])
             }
-          ]),
+          ])!,
           '''
 int,double,String,bool,Uint8List
 1,2.0,text,true,"[1, 2, 3]"

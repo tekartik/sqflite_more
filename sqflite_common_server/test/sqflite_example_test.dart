@@ -6,7 +6,7 @@ import 'package:test/test.dart';
 
 void main() {
   group('example', () {
-    SqfliteServerDatabaseFactory databaseFactory;
+    SqfliteServerDatabaseFactory? databaseFactory;
     setUpAll(() async {
       databaseFactory = await initSqfliteServerDatabaseFactory();
     });
@@ -23,12 +23,12 @@ void main() {
     test('simple', () async {
       // Always test if the factory is available before each test
       if (databaseFactory != null) {
-        var path = join(await databaseFactory.getDatabasesPath(),
+        var path = join(await databaseFactory!.getDatabasesPath(),
             'sqlite_server_example.db');
-        await databaseFactory.deleteDatabase(path);
+        await databaseFactory!.deleteDatabase(path);
 
-        var database = await databaseFactory.openDatabase(path,
-            options: OpenDatabaseOptions(version: 1));
+        var database = await databaseFactory!
+            .openDatabase(path, options: OpenDatabaseOptions(version: 1));
         expect(await database.getVersion(), 1);
 
         await database.execute(
@@ -36,26 +36,26 @@ void main() {
         print('table created');
         var id = await database.rawInsert(
             "INSERT INTO Test(name, value, num) VALUES('some name',1234,?)",
-            <dynamic>[456.789]);
+            <Object?>[456.789]);
         print('inserted1: $id');
         id = await database.rawInsert(
             'INSERT INTO Test(name, value) VALUES(?, ?)',
-            <dynamic>['another name', 12345678]);
+            <Object?>['another name', 12345678]);
         print('inserted2: $id');
         var count = await database.rawUpdate(
             'UPDATE Test SET name = ?, VALUE = ? WHERE name = ?',
-            <dynamic>['updated name', '9876', 'some name']);
+            <Object?>['updated name', '9876', 'some name']);
         print('updated: $count');
         expect(count, 1);
         var list = await database.rawQuery('SELECT * FROM Test');
         var expectedList = <Map>[
-          <String, dynamic>{
+          <String, Object?>{
             'name': 'updated name',
             'id': 1,
             'value': 9876,
             'num': 456.789
           },
-          <String, dynamic>{
+          <String, Object?>{
             'name': 'another name',
             'id': 2,
             'value': 12345678,

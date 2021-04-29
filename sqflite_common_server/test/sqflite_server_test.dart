@@ -17,7 +17,7 @@ void main() {
           [1, 2, 3]
         ],
       });
-      expect(param['arguments'][0], const TypeMatcher<Uint8List>());
+      expect(param['arguments']![0], const TypeMatcher<Uint8List>());
       var param2 = fixParam('batch', {
         'operations': [
           {

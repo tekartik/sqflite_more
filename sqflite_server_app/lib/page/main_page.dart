@@ -11,7 +11,7 @@ import 'package:sqflite_server_app/src/prefs.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';
 
 class SqfliteServerHomePage extends StatefulWidget {
-  SqfliteServerHomePage({Key key, this.title}) : super(key: key);
+  SqfliteServerHomePage({Key? key, this.title}) : super(key: key);
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -22,7 +22,7 @@ class SqfliteServerHomePage extends StatefulWidget {
   // used by the build method of the State. Fields in a Widget subclass are
   // always marked 'final'.
 
-  final String title;
+  final String? title;
 
   @override
   _SqfliteServerHomePageState createState() => _SqfliteServerHomePageState();
@@ -30,12 +30,12 @@ class SqfliteServerHomePage extends StatefulWidget {
 
 class _SqfliteServerHomePageState extends State<SqfliteServerHomePage> {
   bool _startPending = false;
-  int port = sqfliteServerDefaultPort;
+  int? port = sqfliteServerDefaultPort;
 // Create a text controller. We will use it to retrieve the current value
   // of the TextField!
   final portInputController = TextEditingController();
 
-  final List<String> logs = [];
+  final List<String?> logs = [];
 
   @override
   void dispose() {
@@ -44,7 +44,7 @@ class _SqfliteServerHomePageState extends State<SqfliteServerHomePage> {
     super.dispose();
   }
 
-  void log(String message) {
+  void log(String? message) {
     print(message);
     setState(() {
       logs.add(message);
@@ -69,11 +69,11 @@ class _SqfliteServerHomePageState extends State<SqfliteServerHomePage> {
         appBar: AppBar(
           // Here we take the value from the MyHomePage object that was created by
           // the App.build method, and use it to set our appbar title.
-          title: Text(widget.title),
+          title: Text(widget.title!),
         ),
         body: FutureBuilder(
             future: _loadPrefs(),
-            builder: (BuildContext context, AsyncSnapshot<Prefs> snapshot) {
+            builder: (BuildContext context, AsyncSnapshot<Prefs?> snapshot) {
               if (snapshot.data == null) {
                 return Container();
               } else {
@@ -82,7 +82,7 @@ class _SqfliteServerHomePageState extends State<SqfliteServerHomePage> {
                       padding: const EdgeInsets.only(top: 16.0),
                       child: Text(
                         app.sqfliteServerStarted
-                            ? 'SQFlite server listening on ${app.sqfliteServer.port}'
+                            ? 'SQFlite server listening on ${app.sqfliteServer!.port}'
                             : (_startPending
                                 ? 'Starting listening on $port'
                                 : 'Press START to start SQFlite server'),
@@ -118,7 +118,7 @@ class _SqfliteServerHomePageState extends State<SqfliteServerHomePage> {
               widgets.add(Text(openError));
             }
             */
-                if (app.prefs.showConsole) {
+                if (app.prefs!.showConsole) {
                   widgets.add(Expanded(
                       child: ListView.builder(
                           reverse: true,
@@ -128,7 +128,7 @@ class _SqfliteServerHomePageState extends State<SqfliteServerHomePage> {
                                 padding: const EdgeInsets.only(
                                     left: 8.0, right: 8.0),
                                 child: Text(
-                                  logs[logs.length - index - 1],
+                                  logs[logs.length - index - 1]!,
                                   style: const TextStyle(fontSize: 10.0),
                                 ));
                           })));
@@ -166,7 +166,7 @@ class _SqfliteServerHomePageState extends State<SqfliteServerHomePage> {
   }
 
   Future stopServer() async {
-    await app.prefs.setAutoStart(false);
+    await app.prefs!.setAutoStart(false);
     setState(() {
       _startPending = true;
     });
@@ -180,10 +180,10 @@ class _SqfliteServerHomePageState extends State<SqfliteServerHomePage> {
   Future startApp() async {
     if (!app.started) {
       app.started = true;
-      await Future<dynamic>.delayed(const Duration());
+      await Future<Object?>.delayed(const Duration());
       //devPrint('startApp');
-      portInputController.text = (app.prefs.port ?? 0).toString();
-      if (app.prefs.autoStart) {
+      portInputController.text = (app.prefs!.port ?? 0).toString();
+      if (app.prefs!.autoStart) {
         await startServer();
       }
     }
@@ -196,12 +196,12 @@ class _SqfliteServerHomePageState extends State<SqfliteServerHomePage> {
     });
     try {
       await app.startServer(port,
-          notifyCallback: (bool response, String method, dynamic param) {
+          notifyCallback: (bool response, String method, Object? param) {
         if (response == false) {
           void _logOperation(Map map) {
-            var sql = (map['sql'] as String)?.trim();
+            var sql = (map['sql'] as String?)?.trim();
             if (sql != null) {
-              var args = map['arguments'] as List;
+              var args = map['arguments'] as List?;
               if (args != null && args.isNotEmpty) {
                 sql += ' $args';
               }
@@ -210,8 +210,9 @@ class _SqfliteServerHomePageState extends State<SqfliteServerHomePage> {
           }
 
           if (method == methodSqflite) {
-            var sqfliteMethod = param['method'] as String;
-            dynamic sqfliteParam = param['param'];
+            var paramMap = param as Map;
+            var sqfliteMethod = paramMap['method'] as String?;
+            var sqfliteParam = paramMap['param'];
             if (sqfliteMethod == methodOpenDatabase) {
               log('open ${(sqfliteParam as Map)['path']}');
             } else if (sqfliteMethod == methodBatch) {
@@ -221,7 +222,7 @@ class _SqfliteServerHomePageState extends State<SqfliteServerHomePage> {
                 _logOperation(operationMap);
               }
             } else {
-              var _methodParam = sqfliteParam as Map;
+              var _methodParam = sqfliteParam as Map?;
               if (_methodParam != null) {
                 _logOperation(_methodParam);
               }
@@ -234,12 +235,12 @@ class _SqfliteServerHomePageState extends State<SqfliteServerHomePage> {
         // log('$response $method $param');
       });
       // Save port in prefs upon success
-      await app.prefs.setPort(port);
-      await app.prefs.setAutoStart(true);
+      await app.prefs!.setPort(port);
+      await app.prefs!.setAutoStart(true);
       logs.clear();
       log('Version: ${app.version}');
       log('Listening on port $port');
-      log('WebSocket url: ${app.sqfliteServer.url}');
+      log('WebSocket url: ${app.sqfliteServer!.url}');
       if (Platform.isAndroid) {
         log('Make sure you have ran at least once: adb forward tcp:8501 tcp:8501');
       }
@@ -255,7 +256,7 @@ class _SqfliteServerHomePageState extends State<SqfliteServerHomePage> {
     });
   }
 
-  Future<Prefs> _loadPrefs() async {
+  Future<Prefs?> _loadPrefs() async {
     //devPrint('prefs: ${app.prefs?.toString()}');
     if (app.prefs == null) {
       var prefs = Prefs(databaseFactory: databaseFactory);

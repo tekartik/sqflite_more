@@ -7,7 +7,7 @@ import 'package:tekartik_test_menu/test.dart';
 import 'package:tekartik_test_menu_flutter/test.dart';
 
 void porterMain() {
-  dumpSetPrint(write);
+  dumpSetPrint(write as Object? Function(Object?));
 
   group('export/import', () {
     test('export_import', () async {
@@ -30,7 +30,7 @@ void porterMain() {
 
         await db.execute(
             'INSERT INTO $table (column_1, column_2, column_3) VALUES (11, ?, ?)',
-            <dynamic>[
+            <Object?>[
               'Some \' test \n',
               // Uint8List needed for ffi
               Uint8List.fromList([1, 2, 3, 4])

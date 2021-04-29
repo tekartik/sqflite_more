@@ -31,13 +31,13 @@ void main() {
       write("starting isolate...don't expect any more information");
       var path = await initDeleteDb(isolateDbName);
       var receivePort = ReceivePort();
-      var param = <String, dynamic>{
+      var param = <String, Object?>{
         'sendPort': receivePort.sendPort,
         'path': path
       };
       await FlutterIsolate.spawn(simpleIsolate, param);
 
-      var results = json.decode(await receivePort.first);
+      var results = json.decode(await (receivePort.first as FutureOr<String>));
       write(results);
     });
     item('Read data', () async {
@@ -60,21 +60,21 @@ Future insert(Database db, int id) async {
 }
 
 // Somehow it seems to expect a string for now...
-void simpleIsolate(Map<String, dynamic> param) {
+void simpleIsolate(Map<String, Object?> param) {
   var path = param['path'] as String;
-  var sendPort = param['sendPort'] as SendPort;
+  var sendPort = param['sendPort'] as SendPort?;
   simpleTest(path).then((results) {
     // Convert result to string until I figure out how to have something else...
-    sendPort.send(json.encode(results));
+    sendPort!.send(json.encode(results));
   });
 }
 
-Future<List<Map<String, dynamic>>> simpleTest(String path) async {
+Future<List<Map<String, Object?>>> simpleTest(String path) async {
   // Get the path
   var db = await openDatabase(path, version: 1, onCreate: (db, version) {
     db.execute('CREATE TABLE Test (id INTEGER PRIMARY KEY, name TEXT)');
   });
-  List<Map<String, dynamic>> results;
+  List<Map<String, Object?>> results;
   try {
     await insert(db, 1);
     await insert(db, 2);

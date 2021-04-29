@@ -13,8 +13,12 @@ import 'package:tekartik_common_utils/common_utils_import.dart' hide devPrint;
 import 'package:tekartik_web_socket/web_socket.dart';
 import 'package:tekartik_web_socket_io/web_socket_io.dart';
 
+const useNullResponseWorkaround = true;
+
+const nullResponseWorkaround = '<sqflite_null>';
+
 typedef SqfliteServerNotifyCallback = void Function(
-    bool response, String method, dynamic params);
+    bool response, String method, Object? params);
 
 /// Web socket server
 class SqfliteServer {
@@ -29,28 +33,25 @@ class SqfliteServer {
     });
   }
 
-  SqfliteContext _sqfliteLocalContext;
+  SqfliteContext? _sqfliteLocalContext;
 
   SqfliteContext get sqfliteLocalContext =>
       _sqfliteLocalContext ??= SqfliteLocalContext(databaseFactory: factory);
 
-  final SqfliteServerNotifyCallback _notifyCallback;
+  final SqfliteServerNotifyCallback? _notifyCallback;
   final List<SqfliteServerChannel> _channels = [];
   final WebSocketChannelServer<String> _webSocketChannelServer;
 
   static Future<SqfliteServer> serve(
-      {WebSocketChannelServerFactory webSocketChannelServerFactory,
-      dynamic address,
-      int port,
-      SqfliteServerNotifyCallback notifyCallback,
-      @required DatabaseFactory factory}) async {
+      {WebSocketChannelServerFactory? webSocketChannelServerFactory,
+      Object? address,
+      int? port,
+      SqfliteServerNotifyCallback? notifyCallback,
+      required DatabaseFactory factory}) async {
     webSocketChannelServerFactory ??= webSocketChannelServerFactoryIo;
     var webSocketChannelServer = await webSocketChannelServerFactory
         .serve<String>(address: address, port: port);
-    if (webSocketChannelServer != null) {
-      return SqfliteServer._(webSocketChannelServer, notifyCallback, factory);
-    }
-    return null;
+    return SqfliteServer._(webSocketChannelServer, notifyCallback, factory);
   }
 
   Future close() => _webSocketChannelServer.close();
@@ -63,7 +64,7 @@ class SqfliteServer {
 /// We have one channer per client
 class SqfliteServerChannel {
   // Keep
-  final _openDatabaseIds = <int>[];
+  final _openDatabaseIds = <int?>[];
 
   SqfliteServerChannel(this._sqfliteServer, WebSocketChannel<String> channel)
       : _rpcServer = json_rpc.Server(channel) {
@@ -71,9 +72,9 @@ class SqfliteServerChannel {
     _rpcServer.registerMethod(methodGetServerInfo,
         (json_rpc.Parameters parameters) {
       if (_notifyCallback != null) {
-        _notifyCallback(false, methodGetServerInfo, parameters.value);
+        _notifyCallback!(false, methodGetServerInfo, parameters.value);
       }
-      var result = <String, dynamic>{
+      var result = <String, Object?>{
         keyName: serverInfoName,
         keyVersion: serverInfoVersion.toString(),
         keySupportsWithoutRowId:
@@ -85,7 +86,7 @@ class SqfliteServerChannel {
         keyIsLinux: Platform.isLinux
       };
       if (_notifyCallback != null) {
-        _notifyCallback(true, methodGetServerInfo, result);
+        _notifyCallback!(true, methodGetServerInfo, result);
       }
       return result;
     });
@@ -93,25 +94,26 @@ class SqfliteServerChannel {
     _rpcServer.registerMethod(methodSqfliteDeleteDatabase,
         (json_rpc.Parameters parameters) async {
       if (_notifyCallback != null) {
-        _notifyCallback(false, methodSqfliteDeleteDatabase, parameters.value);
+        _notifyCallback!(false, methodSqfliteDeleteDatabase, parameters.value);
       }
-      await _sqfliteServer.factory
-          .deleteDatabase((parameters.value as Map)[keyPath] as String);
+      var path = (parameters.value as Map)[keyPath] as String;
+      await _sqfliteServer.factory.deleteDatabase(path);
       if (_notifyCallback != null) {
-        _notifyCallback(true, methodSqfliteDeleteDatabase, null);
+        _notifyCallback!(true, methodSqfliteDeleteDatabase, null);
       }
-      return null;
+      // Return the path
+      return path;
     });
     // Specific method for creating a directory
     _rpcServer.registerMethod(methodCreateDirectory,
         (json_rpc.Parameters parameters) async {
       if (_notifyCallback != null) {
-        _notifyCallback(false, methodCreateDirectory, parameters.value);
+        _notifyCallback!(false, methodCreateDirectory, parameters.value);
       }
       var path = await _sqfliteServer.sqfliteLocalContext
           .createDirectory((parameters.value as Map)[keyPath] as String);
       if (_notifyCallback != null) {
-        _notifyCallback(true, methodCreateDirectory, path);
+        _notifyCallback!(true, methodCreateDirectory, path);
       }
       return path;
     });
@@ -119,12 +121,12 @@ class SqfliteServerChannel {
     _rpcServer.registerMethod(methodDeleteDirectory,
         (json_rpc.Parameters parameters) async {
       if (_notifyCallback != null) {
-        _notifyCallback(false, methodDeleteDirectory, parameters.value);
+        _notifyCallback!(false, methodDeleteDirectory, parameters.value);
       }
       var path = await _sqfliteServer.sqfliteLocalContext
           .deleteDirectory((parameters.value as Map)[keyPath] as String);
       if (_notifyCallback != null) {
-        _notifyCallback(true, methodDeleteDirectory, path);
+        _notifyCallback!(true, methodDeleteDirectory, path);
       }
       return path;
     });
@@ -132,14 +134,14 @@ class SqfliteServerChannel {
     _rpcServer.registerMethod(methodWriteFile,
         (json_rpc.Parameters parameters) async {
       if (_notifyCallback != null) {
-        _notifyCallback(false, methodWriteFile, parameters.value);
+        _notifyCallback!(false, methodWriteFile, parameters.value);
       }
       final map = parameters.value as Map;
-      var path = map[keyPath]?.toString();
-      var content = (map[keyContent] as List)?.cast<int>();
+      var path = map[keyPath].toString();
+      var content = (map[keyContent] as List).cast<int>();
       path = await _sqfliteServer.sqfliteLocalContext.writeFile(path, content);
       if (_notifyCallback != null) {
-        _notifyCallback(true, methodWriteFile, path);
+        _notifyCallback!(true, methodWriteFile, path);
       }
       return path;
     });
@@ -147,14 +149,14 @@ class SqfliteServerChannel {
     _rpcServer.registerMethod(methodReadFile,
         (json_rpc.Parameters parameters) async {
       if (_notifyCallback != null) {
-        _notifyCallback(false, methodReadFile, parameters.value);
+        _notifyCallback!(false, methodReadFile, parameters.value);
       }
       final map = parameters.value as Map;
       final path = map[keyPath] as String;
 
       var content = await _sqfliteServer.sqfliteLocalContext.readFile(path);
       if (_notifyCallback != null) {
-        _notifyCallback(true, methodReadFile, content);
+        _notifyCallback!(true, methodReadFile, content);
       }
       return content;
     });
@@ -162,7 +164,7 @@ class SqfliteServerChannel {
     _rpcServer.registerMethod(methodSqflite,
         (json_rpc.Parameters parameters) async {
       if (_notifyCallback != null) {
-        _notifyCallback(false, methodSqflite, parameters.value);
+        _notifyCallback!(false, methodSqflite, parameters.value);
       }
 
       var map = parameters.value as Map;
@@ -170,20 +172,20 @@ class SqfliteServerChannel {
       var sqfliteMethod = map[keyMethod] as String;
       var sqfliteParam = map[keyParam];
 
-      if (sqfliteMethod != null && sqfliteParam != null) {
+      if (sqfliteParam != null) {
         sqfliteParam = fixParam(sqfliteMethod, sqfliteParam);
       }
 
-      dynamic result = await _sqfliteServer.invokeHandler
-          .invokeMethod<dynamic>(sqfliteMethod, sqfliteParam);
+      var result = await _sqfliteServer.invokeHandler
+          .invokeMethod<Object?>(sqfliteMethod, sqfliteParam);
       if (_notifyCallback != null) {
-        _notifyCallback(true, methodSqflite, result);
+        _notifyCallback!(true, methodSqflite, result);
       }
 
       // Store opened database
       if (sqfliteMethod == methodOpenDatabase) {
         if (result is Map) {
-          _openDatabaseIds.add(result[paramId] as int);
+          _openDatabaseIds.add(result[paramId] as int?);
         } else if (result is int) {
           // Old
           _openDatabaseIds.add(result);
@@ -191,9 +193,19 @@ class SqfliteServerChannel {
           throw 'invalid open result $result';
         }
       } else if (sqfliteMethod == methodCloseDatabase) {
-        _openDatabaseIds.remove((sqfliteParam as Map)[paramId] as int);
+        _openDatabaseIds.remove((sqfliteParam as Map)[paramId] as int?);
       }
 
+      if (useNullResponseWorkaround) {
+        /// nnbd workaround for issue https://github.com/dart-lang/json_rpc_2/issues/76
+        if (result == null) {
+          if (sqfliteMethod == methodBatch) {
+            result = [];
+          } else {
+            result = nullResponseWorkaround;
+          }
+        }
+      }
       return result;
     });
     _rpcServer.listen();
@@ -203,7 +215,7 @@ class SqfliteServerChannel {
     _rpcServer.done.then((_) async {
       for (var databaseId in _openDatabaseIds) {
         try {
-          await _sqfliteServer.invokeHandler.invokeMethod<dynamic>(
+          await _sqfliteServer.invokeHandler.invokeMethod<Object?>(
               methodCloseDatabase, {paramId: databaseId});
         } catch (e) {
           print('error cleaning up database $databaseId');
@@ -215,7 +227,7 @@ class SqfliteServerChannel {
   final SqfliteServer _sqfliteServer;
   final json_rpc.Server _rpcServer;
 
-  SqfliteServerNotifyCallback get _notifyCallback =>
+  SqfliteServerNotifyCallback? get _notifyCallback =>
       _sqfliteServer._notifyCallback;
 }
 
@@ -223,7 +235,7 @@ class SqfliteLocalContext implements SqfliteContext {
   @override
   final DatabaseFactory databaseFactory;
 
-  SqfliteLocalContext({@required this.databaseFactory});
+  SqfliteLocalContext({required this.databaseFactory});
 
   @override
   Future<String> createDirectory(String path) async {
@@ -247,7 +259,7 @@ class SqfliteLocalContext implements SqfliteContext {
     return path;
   }
 
-  Future<String> fixPath(String path) async {
+  Future<String> fixPath(String? path) async {
     if (path == null) {
       path = await databaseFactory.getDatabasesPath();
     } else if (path == inMemoryDatabasePath) {
@@ -283,18 +295,18 @@ class SqfliteLocalContext implements SqfliteContext {
   Context get pathContext => path.context;
 
   @override
-  Future<List<int>> readFile(String path) async =>
+  Future<List<int>> readFile(String? path) async =>
       File(await fixPath(path)).readAsBytes();
 
   @override
-  Future<String> writeFile(String path, List<int> data) async {
+  Future<String> writeFile(String? path, List<int>? data) async {
     path = await fixPath(path);
-    await File(await fixPath(path)).writeAsBytes(data, flush: true);
+    await File(await fixPath(path)).writeAsBytes(data!, flush: true);
     return path;
   }
 }
 
-T fixParam<T>(String method, T param) {
+T fixParam<T>(String? method, T param) {
   switch (method) {
     //  [
     //          'insert',
@@ -346,7 +358,7 @@ T fixParam<T>(String method, T param) {
         if (operations is List) {
           for (var operation in operations) {
             if (operation is Map) {
-              var method = operation['method'] as String;
+              var method = operation['method'] as String?;
               fixParam(method, operation);
             }
           }

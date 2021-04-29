@@ -12,13 +12,11 @@ class SqfliteServerDatabaseFactory extends SqfliteDatabaseFactoryBase {
   final SqfliteServerContext context;
 
   static Future<SqfliteServerDatabaseFactory> connect(String url,
-      {WebSocketChannelClientFactory webSocketChannelClientFactory}) async {
+      {WebSocketChannelClientFactory? webSocketChannelClientFactory}) async {
     var sqfliteContext = await SqfliteServerContext.connect(url,
         webSocketChannelClientFactory: webSocketChannelClientFactory);
-    if (sqfliteContext != null) {
-      return SqfliteServerDatabaseFactory(sqfliteContext);
-    }
-    return null;
+
+    return SqfliteServerDatabaseFactory(sqfliteContext);
   }
 
   path.Context get pathContext => context.pathContext;
@@ -28,21 +26,19 @@ class SqfliteServerDatabaseFactory extends SqfliteDatabaseFactoryBase {
   }
 
   @override
-  Future<T> invokeMethod<T>(String method, [dynamic arguments]) =>
+  Future<T> invokeMethod<T>(String method, [Object? arguments]) =>
       context.invoke<T>(method, arguments);
 
   @override
-  Future deleteDatabase(String path) async {
-    return await context.sendRequest<String>(
-        methodSqfliteDeleteDatabase, <String, dynamic>{keyPath: path});
+  Future<void> deleteDatabase(String path) async {
+    await context.sendRequest<String>(
+        methodSqfliteDeleteDatabase, <String, Object?>{keyPath: path});
   }
 
   // overrident to use the proper path context
   @override
   Future<String> fixPath(String path) async {
-    if (path == null) {
-      path = await getDatabasesPath();
-    } else if (path == inMemoryDatabasePath) {
+    if (path == inMemoryDatabasePath) {
       // nothing
     } else {
       if (context.pathContext.isRelative(path)) {

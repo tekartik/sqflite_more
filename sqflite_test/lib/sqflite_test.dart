@@ -135,24 +135,23 @@ class SqfliteLocalTestContext
 class SqfliteServerTestContext extends SqfliteServerContext
     with SqfliteTestContextMixin
     implements SqfliteTestContext {
-  String envUrl;
-  int envPort;
-  String url;
+  String? envUrl;
+  int? envPort;
+  late String url;
 
   @override
   bool get supportsWithoutRowId => false;
 
-  Future<SqfliteClient> connectClientPort({int port}) async {
+  Future<SqfliteClient?> connectClientPort({int? port}) async {
     if (client == null) {
       if (port != null) {
         url = getSqfliteServerUrl(port: port);
       } else {
-        envUrl = const String.fromEnvironment(sqfliteServerUrlEnvKey);
-        envPort =
-            parseInt(const String.fromEnvironment(sqfliteServerPortEnvKey));
-
-        url = envUrl;
-        url ??= getSqfliteServerUrl(port: envPort);
+        envPort = parseInt(String.fromEnvironment(sqfliteServerPortEnvKey,
+            defaultValue: sqfliteServerDefaultPort.toString()));
+        envUrl = String.fromEnvironment(sqfliteServerUrlEnvKey,
+            defaultValue: getSqfliteServerUrl(port: envPort));
+        url = envUrl!;
       }
 
       port ??= parseSqfliteServerUrlPort(url, defaultValue: 0);
@@ -195,7 +194,7 @@ $sqfliteServerPortEnvKey: ${envPort ?? ''}
     return client;
   }
 
-  static Future<SqfliteServerTestContext> connect() async {
+  static Future<SqfliteServerTestContext?> connect() async {
     var context = SqfliteServerTestContext();
     var sqfliteClient = await context.connectClientPort();
     if (sqfliteClient == null) {
@@ -221,11 +220,11 @@ Android:
   }
 
   @override
-  Future<T> sendRequest<T>(String method, dynamic param) async {
+  Future<T?> sendRequest<T>(String method, Object? param) async {
     if (_debugModeOn) {
       print('$param');
     }
-    var t = await super.sendRequest(method, param) as T;
+    var t = await super.sendRequest(method, param) as T?;
     if (_debugModeOn) {
       print(t);
     }
@@ -233,7 +232,7 @@ Android:
   }
 
   @override
-  Future<T> invoke<T>(String method, dynamic param) async {
+  Future<T> invoke<T>(String method, Object? param) async {
     var t = await super.invoke<T>(method, param);
     return t;
   }
@@ -243,7 +242,7 @@ Android:
   @override
   @deprecated
   Future devSetDebugModeOn(bool on) async {
-    _debugModeOn = on ?? false;
+    _debugModeOn = on;
   }
 
   /// Complex manual dead lock (multi instance) is not well supported. Avoid it

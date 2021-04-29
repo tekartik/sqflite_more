@@ -5,10 +5,10 @@ import 'package:sqflite_common_server/sqflite_server.dart';
 int defaultPort = sqfliteServerDefaultPort;
 void main() {
   menu('server', () {
-    SqfliteServer server;
+    SqfliteServer? server;
     item('start', () async {
       server ??= await SqfliteServer.serve(
-          port: defaultPort, factory: databaseFactory);
+          port: defaultPort, factory: databaseFactory!);
     });
     item('stop', () async {
       await server?.close();

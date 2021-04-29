@@ -24,7 +24,7 @@ import 'dart:convert';
 import 'package:sqflite_common/sqlite_api.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
-String jsonPretty(dynamic json) {
+String jsonPretty(Object? json) {
   return JsonEncoder.withIndent('  ').convert(json);
 }
 
@@ -41,8 +41,8 @@ Future main() async {
   )
   ''');
   print('adding 2 products...');
-  await db.insert('Product', <String, dynamic>{'title': 'Product 1'});
-  await db.insert('Product', <String, dynamic>{'title': 'Product 2'});
+  await db.insert('Product', <String, Object?>{'title': 'Product 1'});
+  await db.insert('Product', <String, Object?>{'title': 'Product 2'});
 
   var results = await db.query('Product');
   print(jsonPretty(results));
@@ -74,8 +74,8 @@ Future main() async {
         )
         ''');
       print('adding 2 products...');
-      await db.insert('Product', <String, dynamic>{'title': 'Product 1'});
-      await db.insert('Product', <String, dynamic>{'title': 'Product 2'});
+      await db.insert('Product', <String, Object?>{'title': 'Product 1'});
+      await db.insert('Product', <String, Object?>{'title': 'Product 2'});
 
       var results = await db.query('Product');
       expect(results, [
