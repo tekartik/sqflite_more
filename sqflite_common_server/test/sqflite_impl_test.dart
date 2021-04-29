@@ -25,6 +25,7 @@ void main() {
 
     test('getDatabasesPath', () async {
       var databasesPath = await databaseFactory!.getDatabasesPath();
+      print(databasesPath);
       expect(databasesPath, isNotNull);
     });
 

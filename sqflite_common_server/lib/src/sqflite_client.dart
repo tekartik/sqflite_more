@@ -4,8 +4,9 @@ import 'dart:typed_data';
 import 'package:pedantic/pedantic.dart';
 import 'package:sqflite_common_server/src/constant.dart';
 import 'package:sqflite_common_server/src/sqflite_import.dart';
+import 'package:sqflite_common_server/src/sqflite_server.dart';
 
-import 'package:tekartik_common_utils/common_utils_import.dart';
+import 'package:tekartik_common_utils/common_utils_import.dart' hide devPrint;
 import 'package:tekartik_web_socket_io/web_socket_io.dart';
 import 'package:tekartik_web_socket/web_socket.dart';
 import 'package:json_rpc_2/json_rpc_2.dart' as json_rpc;
@@ -59,14 +60,22 @@ class SqfliteClient {
   }
 
   Future<T> sendRequest<T>(String method, Object? param) async {
-    late T t;
     try {
-      t = await _client.sendRequest(method, param) as T;
+      var result = await _client.sendRequest(method, param);
+
+      if (useNullResponseWorkaround) {
+        /// nnbd workaround for issue https://github.com/dart-lang/json_rpc_2/issues/76
+        if (result == nullResponseWorkaround) {
+          result = null;
+        }
+      }
+
+      /// Handle workaround
+      return result as T;
     } on json_rpc.RpcException catch (e) {
       // devPrint('ERROR ${e.runtimeType} $e ${e.message} ${e.data}');
       throw SqfliteDatabaseException(e.message, e.data);
     }
-    return t;
   }
 
   static void fixResult<T>(T result) {
@@ -80,7 +89,7 @@ class SqfliteClient {
         list.add(parseInt(item));
       }
       // devPrint('fix: $value ${value.runtimeType}');
-      return Uint8List.fromList(list as List<int>);
+      return Uint8List.fromList(list.cast<int>());
     }
 
     // devPrint('result1: $result');

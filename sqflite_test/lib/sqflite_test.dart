@@ -151,6 +151,7 @@ class SqfliteServerTestContext extends SqfliteServerContext
             defaultValue: sqfliteServerDefaultPort.toString()));
         envUrl = String.fromEnvironment(sqfliteServerUrlEnvKey,
             defaultValue: getSqfliteServerUrl(port: envPort));
+        url = envUrl!;
       }
 
       port ??= parseSqfliteServerUrlPort(url, defaultValue: 0);

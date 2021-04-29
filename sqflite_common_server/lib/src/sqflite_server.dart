@@ -13,6 +13,10 @@ import 'package:tekartik_common_utils/common_utils_import.dart' hide devPrint;
 import 'package:tekartik_web_socket/web_socket.dart';
 import 'package:tekartik_web_socket_io/web_socket_io.dart';
 
+const useNullResponseWorkaround = true;
+
+const nullResponseWorkaround = '<sqflite_null>';
+
 typedef SqfliteServerNotifyCallback = void Function(
     bool response, String method, Object? params);
 
@@ -92,12 +96,13 @@ class SqfliteServerChannel {
       if (_notifyCallback != null) {
         _notifyCallback!(false, methodSqfliteDeleteDatabase, parameters.value);
       }
-      await _sqfliteServer.factory
-          .deleteDatabase((parameters.value as Map)[keyPath] as String);
+      var path = (parameters.value as Map)[keyPath] as String;
+      await _sqfliteServer.factory.deleteDatabase(path);
       if (_notifyCallback != null) {
         _notifyCallback!(true, methodSqfliteDeleteDatabase, null);
       }
-      return null;
+      // Return the path
+      return path;
     });
     // Specific method for creating a directory
     _rpcServer.registerMethod(methodCreateDirectory,
@@ -191,6 +196,16 @@ class SqfliteServerChannel {
         _openDatabaseIds.remove((sqfliteParam as Map)[paramId] as int?);
       }
 
+      if (useNullResponseWorkaround) {
+        /// nnbd workaround for issue https://github.com/dart-lang/json_rpc_2/issues/76
+        if (result == null) {
+          if (sqfliteMethod == methodBatch) {
+            result = [];
+          } else {
+            result = nullResponseWorkaround;
+          }
+        }
+      }
       return result;
     });
     _rpcServer.listen();
