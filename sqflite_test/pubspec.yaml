@@ -24,7 +24,7 @@ dev_dependencies:
   pedantic:
   flutter_test:
     sdk: flutter
-
+  dev_test:
 
 # For information on the generic Dart part of this file, see the
 # following page: https://www.dartlang.org/tools/pub/pubspec

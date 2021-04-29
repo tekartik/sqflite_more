@@ -61,6 +61,7 @@ dev_dependencies:
     sdk: flutter
   test:
   process_run: '>=0.10.7'
+  dev_test:
 
 # For information on the generic Dart part of this file, see the
 # following page: https://www.dartlang.org/tools/pub/pubspec

@@ -55,6 +55,7 @@ dev_dependencies:
       path: test_menu_flutter
     version: '>=0.2.4'
   flutter_launcher_icons: ">=0.6.1"
+  dev_test:
 
 flutter_icons:
   android: true
