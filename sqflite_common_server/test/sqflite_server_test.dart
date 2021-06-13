@@ -2,12 +2,11 @@ import 'dart:typed_data';
 
 import 'package:sqflite_common/sqlite_api.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:sqflite_common_server/sqflite_server.dart';
 import 'package:sqflite_common_server/src/sqflite_client.dart';
 import 'package:sqflite_common_server/src/sqflite_server.dart';
-import 'package:test/test.dart';
-
-import 'package:sqflite_common_server/sqflite_server.dart';
 import 'package:tekartik_web_socket/web_socket.dart';
+import 'package:test/test.dart';
 
 void main() {
   group('server', () {

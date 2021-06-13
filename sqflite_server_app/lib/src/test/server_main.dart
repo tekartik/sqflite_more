@@ -1,8 +1,9 @@
+import 'package:sqflite_common_server/sqflite_server.dart';
 import 'package:sqflite_server_app/main.dart';
 import 'package:tekartik_test_menu/test.dart';
-import 'package:sqflite_common_server/sqflite_server.dart';
 
 int defaultPort = sqfliteServerDefaultPort;
+
 void main() {
   menu('server', () {
     SqfliteServer? server;

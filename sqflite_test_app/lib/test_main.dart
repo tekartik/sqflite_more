@@ -1,11 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:sqflite_example/main.dart' as example;
 import 'package:sqflite_example/manual_test_page.dart';
 import 'package:sqflite_test_app/src/log_service_main.dart';
 import 'package:sqflite_test_app/src/porter_main.dart';
 import 'package:tekartik_test_menu_flutter/test.dart';
-import 'package:sqflite_example/main.dart' as example;
+
 import 'src/server_main.dart';
 
 void main() {
@@ -45,6 +46,7 @@ class HomePage extends StatefulWidget {
   final Completer? doneCompleter;
 
   const HomePage({Key? key, this.doneCompleter}) : super(key: key);
+
   @override
   _HomePageState createState() => _HomePageState();
 }

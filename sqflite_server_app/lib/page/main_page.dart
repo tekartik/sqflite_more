@@ -31,6 +31,7 @@ class SqfliteServerHomePage extends StatefulWidget {
 class _SqfliteServerHomePageState extends State<SqfliteServerHomePage> {
   bool _startPending = false;
   int? port = sqfliteServerDefaultPort;
+
 // Create a text controller. We will use it to retrieve the current value
   // of the TextField!
   final portInputController = TextEditingController();

@@ -13,6 +13,7 @@ String pubspecStringAddSqflite(String content) {
 }
 
 String? _flutterChannel;
+
 Future initFlutter() async {
   _flutterChannel = await getFlutterBinChannel();
   if (supportsMacOS) {
