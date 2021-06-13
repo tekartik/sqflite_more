@@ -1,11 +1,11 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:sqflite/sqflite.dart' as sqflite;
 import 'package:sqflite_common/sqlite_api.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:sqflite_server_app/page/main_page.dart';
 import 'package:tekartik_app_platform/app_platform.dart';
-import 'package:sqflite/sqflite.dart' as sqflite;
 
 void main() => run();
 

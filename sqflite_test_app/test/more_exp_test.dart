@@ -4,12 +4,12 @@ import 'dart:typed_data';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart' show TestWidgetsFlutterBinding;
-import 'package:test/test.dart';
 import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
 import 'package:sqflite/sqlite_api.dart';
 import 'package:sqflite_test/sqflite_test.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:test/test.dart';
 
 class TestAssetBundle extends CachingAssetBundle {
   @override

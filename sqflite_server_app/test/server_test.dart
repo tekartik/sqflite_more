@@ -4,10 +4,10 @@
 // find child widgets in the widget tree, read text, and verify that the values of widget properties
 // are correct.
 //import 'package:sqflite_common_server/sqflite_server.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:sqflite_common_server/sqflite.dart';
 import 'package:sqflite_common_server/sqflite_server.dart';
 import 'package:sqflite_server_app/src/prefs.dart';
-import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('prefs', () {

@@ -9,6 +9,7 @@ class App {
   bool started = false;
   Prefs? prefs;
   SqfliteServer? _sqfliteServer;
+
   SqfliteServer? get sqfliteServer => _sqfliteServer;
 
   bool get sqfliteServerStarted => _sqfliteServer != null;
@@ -35,6 +36,7 @@ class App {
 }
 
 App? _app;
+
 App get app => _app ??= App();
 
 Future clearApp() async {
