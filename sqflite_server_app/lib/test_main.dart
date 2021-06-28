@@ -8,7 +8,7 @@ import 'package:tekartik_test_menu_flutter/test.dart';
 
 void main() {
   mainMenu(() {
-    dumpSetPrint(write as Object? Function(Object?));
+    dumpSetPrint(write);
     menu('run', () {
       item('go home', () {
         Navigator.of(buildContext!).push<Object?>(homePageRoute);
