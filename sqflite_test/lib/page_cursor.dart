@@ -1,9 +1,9 @@
 import 'dart:async';
 
-@deprecated
+@Deprecated('Not defined')
 abstract class CursorRow {}
 
-@deprecated
+@Deprecated('Not defined')
 abstract class Cursor {
   // int _totalCount;
   // int _pageCount;

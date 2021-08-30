@@ -9,7 +9,7 @@ import 'sqflite_import.dart';
 void logServiceMain() {
   group('log_service', () {
     item('Turn on', () async {
-      if (!(databaseFactory is FactoryDelegate)) {
+      if (databaseFactory is! FactoryDelegate) {
         // ignore: deprecated_member_use
         await (databaseFactory as SqfliteDatabaseFactory)
             // ignore: deprecated_member_use

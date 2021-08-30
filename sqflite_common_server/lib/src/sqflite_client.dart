@@ -79,7 +79,7 @@ class SqfliteClient {
 
   static void fixResult<T>(T result) {
     bool shouldFix(Object? value) {
-      return value is List && (!(value is Uint8List));
+      return value is List && (value is! Uint8List);
     }
 
     Uint8List fix(List value) {

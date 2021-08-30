@@ -19,7 +19,7 @@ const sqfliteServerUrlEnvKey = 'SQFLITE_SERVER_URL';
 const sqfliteServerPortEnvKey = 'SQFLITE_SERVER_PORT';
 
 int? parseSqfliteServerUrlPort(String url, {int? defaultValue}) {
-  var port = parseInt(url.split('\:').last);
+  var port = parseInt(url.split(':').last);
   return port ?? defaultValue;
 }
 
