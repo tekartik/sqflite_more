@@ -240,7 +240,7 @@ Android:
   bool _debugModeOn = false;
 
   @override
-  @deprecated
+  @Deprecated('Deb only')
   Future devSetDebugModeOn(bool on) async {
     _debugModeOn = on;
   }

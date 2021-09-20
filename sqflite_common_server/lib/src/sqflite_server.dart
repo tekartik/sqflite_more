@@ -328,7 +328,7 @@ T fixParam<T>(String? method, T param) {
         if (arguments is List) {
           for (var i = 0; i < arguments.length; i++) {
             var argument = arguments[i];
-            if (argument is List && !(argument is Uint8List)) {
+            if (argument is List && (argument is! Uint8List)) {
               // fix!
               arguments[i] = Uint8List.fromList(argument.cast<int>());
             }

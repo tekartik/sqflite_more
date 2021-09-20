@@ -67,7 +67,7 @@ int,double,String,bool,Uint8List
         {'test': '"null"'}
       ]);
       print(jsonEncode(csv));
-      expect(csv, 'test\r\n\"\"\"null\"\"\"');
+      expect(csv, 'test\r\n"""null"""');
     });
     test('csvnull string', () {
       var csv = mapListToCsv([
