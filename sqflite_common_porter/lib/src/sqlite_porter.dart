@@ -3,10 +3,13 @@ import 'dart:async';
 import 'package:sqflite_common/sqlite_api.dart';
 import 'package:sqflite_common/utils/utils.dart' as utils;
 import 'package:sqflite_common_porter/src/sql_parser.dart';
+import 'package:tekartik_common_utils/common_utils_import.dart';
 
+/// Remove extra ; if any
 String fixStatement(String sql) {
-  if (!sql.endsWith(';')) {
-    return '$sql;';
+  sql = sql.trim();
+  if (sql.endsWith(';')) {
+    return sql.substring(0, sql.length - 1);
   }
   return sql;
 }
@@ -33,8 +36,11 @@ String? extractTableName(String? sqlTableStatement) {
 Future<List<String>> dbExportSql(Database db) async {
   var statements = <String>[];
   await db.transaction((Transaction txn) async {
-    var tableRows = await txn.rawQuery(
-        'SELECT sql, name FROM sqlite_master WHERE type = ?', ['table']);
+    var metaRows =
+        await txn.rawQuery('SELECT sql, type, name FROM sqlite_master');
+    // devPrint(metaRows);
+    var tableRows = metaRows.where((row) => row['type'] == 'table');
+    var otherRows = metaRows.where((row) => row['type'] != 'table');
 
     Future exportTable(String table) async {
       var contentRows = await txn.rawQuery('SELECT * from $table');
@@ -51,7 +57,7 @@ Future<List<String>> dbExportSql(Database db) async {
             values.add("'${sanitizeText(value.toString())}'");
           }
         }
-        statements.add('INSERT INTO $table VALUES (${values.join(',')});');
+        statements.add('INSERT INTO $table VALUES (${values.join(',')})');
       }
     }
 
@@ -59,9 +65,17 @@ Future<List<String>> dbExportSql(Database db) async {
     for (var tableRow in tableRows) {
       var sql = tableRow['sql'] as String?;
       var table = tableRow['name'] as String?;
-      if (table != null && !isSystemTable(unescapeText(table))) {
-        statements.add(fixStatement(sql!));
+      if (table != null && !isSystemTable(unescapeText(table)) && sql != null) {
+        statements.add(fixStatement(sql));
         await exportTable(table);
+      }
+    }
+
+    // Create other items (view, trigger)
+    for (var row in otherRows) {
+      var sql = row['sql'] as String?;
+      if (sql != null) {
+        statements.add(fixStatement(sql));
       }
     }
 
@@ -70,7 +84,7 @@ Future<List<String>> dbExportSql(Database db) async {
 
     if (sqliteSequenceTableFound) {
       // Handle system table sqlite_sequence
-      statements.add('DELETE FROM sqlite_sequence;');
+      statements.add('DELETE FROM sqlite_sequence');
       await exportTable('sqlite_sequence');
 
       // handle views and trigger
