@@ -6,6 +6,7 @@ Future main() async {
 
   for (var dir in [
     'sqflite_common_server',
+    'sqflite_common_porter',
     'sqflite_common_test_app',
   ]) {
     shell = shell.pushd(join('..', dir));
