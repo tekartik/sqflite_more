@@ -1,17 +1,3 @@
 # sqflite_porter
 
-Sqflite importer/exporter
-
-## Getting Started
-
-pubspec.yaml:
-
-````yaml
-dependencies:
-  sqflite_porter:
-    git:
-      url: git://github.com/tekartik/sqflite_more
-      ref: null_safety
-      path: sqflite_porter
-    version: '>=0.2.0'
-````
+**Deprecated**: See [sqflite_common_porter](../sqflite_common_porter) for a new version for all versions of sqflite.

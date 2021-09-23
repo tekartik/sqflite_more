@@ -1,0 +1,2 @@
+# tekartik analysis_options extension to pedantic
+include: package:tekartik_common_utils/pedantic/analysis_options.strong_mode.yaml
