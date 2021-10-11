@@ -4,7 +4,7 @@ import 'package:sqflite_common/sqlite_api.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 String jsonPretty(Object? json) {
-  return JsonEncoder.withIndent('  ').convert(json);
+  return const JsonEncoder.withIndent('  ').convert(json);
 }
 
 Future main() async {

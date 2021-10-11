@@ -21,7 +21,7 @@ void main() {
     });
 
     item('manual', () async {
-      var manalApp = ManualApp();
+      var manalApp = const ManualApp();
       runApp(manalApp);
       await manalApp.done;
       // restart
@@ -31,12 +31,14 @@ void main() {
 }
 
 class ManualApp extends StatelessWidget {
+  const ManualApp({Key? key}) : super(key: key);
+
   //final _doneCompleter = Completer();
   Future? get done => null;
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       home: ManualTestPage(),
     );
   }
@@ -57,7 +59,7 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     () async {
       await Navigator.of(context)
-          .push(MaterialPageRoute(builder: (context) => ManualApp()));
+          .push(MaterialPageRoute(builder: (context) => const ManualApp()));
       try {
         widget.doneCompleter?.complete();
       } catch (e) {
@@ -69,6 +71,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold();
+    return const Scaffold();
   }
 }
