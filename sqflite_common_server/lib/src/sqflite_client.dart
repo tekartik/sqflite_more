@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:json_rpc_2/json_rpc_2.dart' as json_rpc;
-import 'package:pedantic/pedantic.dart';
+
 import 'package:sqflite_common_server/src/constant.dart';
 import 'package:sqflite_common_server/src/sqflite_import.dart';
 import 'package:sqflite_common_server/src/sqflite_server.dart';

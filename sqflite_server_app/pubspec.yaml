@@ -56,6 +56,12 @@ dev_dependencies:
     version: '>=0.2.4'
   flutter_launcher_icons: ">=0.6.1"
   dev_test:
+  tekartik_lints_flutter:
+    git:
+      url: git://github.com/tekartik/common_flutter.dart
+      ref: null_safety
+      path: packages/lints_flutter
+    version: '>=0.1.0'
 
 flutter_icons:
   android: true
@@ -103,7 +109,6 @@ flutter:
   # For details regarding fonts from package dependencies,
   # see https://flutter.io/custom-fonts/#from-packages
 dependency_overrides:
-  # pedantic: '>=1.9.0'
   sqflite_porter:
     path: ../sqflite_porter
   sqflite_common_server:

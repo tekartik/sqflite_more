@@ -14,6 +14,11 @@ dependencies:
 dev_dependencies:
   sqflite_common_ffi:
   process_run:
-  pedantic: ^1.8.0
   test:
   dev_test:
+  tekartik_lints_flutter:
+    git:
+      url: git://github.com/tekartik/common_flutter.dart
+      ref: null_safety
+      path: packages/lints_flutter
+    version: '>=0.1.0'
