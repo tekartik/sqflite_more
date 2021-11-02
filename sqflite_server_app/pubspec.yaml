@@ -22,26 +22,26 @@ dependencies:
   cupertino_icons: ^0.1.2
   sqflite_common_server:
     git:
-      url: git://github.com/tekartik/sqflite_more
-      ref: null_safety
+      url: https://github.com/tekartik/sqflite_more
+      ref: dart2_3
       path: sqflite_common_server
     version: '>=0.3.2'
   sqflite_porter:
     git:
-      url: git://github.com/tekartik/sqflite_more
-      ref: null_safety
+      url: https://github.com/tekartik/sqflite_more
+      ref: dart2_3
       path: sqflite_porter
     version: '>=0.2.0'
   tekartik_app_platform:
     git:
-      url: git://github.com/tekartik/app_flutter_utils.dart
-      ref: null_safety
+      url: https://github.com/tekartik/app_flutter_utils.dart
+      ref: dart2_3
       path: app_platform
     version: '>=0.1.0'
   sqflite_test:
     git:
-      url: git://github.com/tekartik/sqflite_more
-      ref: null_safety
+      url: https://github.com/tekartik/sqflite_more
+      ref: dart2_3
       path: sqflite_test
     version: '>=0.2.0'
 
@@ -50,16 +50,16 @@ dev_dependencies:
     sdk: flutter
   tekartik_test_menu_flutter:
     git:
-      url: git://github.com/tekartik/test_menu_flutter
-      ref: null_safety
+      url: https://github.com/tekartik/test_menu_flutter
+      ref: dart2_3
       path: test_menu_flutter
     version: '>=0.2.4'
   flutter_launcher_icons: ">=0.6.1"
   dev_test:
   tekartik_lints_flutter:
     git:
-      url: git://github.com/tekartik/common_flutter.dart
-      ref: null_safety
+      url: https://github.com/tekartik/common_flutter.dart
+      ref: dart2_3
       path: packages/lints_flutter
     version: '>=0.1.0'
 

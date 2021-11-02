@@ -32,8 +32,8 @@ you can run your test
 dependencies:
   sqflite_server:
     git:
-      url: git://github.com/tekartik/sqflite_more
-      ref: null_safety
+      url: https://github.com/tekartik/sqflite_more
+      ref: dart2_3
       path: sqflite_server
     version: '>=0.3.0'
 ````

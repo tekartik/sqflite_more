@@ -18,7 +18,7 @@ dev_dependencies:
   dev_test:
   tekartik_lints_flutter:
     git:
-      url: git://github.com/tekartik/common_flutter.dart
-      ref: null_safety
+      url: https://github.com/tekartik/common_flutter.dart
+      ref: dart2_3
       path: packages/lints_flutter
     version: '>=0.1.0'

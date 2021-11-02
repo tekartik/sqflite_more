@@ -12,8 +12,8 @@ dependencies:
   process_run:
   sqflite_common_test:
     git:
-      url: git://github.com/tekartik/sqflite
-      ref: null_safety
+      url: https://github.com/tekartik/sqflite
+      ref: dart2_3
       path: sqflite_common_test
     version: '>=0.3.1'
   synchronized: '>=2.2.0'
@@ -26,8 +26,8 @@ dev_dependencies:
   dev_test:
   tekartik_lints_flutter:
     git:
-      url: git://github.com/tekartik/common_flutter.dart
-      ref: null_safety
+      url: https://github.com/tekartik/common_flutter.dart
+      ref: dart2_3
       path: packages/lints_flutter
     version: '>=0.1.0'
 # For information on the generic Dart part of this file, see the
