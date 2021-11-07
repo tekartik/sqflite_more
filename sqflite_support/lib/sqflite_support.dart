@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:process_run/dartbin.dart';
 import 'package:process_run/shell_run.dart';
 
 /// Add sqflite dependencies in a brut force way
