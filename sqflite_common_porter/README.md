@@ -7,7 +7,7 @@ Sqflite importer/exporter.
 
 ## Getting Started
 
-pubspec.yaml:
+Following [versioning doc](https://github.com/tekartik/common.dart/blob/main/doc/tekartik_versioning.md), add in pubspec.yaml:
 
 ````yaml
 dependencies:
