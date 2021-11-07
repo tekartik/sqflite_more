@@ -7,14 +7,14 @@ Sqflite importer/exporter.
 
 ## Getting Started
 
-pubspec.yaml:
+Following [versioning doc](https://github.com/tekartik/common.dart/blob/main/doc/tekartik_versioning.md), add in pubspec.yaml:
 
 ````yaml
 dependencies:
   sqflite_common_porter:
     git:
-      url: git://github.com/tekartik/sqflite_more
-      ref: null_safety
+      url: https://github.com/tekartik/sqflite_more
+      ref: dart2_3
       path: sqflite_common_porter
     version: '>=0.2.0'
 ````

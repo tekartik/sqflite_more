@@ -11,15 +11,15 @@ dependencies:
   sqflite_common: '>=1.0.0+1'
   tekartik_web_socket_io:
     git:
-      url: git://github.com/tekartik/web_socket.dart
-      ref: null_safety
+      url: https://github.com/tekartik/web_socket.dart
+      ref: dart2_3
       path: web_socket_io
     version: '>=0.2.0'
   json_rpc_2:
   tekartik_common_utils:
     git:
-      url: git://github.com/tekartik/common_utils.dart
-      ref: null_safety
+      url: https://github.com/tekartik/common_utils.dart
+      ref: dart2_3
     version: '>=0.9.7+1'
 
 

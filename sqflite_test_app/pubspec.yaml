@@ -19,38 +19,38 @@ dependencies:
   sqflite: '>=1.3.1'
   sqflite_porter:
     git:
-      url: git://github.com/tekartik/sqflite_more
-      ref: null_safety
+      url: https://github.com/tekartik/sqflite_more
+      ref: dart2_3
       path: sqflite_porter
     version: '>=0.1.0'
   sqflite_test:
     git:
-      url: git://github.com/tekartik/sqflite_more
-      ref: null_safety
+      url: https://github.com/tekartik/sqflite_more
+      ref: dart2_3
       path: sqflite_test
     version: '>=0.1.0'
   tekartik_test_menu_flutter:
     git:
-      url: git://github.com/tekartik/test_menu_flutter
-      ref: null_safety
+      url: https://github.com/tekartik/test_menu_flutter
+      ref: dart2_3
       path: test_menu_flutter
     version: '>=0.3.0'
   tekartik_app_platform:
     git:
-      url: git://github.com/tekartik/app_flutter_utils.dart
-      ref: null_safety
+      url: https://github.com/tekartik/app_flutter_utils.dart
+      ref: dart2_3
       path: app_platform
     version: '>=0.1.0'
   tekartik_app_roboto:
     git:
-      url: git://github.com/tekartik/app_flutter_utils.dart
-      ref: null_safety
+      url: https://github.com/tekartik/app_flutter_utils.dart
+      ref: dart2_3
       path: app_roboto
       version: '>=0.1.0'
   sqflite_example:
     git:
-      url: git://github.com/tekartik/sqflite
-      ref: null_safety
+      url: https://github.com/tekartik/sqflite
+      ref: dart2_3
       path: sqflite/example/
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -64,8 +64,8 @@ dev_dependencies:
   dev_test:
   tekartik_lints_flutter:
     git:
-      url: git://github.com/tekartik/common_flutter.dart
-      ref: null_safety
+      url: https://github.com/tekartik/common_flutter.dart
+      ref: dart2_3
       path: packages/lints_flutter
     version: '>=0.1.0'
 # For information on the generic Dart part of this file, see the
