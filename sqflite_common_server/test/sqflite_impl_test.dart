@@ -1,7 +1,7 @@
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:sqflite_common_server/sqflite.dart';
 import 'package:sqflite_common_server/sqflite_server.dart';
-import 'package:tekartik_web_socket/web_socket.dart';
+import 'package:sqflite_common_server/src/import.dart';
 import 'package:test/test.dart';
 
 void main() {

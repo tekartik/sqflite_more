@@ -6,7 +6,8 @@ import 'package:sqflite_common_server/src/factory.dart';
 import 'package:sqflite_common_server/src/sqflite_client.dart';
 import 'package:sqflite_common_server/src/utils.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';
-import 'package:tekartik_web_socket/web_socket.dart';
+
+import 'src/import.dart';
 
 export 'package:sqflite_common_server/src/common_public.dart';
 export 'package:sqflite_common_server/src/factory.dart'

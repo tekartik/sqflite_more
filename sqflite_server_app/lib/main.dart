@@ -21,10 +21,12 @@ void run() {
     databaseFactory = sqflite.databaseFactory;
   }
 
-  runApp(SqfliteServerApp());
+  runApp(const SqfliteServerApp());
 }
 
 class SqfliteServerApp extends StatelessWidget {
+  const SqfliteServerApp({Key? key}) : super(key: key);
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -34,12 +36,12 @@ class SqfliteServerApp extends StatelessWidget {
         // This is the theme of your application.
         primarySwatch: Colors.blue,
       ),
-      home: SqfliteServerHomePage(title: 'SQFlite server'),
+      home: const SqfliteServerHomePage(title: 'SQFlite server'),
     );
   }
 }
 
 MaterialPageRoute<Object?> get homePageRoute =>
     MaterialPageRoute<Object?>(builder: (BuildContext context) {
-      return SqfliteServerHomePage(title: 'SQFlite server page');
+      return const SqfliteServerHomePage(title: 'SQFlite server page');
     });

@@ -10,7 +10,7 @@ import 'package:sqflite_server_app/src/prefs.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';
 
 class SqfliteServerHomePage extends StatefulWidget {
-  SqfliteServerHomePage({Key? key, this.title}) : super(key: key);
+  const SqfliteServerHomePage({Key? key, this.title}) : super(key: key);
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -24,6 +24,7 @@ class SqfliteServerHomePage extends StatefulWidget {
   final String? title;
 
   @override
+  // ignore: library_private_types_in_public_api
   _SqfliteServerHomePageState createState() => _SqfliteServerHomePageState();
 }
 
@@ -45,6 +46,7 @@ class _SqfliteServerHomePageState extends State<SqfliteServerHomePage> {
   }
 
   void log(String? message) {
+    // ignore: avoid_print
     print(message);
     setState(() {
       logs.add(message);
@@ -222,9 +224,9 @@ class _SqfliteServerHomePageState extends State<SqfliteServerHomePage> {
                 _logOperation(operationMap);
               }
             } else {
-              var _methodParam = sqfliteParam as Map?;
-              if (_methodParam != null) {
-                _logOperation(_methodParam);
+              var methodParam = sqfliteParam as Map?;
+              if (methodParam != null) {
+                _logOperation(methodParam);
               }
             }
           } else if (method == methodSqfliteDeleteDatabase) {
@@ -248,7 +250,9 @@ class _SqfliteServerHomePageState extends State<SqfliteServerHomePage> {
       setState(() {
         log(e.toString());
       });
+      // ignore: avoid_print
       print(e);
+      // ignore: avoid_print
       print(st);
     }
     setState(() {

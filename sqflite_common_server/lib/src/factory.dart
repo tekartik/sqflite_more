@@ -4,7 +4,8 @@ import 'package:sqflite_common_server/sqflite.dart';
 import 'package:sqflite_common_server/src/constant.dart';
 import 'package:sqflite_common_server/src/sqflite_import.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';
-import 'package:tekartik_web_socket/web_socket.dart';
+
+import 'import.dart';
 
 class SqfliteServerDatabaseFactory extends SqfliteDatabaseFactoryBase {
   SqfliteServerDatabaseFactory(this.context);

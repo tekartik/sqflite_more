@@ -10,8 +10,9 @@ import 'package:sqflite_common_server/sqflite_context.dart';
 import 'package:sqflite_common_server/src/constant.dart';
 import 'package:sqflite_common_server/src/sqflite_import.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart' hide devPrint;
-import 'package:tekartik_web_socket/web_socket.dart';
 import 'package:tekartik_web_socket_io/web_socket_io.dart';
+
+import 'import.dart';
 
 const useNullResponseWorkaround = true;
 
@@ -242,7 +243,7 @@ class SqfliteLocalContext implements SqfliteContext {
     try {
       path = await fixPath(path);
       await Directory(path).create(recursive: true);
-    } catch (_e) {
+    } catch (_) {
       // print(e);
     }
     return path;
@@ -253,7 +254,7 @@ class SqfliteLocalContext implements SqfliteContext {
     try {
       path = await fixPath(path);
       await Directory(path).delete(recursive: true);
-    } catch (_e) {
+    } catch (_) {
       // print(e);
     }
     return path;
