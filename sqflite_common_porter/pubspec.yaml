@@ -15,6 +15,7 @@ dependencies:
     version: '>=0.9.7+1'
   csv:
   sqflite_common_ffi:
+  sqflite_common:
 
 dev_dependencies:
   test:

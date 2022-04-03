@@ -44,8 +44,12 @@ dependencies:
       ref: dart2_3
       path: sqflite_test
     version: '>=0.2.0'
-
+  sqflite:
+  sqflite_common_ffi:
+  sqflite_common:
+  path:
 dev_dependencies:
+  process_run:
   flutter_test:
     sdk: flutter
   tekartik_test_menu_flutter:

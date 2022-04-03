@@ -5,8 +5,9 @@ import 'package:sqflite_common_server/src/constant.dart';
 import 'package:sqflite_common_server/src/sqflite_import.dart';
 import 'package:sqflite_common_server/src/sqflite_server.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart' hide devPrint;
-import 'package:tekartik_web_socket/web_socket.dart';
 import 'package:tekartik_web_socket_io/web_socket_io.dart';
+
+import 'import.dart';
 
 class ServerInfo {
   bool? supportsWithoutRowId;
@@ -31,29 +32,31 @@ class SqfliteClient {
     webSocketChannelClientFactory ??= webSocketChannelClientFactoryIo;
     var webSocketChannel = webSocketChannelClientFactory.connect<String>(url);
     var rpcClient = json_rpc.Client(webSocketChannel);
-    ServerInfo _serverInfo;
+    ServerInfo serverInfo;
     unawaited(rpcClient.listen());
     try {
-      var serverInfo = await rpcClient.sendRequest(methodGetServerInfo) as Map;
-      if (serverInfo[keyName] != serverInfoName) {
-        throw 'invalid name in $serverInfo';
+      var rawServerInfo =
+          await rpcClient.sendRequest(methodGetServerInfo) as Map;
+      if (rawServerInfo[keyName] != serverInfoName) {
+        throw 'invalid name in $rawServerInfo';
       }
-      var version = Version.parse(serverInfo[keyVersion] as String);
+      var version = Version.parse(rawServerInfo[keyVersion] as String);
       if (version < serverInfoMinVersion) {
         throw 'SQFlite server version $version not supported, >=$serverInfoMinVersion expected';
       }
-      _serverInfo = ServerInfo()
-        ..supportsWithoutRowId = parseBool(serverInfo[keySupportsWithoutRowId])
-        ..isIOS = parseBool(serverInfo[keyIsIOS])
-        ..isAndroid = parseBool(serverInfo[keyIsAndroid])
-        ..isMacOS = parseBool(serverInfo[keyIsMacOS])
-        ..isLinux = parseBool(serverInfo[keyIsLinux])
-        ..isWindows = parseBool(serverInfo[keyIsWindows]);
+      serverInfo = ServerInfo()
+        ..supportsWithoutRowId =
+            parseBool(rawServerInfo[keySupportsWithoutRowId])
+        ..isIOS = parseBool(rawServerInfo[keyIsIOS])
+        ..isAndroid = parseBool(rawServerInfo[keyIsAndroid])
+        ..isMacOS = parseBool(rawServerInfo[keyIsMacOS])
+        ..isLinux = parseBool(rawServerInfo[keyIsLinux])
+        ..isWindows = parseBool(rawServerInfo[keyIsWindows]);
     } catch (e) {
       await rpcClient.close();
       rethrow;
     }
-    return SqfliteClient._(rpcClient, _serverInfo);
+    return SqfliteClient._(rpcClient, serverInfo);
   }
 
   Future<T> sendRequest<T>(String method, Object? param) async {
@@ -106,9 +109,9 @@ class SqfliteClient {
       }
     } else if (result is Map) {
       // print(result);
-      Object? _rows = result['rows'];
-      if (_rows is List) {
-        var rows = _rows.cast<List>();
+      Object? rawRows = result['rows'];
+      if (rawRows is List) {
+        var rows = rawRows.cast<List>();
         for (var row in rows) {
           for (var i = 0; i < row.length; i++) {
             Object? value = row[i];
