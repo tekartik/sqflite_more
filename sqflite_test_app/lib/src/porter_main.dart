@@ -3,7 +3,6 @@ import 'dart:typed_data';
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_porter/sqflite_porter.dart';
 import 'package:sqflite_porter/src/utils.dart'; // ignore: implementation_imports
-import 'package:tekartik_test_menu/test.dart';
 import 'package:tekartik_test_menu_flutter/test.dart';
 
 void porterMain() {

@@ -3,12 +3,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:sqflite_common/sqflite_dev.dart';
-import 'package:sqflite_common/src/mixin/import_mixin.dart' // ignore: implementation_imports
-    show
-        SqfliteDatabaseFactory,
-        SqfliteDatabaseFactoryMixin;
-import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:sqflite_test_app/src/sqflite_import.dart';
 import 'package:tekartik_app_platform/app_platform.dart';
 import 'package:tekartik_test_menu_flutter/test.dart';
 
