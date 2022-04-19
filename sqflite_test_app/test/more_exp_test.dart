@@ -8,7 +8,6 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite/sqlite_api.dart';
 import 'package:sqflite_test/sqflite_test.dart';
-import 'package:tekartik_common_utils/common_utils_import.dart';
 import 'package:test/test.dart';
 
 class TestAssetBundle extends CachingAssetBundle {
@@ -117,7 +116,7 @@ Future main() async {
       var db = DbHelper(context);
       var user1 = User('User1');
       var insertResult = await db.saveUser(user1);
-      print('insert result is ' + insertResult.toString());
+      print('insert result is $insertResult');
       var searchResult = await db.retrieveUser(insertResult);
       print(searchResult.toString());
     });
@@ -398,11 +397,11 @@ Future issue146(SqfliteServerTestContext context) async {
 
     _teacherProvider = TeacherProvider();
     _studentProvider = StudentProvider();
-    var _classroomProvider = ClassroomProvider();
+    var classroomProvider = ClassroomProvider();
     var room = Classroom()..name = 'room1';
     room._teacher = Teacher()..name = 'teacher1';
     room._students = [Student()..name = 'student1'];
-    await _classroomProvider.insert(room);
+    await classroomProvider.insert(room);
   } finally {
     await database?.close();
     database = null;
@@ -455,8 +454,8 @@ class DbHelper {
 
   DbHelper(this.context);
 
-  void _onCreate(Database _db, int newVersion) async {
-    await _db.execute(
+  void _onCreate(Database db, int newVersion) async {
+    await db.execute(
         'CREATE TABLE MYTABLE(ID INTEGER PRIMARY KEY, userName TEXT NOT NULL)');
   }
 

@@ -1,7 +1,6 @@
 import 'dart:io';
 
-import 'package:sqflite/sqlite_api.dart';
-import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:sqflite_test_app/src/sqflite_import.dart';
 
 Future main() async {
   sqfliteFfiInit();
