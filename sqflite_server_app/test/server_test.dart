@@ -47,21 +47,21 @@ void main() {
         await prefs.setShowConsole(false);
         await prefs.setAutoStart(true);
 
-        void _check(Prefs prefs) {
+        void check(Prefs prefs) {
           expect(prefs.port, 1234);
           expect(prefs.showConsole, isFalse);
           expect(prefs.autoStart, isTrue);
         }
 
-        _check(prefs);
+        check(prefs);
         prefs.port = 5678;
         await prefs.load();
-        _check(prefs);
+        check(prefs);
 
         prefs =
             Prefs(databaseFactory: databaseFactory, dbName: 'prefs_test.db');
         await prefs.load();
-        _check(prefs);
+        check(prefs);
       }
     });
   });

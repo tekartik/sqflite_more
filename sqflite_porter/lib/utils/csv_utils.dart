@@ -12,7 +12,7 @@ String? mapListToCsv(List<Map<String, Object?>>? mapList,
   var keyIndexMap = <String, int>{};
 
   // Add the key and fix previous records
-  int _addKey(String key) {
+  int addKey(String key) {
     var index = keys.length;
     keyIndexMap[key] = index;
     keys.add(key);
@@ -31,7 +31,7 @@ String? mapListToCsv(List<Map<String, Object?>>? mapList,
       if (keyIndex == null) {
         // New key is found
         // Add it and fix previous data
-        keyIndex = _addKey(key);
+        keyIndex = addKey(key);
         // grow our list
         dataRow = List.from(dataRow, growable: true)..add(value);
       } else {
