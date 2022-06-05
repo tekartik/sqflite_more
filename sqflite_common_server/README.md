@@ -30,11 +30,11 @@ you can run your test
 
 ````yaml
 dependencies:
-  sqflite_server:
+  sqflite_common_server:
     git:
       url: https://github.com/tekartik/sqflite_more
       ref: dart2_3
-      path: sqflite_server
+      path: sqflite_common_server
     version: '>=0.3.0'
 ````
 

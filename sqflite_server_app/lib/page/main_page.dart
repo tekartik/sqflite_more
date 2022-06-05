@@ -200,7 +200,7 @@ class _SqfliteServerHomePageState extends State<SqfliteServerHomePage> {
       await app.startServer(port,
           notifyCallback: (bool response, String method, Object? param) {
         if (response == false) {
-          void _logOperation(Map map) {
+          void logOperation(Map map) {
             var sql = (map['sql'] as String?)?.trim();
             if (sql != null) {
               var args = map['arguments'] as List?;
@@ -221,12 +221,12 @@ class _SqfliteServerHomePageState extends State<SqfliteServerHomePage> {
               var operations = (sqfliteParam as Map)['operations'] as List;
               for (var operation in operations) {
                 var operationMap = operation as Map;
-                _logOperation(operationMap);
+                logOperation(operationMap);
               }
             } else {
               var methodParam = sqfliteParam as Map?;
               if (methodParam != null) {
-                _logOperation(methodParam);
+                logOperation(methodParam);
               }
             }
           } else if (method == methodSqfliteDeleteDatabase) {

@@ -19,8 +19,20 @@ dependencies:
   synchronized: '>=2.2.0'
   sqflite_common_ffi:
   sqflite:
-dev_dependencies:
+  sqflite_common_server:
+    git:
+      url: https://github.com/tekartik/sqflite_more
+      ref: dart2_3
+      path: sqflite_common_server
+    version: '>=0.3.0'
+  tekartik_common_utils:
+    git:
+      url: https://github.com/tekartik/common_utils.dart
+      ref: dart2_3
+    version: '>=0.3.0'
   test:
+  path:
+dev_dependencies:
   flutter_test:
     sdk: flutter
   dev_test:
