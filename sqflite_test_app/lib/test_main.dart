@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:sqflite_example/main.dart' as example;
 import 'package:sqflite_example/manual_test_page.dart';
 import 'package:sqflite_test_app/src/log_service_main.dart';
+import 'package:sqflite_test_app/src/perf_main.dart';
 import 'package:sqflite_test_app/src/porter_main.dart';
 import 'package:tekartik_test_menu_flutter/test.dart';
 
@@ -18,6 +19,7 @@ void main() {
       serverMain();
       porterMain();
       logServiceMain();
+      perfMain();
     });
 
     item('manual', () async {
