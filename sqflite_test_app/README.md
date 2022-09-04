@@ -5,6 +5,7 @@ Sqflite testing app
 ## Getting Started
 
 ```bash
+flutter create .
 flutter run
 ```
 
