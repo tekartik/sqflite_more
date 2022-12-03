@@ -19,7 +19,7 @@ void main() {
   sqfliteFfiInit();
 
   test('csv', () async {
-    var path = await initDeleteDb(factory, 'csv_exp.db');
+    var path = await initDeleteDb(factory, 'csv_exp_ffi.db');
     var db = await factory.openDatabase(path);
     try {
       var sql = '''

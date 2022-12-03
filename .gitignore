@@ -9,3 +9,6 @@ build/
 .vscode/
 *.iml
 /sqflite_test/.flutter-plugins-dependencies
+
+# Linux
+.uuid
