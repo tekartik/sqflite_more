@@ -7,7 +7,7 @@
          additional functionality it is fine to subclass or reimplement
          FlutterApplication and put your custom class here. -->
     <application
-        android:name="io.flutter.app.FlutterApplication"
+        android:name="io.flutter.embedding.android.FlutterActivity"
         android:label="sqflite_isolate_test_app"
         android:icon="@mipmap/ic_launcher">
         <activity
@@ -29,5 +29,6 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <meta-data android:name="flutterEmbedding" android:value="2"/>`
     </application>
 </manifest>
