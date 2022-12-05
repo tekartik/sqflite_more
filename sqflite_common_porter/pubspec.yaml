@@ -1,6 +1,6 @@
 name: sqflite_common_porter
 description: Sqflite import and export
-version: 0.2.0+1
+version: 0.3.0
 publish_to: none
 
 environment:

@@ -2,7 +2,7 @@
 
 Sqflite importer/exporter.
 **Warning**: this is just some reference code.
-* version is not exported
+* version is now exported (since v)
 * trigger/view not tested yet.
 
 ## Getting Started
