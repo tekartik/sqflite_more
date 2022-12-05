@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:sqflite_common/sqlite_api.dart';
 import 'package:sqflite_common/utils/utils.dart' as utils;
+import 'package:sqflite_common/utils/utils.dart';
 import 'package:sqflite_common_porter/src/sql_parser.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';
 
@@ -32,7 +33,7 @@ String? extractTableName(String? sqlTableStatement) {
   return null;
 }
 
-/// Export a database a list of string
+/// Export a database as list of string
 Future<List<String>> dbExportSql(Database db) async {
   var statements = <String>[];
   await db.transaction((Transaction txn) async {
@@ -97,17 +98,68 @@ Future<List<String>> dbExportSql(Database db) async {
         }
       }
     }
+
+    // The version!
+    final rows = await txn.rawQuery('PRAGMA user_version');
+    var version = firstIntValue(rows) ?? 0;
+    if (version != 0) {
+      statements.add('PRAGMA user_version = $version');
+    }
   });
   return statements;
+}
+
+/// Import options
+class SqlImportOptions {
+  /// Max batch size during import, could be needed if the export is huge.
+  final int importBatchSize;
+
+  SqlImportOptions(this.importBatchSize);
 }
 
 /// Import a database from a list of statements.
 ///
 /// db must be an empty database.
-Future dbImportSql(Database db, List<String> sqlStatements) async {
-  var batch = db.batch();
+Future<void> dbImportSql(Database db, List<String> sqlStatements,
+    {SqlImportOptions? options}) async {
+  var importBatchSize = options?.importBatchSize;
+  late Batch batch;
+  var batchSize = 0;
+  void createBatch() {
+    batch = db.batch();
+    batchSize = 0;
+  }
+
+  Future<void> commitBatch() async {
+    if (batchSize > 0) {
+      await batch.commit(noResult: true);
+    }
+  }
+
+  // Create first batch
+  createBatch();
   for (var statement in sqlStatements) {
     batch.execute(statement);
+    batchSize++;
+    if (importBatchSize != null) {
+      if (batchSize >= importBatchSize) {
+        await commitBatch();
+        createBatch();
+      }
+    }
   }
-  await batch.commit(noResult: true);
+  // commit last batch if needed
+  await commitBatch();
+}
+
+/// Import a database and open it
+///
+Future<Database> openDatabaseFromSqlImport(
+    DatabaseFactory factory, String path, List<String> sqlStatements,
+    {SqlImportOptions? options,
+    OpenDatabaseOptions? openDatabaseOptions}) async {
+  await factory.deleteDatabase(path);
+  var db = await factory.openDatabase(path, options: openDatabaseOptions);
+  await dbImportSql(db, sqlStatements, options: options);
+  return db;
 }
