@@ -43,8 +43,8 @@ void main() {
       );
 
       var result = await sqfliteClient
-          .invoke('openDatabase', {'path': inMemoryDatabasePath});
-      expect((result as Map)['id'], const TypeMatcher<int>());
+          .invoke<Map>('openDatabase', {'path': inMemoryDatabasePath});
+      expect(result['id'], const TypeMatcher<int>());
 
       expect(sqfliteClient, isNotNull);
 

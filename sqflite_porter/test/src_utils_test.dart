@@ -1,6 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqflite_porter/src/sql_parser.dart';
-import 'package:sqflite_porter/src/utils.dart';
+
+String bookshelfSql = '''
+CREATE TABLE book (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT);
+INSERT INTO book(title) VALUES ('Le petit prince');
+INSERT INTO book(title) VALUES ('Harry Potter');''';
 
 void main() {
   group('src_utils', () {

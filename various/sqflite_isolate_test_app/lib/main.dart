@@ -1,5 +1,8 @@
+// ignore_for_file: depend_on_referenced_packages
+
 import 'dart:isolate';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_isolate/flutter_isolate.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
@@ -51,7 +54,7 @@ void main() {
   }, showConsole: true);
 }
 
-final isolateDbName = 'isolate.db';
+const isolateDbName = 'isolate.db';
 
 Future insert(Database db, int id) async {
   await db.insert('Test', {'id': id, 'name': 'item $id'},
@@ -79,7 +82,9 @@ Future<List<Map<String, Object?>>> simpleTest(String path) async {
     await insert(db, 2);
     await insert(db, 3);
     results = await db.rawQuery('SELECT id, name FROM Test');
-    print(results);
+    if (kDebugMode) {
+      print(results);
+    }
   } finally {
     await db.close();
   }

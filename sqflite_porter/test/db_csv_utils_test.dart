@@ -7,10 +7,10 @@ import 'package:test/test.dart';
 
 import 'csv_utils_test.dart';
 
-final String tableTodo = 'todo';
-final String columnId = '_id';
-final String columnTitle = 'title';
-final String columnDone = 'done';
+const String tableTodo = 'todo';
+const String columnId = '_id';
+const String columnTitle = 'title';
+const String columnDone = 'done';
 
 Future main() {
   return testMain(run);
