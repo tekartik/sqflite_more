@@ -27,7 +27,7 @@ void main() {
   test('export empty', () async {
     var db = await factory.openDatabase(inMemoryDatabasePath);
     var export = await dbExportSql(db);
-    expect(export, []);
+    expect(export, isEmpty);
 
     await db.close();
     db = await openDatabaseInMemoryFromSqlImport(factory, export);

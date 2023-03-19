@@ -1,5 +1,5 @@
 # tekartik analysis_options extension to pedantic
-include: package:tekartik_lints_flutter/recommended.yaml
+include: package:tekartik_lints_flutter/strict.yaml
 
 linter:
   rules:

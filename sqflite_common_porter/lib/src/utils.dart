@@ -33,6 +33,9 @@ Future<Database> openEmptyDatabase(
   return db;
 }
 
+typedef PrintFunction = void Function(Object? message);
+PrintFunction _print = core.print;
+
 Iterable<String> rowsToLines(Iterable<Object?> rows) {
   return rows.map((Object? row) => row.toString());
 }
@@ -41,36 +44,32 @@ String formatLines(List rows) {
   return '[${rowsToLines(rows).join(',\n')}]';
 }
 
-Function(Object? message) _print = core.print;
-
-void dumpSetPrint(Function(Object? message) print) {
+void dumpSetPrint(PrintFunction print) {
   _print = print;
 }
 
-void dumpLines(List rows, {Function(Object? message)? print}) {
+void dumpLines(List rows, {PrintFunction? print}) {
   print ??= _print;
   rowsToLines(rows).toList().forEach((line) {
     print!(line);
   });
 }
 
-void dumpLine(Object? line, {Function(Object? message)? print}) {
+void dumpLine(Object? line, {PrintFunction? print}) {
   print ??= _print;
   print(line);
 }
 
-Future dumpTableDefinitions(Database db,
-    {Function(Object? message)? print}) async {
+Future dumpTableDefinitions(Database db, {PrintFunction? print}) async {
   dumpLines(await db.query('sqlite_master'), print: print);
 }
 
-Future dumpTable(Database db, String table,
-    {Function(Object? message)? print}) async {
+Future dumpTable(Database db, String table, {PrintFunction? print}) async {
   dumpLine('TABLE: $table', print: print);
   dumpLines(await db.query(table), print: print);
 }
 
-Future dumpTables(Database db, {Function(Object? message)? print}) async {
+Future dumpTables(Database db, {PrintFunction? print}) async {
   for (var row in await db.query('sqlite_master', columns: ['name'])) {
     var table = row.values.first as String;
     await dumpTable(db, table, print: print);
@@ -89,8 +88,3 @@ Future<Database> importSqlDatabase(DatabaseFactory factory, String dbName,
           }));
   return db;
 }
-
-String bookshelfSql = '''
-CREATE TABLE book (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT);
-INSERT INTO book(title) VALUES ('Le petit prince');
-INSERT INTO book(title) VALUES ('Harry Potter');''';

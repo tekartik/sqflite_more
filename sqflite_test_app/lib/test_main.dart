@@ -61,8 +61,8 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     () async {
-      await Navigator.of(context)
-          .push(MaterialPageRoute(builder: (context) => const ManualApp()));
+      await Navigator.of(context).push<void>(
+          MaterialPageRoute(builder: (context) => const ManualApp()));
       try {
         widget.doneCompleter?.complete();
       } catch (e) {

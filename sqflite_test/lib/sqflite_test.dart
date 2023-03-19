@@ -222,11 +222,11 @@ Android:
   }
 
   @override
-  Future<T?> sendRequest<T>(String method, Object? param) async {
+  Future<T> sendRequest<T>(String method, Object? param) async {
     if (_debugModeOn) {
       print('$param');
     }
-    var t = await super.sendRequest(method, param) as T?;
+    var t = await super.sendRequest<T>(method, param);
     if (_debugModeOn) {
       print(t);
     }
