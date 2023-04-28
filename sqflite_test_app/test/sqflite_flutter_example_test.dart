@@ -1,5 +1,4 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_test_app/src/sqflite_import.dart';
 
 /// Initialize sqflite for test.
