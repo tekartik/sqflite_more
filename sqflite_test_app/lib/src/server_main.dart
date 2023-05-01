@@ -1,4 +1,3 @@
-import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_test_app/src/import.dart';
 import 'package:sqflite_test_app/src/sqflite_import.dart';
 
