@@ -1,0 +1,60 @@
+# Dependabot configuration file.
+# See https://docs.github.com/en/code-security/dependabot/dependabot-version-updates
+version: 2
+
+enable-beta-ecosystems: true
+updates:
+  - package-ecosystem: "pub"
+    directory: "repo_support"
+    schedule:
+      interval: "monthly"
+
+  - package-ecosystem: "pub"
+    directory: "sqflite_common_porter"
+    schedule:
+      interval: "monthly"
+
+  - package-ecosystem: "pub"
+    directory: "sqflite_common_server"
+    schedule:
+      interval: "monthly"
+
+  - package-ecosystem: "pub"
+    directory: "sqflite_common_test_app"
+    schedule:
+      interval: "monthly"
+
+  - package-ecosystem: "pub"
+    directory: "sqflite_porter"
+    schedule:
+      interval: "monthly"
+
+  - package-ecosystem: "pub"
+    directory: "sqflite_server_app"
+    schedule:
+      interval: "monthly"
+
+  - package-ecosystem: "pub"
+    directory: "sqflite_support"
+    schedule:
+      interval: "monthly"
+
+  - package-ecosystem: "pub"
+    directory: "sqflite_test"
+    schedule:
+      interval: "monthly"
+
+  - package-ecosystem: "pub"
+    directory: "sqflite_test_app"
+    schedule:
+      interval: "monthly"
+
+  - package-ecosystem: "pub"
+    directory: "various/sqflite_isolate_test_app"
+    schedule:
+      interval: "monthly"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"

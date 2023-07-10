@@ -1,8 +1,8 @@
 import 'dart:typed_data';
 
 import 'package:sqflite/sqflite.dart';
-import 'package:sqflite_porter/sqflite_porter.dart';
-import 'package:sqflite_porter/src/utils.dart'; // ignore: implementation_imports
+import 'package:sqflite_common_porter/sqflite_porter.dart';
+import 'package:sqflite_common_porter/src/utils.dart'; // ignore: implementation_imports
 import 'package:tekartik_test_menu_flutter/test.dart';
 
 void porterMain() {
@@ -10,7 +10,7 @@ void porterMain() {
 
   group('export/import', () {
     test('export_import', () async {
-      var path = await initEmptyDb('export.db');
+      var path = await initDeleteDb(databaseFactory, 'export.db');
       // await Sqflite.devSetDebugModeOn();
       var db = await openDatabase(path);
       try {
@@ -53,7 +53,7 @@ CREATE TRIGGER my_trigger AFTER INSERT ON test BEGIN INSERT INTO test_2(column_2
 
         // print('#### $sql');
         await db.close();
-        db = await openEmptyDatabase('import.db');
+        db = await openEmptyDatabase(databaseFactory, 'import.db');
         await dbImportSql(db, statements);
         // re-export
         var statements2 = await dbExportSql(db);
@@ -73,7 +73,8 @@ CREATE TRIGGER my_trigger AFTER INSERT ON test BEGIN INSERT INTO test_2(column_2
   group('meta', () {
     test('table_definitions', () async {
       //Sqflite.devSetDebugModeOn(true);
-      var db = await importSqlDatabase('book_table_definitions.db',
+      var db = await importSqlDatabase(
+          databaseFactory, 'book_table_definitions.db',
           sql: bookshelfSql);
       try {
         await dumpTableDefinitions(db);
@@ -85,7 +86,8 @@ CREATE TRIGGER my_trigger AFTER INSERT ON test BEGIN INSERT INTO test_2(column_2
 
     test('table', () async {
       //Sqflite.devSetDebugModeOn(true);
-      var db = await importSqlDatabase('book_dump_table.db', sql: bookshelfSql);
+      var db = await importSqlDatabase(databaseFactory, 'book_dump_table.db',
+          sql: bookshelfSql);
       try {
         await dumpTable(db, 'book');
       } finally {
@@ -95,8 +97,8 @@ CREATE TRIGGER my_trigger AFTER INSERT ON test BEGIN INSERT INTO test_2(column_2
 
     test('tables', () async {
       //Sqflite.devSetDebugModeOn(true);
-      var db =
-          await importSqlDatabase('book_dump_tables.db', sql: bookshelfSql);
+      var db = await importSqlDatabase(databaseFactory, 'book_dump_tables.db',
+          sql: bookshelfSql);
       try {
         await dumpTables(db);
       } finally {

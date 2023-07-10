@@ -33,7 +33,7 @@ dependencies:
   sqflite_common_server:
     git:
       url: https://github.com/tekartik/sqflite_more
-      ref: dart2_3
+      ref: dart3a
       path: sqflite_common_server
     version: '>=0.3.0'
 ````
