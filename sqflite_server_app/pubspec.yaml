@@ -11,7 +11,7 @@ publish_to: none
 version: 0.1.0
 
 environment:
-  sdk: '>=2.18.0 <4.0.0'
+  sdk: '>=3.0.0 <4.0.0'
 
 dependencies:
   flutter:
@@ -23,25 +23,25 @@ dependencies:
   sqflite_common_server:
     git:
       url: https://github.com/tekartik/sqflite_more
-      ref: dart2_3
+      ref: dart3a
       path: sqflite_common_server
     version: '>=0.3.2'
   sqflite_porter:
     git:
       url: https://github.com/tekartik/sqflite_more
-      ref: dart2_3
+      ref: dart3a
       path: sqflite_porter
     version: '>=0.2.0'
   tekartik_app_platform:
     git:
       url: https://github.com/tekartik/app_flutter_utils.dart
-      ref: dart2_3
+      ref: dart3a
       path: app_platform
     version: '>=0.1.0'
   sqflite_test:
     git:
       url: https://github.com/tekartik/sqflite_more
-      ref: dart2_3
+      ref: dart3a
       path: sqflite_test
     version: '>=0.2.0'
   sqflite:
@@ -55,7 +55,7 @@ dev_dependencies:
   tekartik_test_menu_flutter:
     git:
       url: https://github.com/tekartik/test_menu_flutter
-      ref: dart2_3
+      ref: dart3a
       path: test_menu_flutter
     version: '>=0.2.4'
   flutter_launcher_icons: ">=0.6.1"
@@ -63,7 +63,7 @@ dev_dependencies:
   tekartik_lints_flutter:
     git:
       url: https://github.com/tekartik/common_flutter.dart
-      ref: dart2_3
+      ref: dart3a
       path: packages/lints_flutter
     version: '>=0.1.0'
 

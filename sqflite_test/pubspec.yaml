@@ -4,7 +4,7 @@ version: 0.2.4
 publish_to: none
 
 environment:
-  sdk: '>=2.18.0 <4.0.0'
+  sdk: '>=3.0.0 <4.0.0'
 
 dependencies:
   flutter:
@@ -13,7 +13,7 @@ dependencies:
   sqflite_common_test:
     git:
       url: https://github.com/tekartik/sqflite
-      ref: dart2_3
+      ref: dart3a
       path: sqflite_common_test
     version: '>=0.3.1'
   synchronized: '>=2.2.0'
@@ -22,13 +22,13 @@ dependencies:
   sqflite_common_server:
     git:
       url: https://github.com/tekartik/sqflite_more
-      ref: dart2_3
+      ref: dart3a
       path: sqflite_common_server
     version: '>=0.3.0'
   tekartik_common_utils:
     git:
       url: https://github.com/tekartik/common_utils.dart
-      ref: dart2_3
+      ref: dart3a
     version: '>=0.3.0'
   test:
   path:
@@ -39,7 +39,7 @@ dev_dependencies:
   tekartik_lints_flutter:
     git:
       url: https://github.com/tekartik/common_flutter.dart
-      ref: dart2_3
+      ref: dart3a
       path: packages/lints_flutter
     version: '>=0.1.0'
 # For information on the generic Dart part of this file, see the

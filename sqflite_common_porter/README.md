@@ -14,7 +14,7 @@ dependencies:
   sqflite_common_porter:
     git:
       url: https://github.com/tekartik/sqflite_more
-      ref: dart2_3
+      ref: dart3a
       path: sqflite_common_porter
     version: '>=0.2.0'
 ````

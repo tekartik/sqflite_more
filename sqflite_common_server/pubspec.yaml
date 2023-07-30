@@ -4,7 +4,7 @@ version: 0.3.3
 publish_to: none
 
 environment:
-  sdk: '>=2.18.0 <4.0.0'
+  sdk: '>=3.0.0 <4.0.0'
 
 dependencies:
   path:
@@ -12,14 +12,14 @@ dependencies:
   tekartik_web_socket_io:
     git:
       url: https://github.com/tekartik/web_socket.dart
-      ref: dart2_3
+      ref: dart3a
       path: web_socket_io
     version: '>=0.2.0'
   json_rpc_2:
   tekartik_common_utils:
     git:
       url: https://github.com/tekartik/common_utils.dart
-      ref: dart2_3
+      ref: dart3a
     version: '>=0.9.7+1'
 
 
