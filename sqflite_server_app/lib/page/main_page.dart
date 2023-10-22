@@ -10,7 +10,7 @@ import 'package:sqflite_server_app/src/prefs.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';
 
 class SqfliteServerHomePage extends StatefulWidget {
-  const SqfliteServerHomePage({Key? key, this.title}) : super(key: key);
+  const SqfliteServerHomePage({super.key, this.title});
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect

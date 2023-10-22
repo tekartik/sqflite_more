@@ -24,7 +24,7 @@ void run() {
 }
 
 class SqfliteServerApp extends StatelessWidget {
-  const SqfliteServerApp({Key? key}) : super(key: key);
+  const SqfliteServerApp({super.key});
 
   // This widget is the root of your application.
   @override

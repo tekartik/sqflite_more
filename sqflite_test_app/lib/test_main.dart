@@ -33,7 +33,7 @@ void main() {
 }
 
 class ManualApp extends StatelessWidget {
-  const ManualApp({Key? key}) : super(key: key);
+  const ManualApp({super.key});
 
   //final _doneCompleter = Completer();
   Future? get done => null;
@@ -49,7 +49,7 @@ class ManualApp extends StatelessWidget {
 class HomePage extends StatefulWidget {
   final Completer? doneCompleter;
 
-  const HomePage({Key? key, this.doneCompleter}) : super(key: key);
+  const HomePage({super.key, this.doneCompleter});
 
   @override
   // ignore: library_private_types_in_public_api
