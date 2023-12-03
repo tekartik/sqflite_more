@@ -8,7 +8,7 @@ environment:
   sdk: '>=3.0.0 <4.0.0'
 
 dependencies:
-  sqflite_common:
+  sqflite_common: '>=2.0.0+2'
   path:
 
 dev_dependencies:
