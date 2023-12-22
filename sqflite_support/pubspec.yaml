@@ -7,7 +7,7 @@ environment:
   sdk: '>=3.0.0 <4.0.0'
 
 dependencies:
-  process_run: '>=0.10.10+2'
+  process_run: '>=0.13.3'
   path:
   tekartik_lints:
     git:
@@ -16,4 +16,4 @@ dependencies:
       path: packages/lints
     version: '>=0.1.0'
 dev_dependencies:
-  test: ^1.6.0
+  test: '>=1.6.0'

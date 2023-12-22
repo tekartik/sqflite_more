@@ -15,5 +15,5 @@ dev_dependencies:
       ref: dart3a
     version: '>=0.7.0'
   test:
-  dev_test:
+  dev_build:
 

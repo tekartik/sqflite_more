@@ -12,10 +12,10 @@ dependencies:
   path:
 
 dev_dependencies:
-  sqflite_common_ffi:
+  sqflite_common_ffi: '>=2.3.1'
   process_run:
   test:
-  dev_test:
+  dev_build:
   tekartik_lints_flutter:
     git:
       url: https://github.com/tekartik/common_flutter.dart

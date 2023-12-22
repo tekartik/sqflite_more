@@ -1,5 +1,5 @@
-import 'package:dev_test/test.dart';
 import 'package:sqflite_common_porter/src/sql_parser.dart';
+import 'package:test/test.dart';
 
 void main() {
   group('sql_parser', () {

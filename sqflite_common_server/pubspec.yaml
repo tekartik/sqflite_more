@@ -27,6 +27,6 @@ dev_dependencies:
   sqflite_common_ffi: '>=2.3.1'
   test:
   process_run: '>=0.10.7'
-  dev_test:
+  dev_build:
 
 dependency_overrides:
