@@ -8,7 +8,7 @@ environment:
 
 dependencies:
   path:
-  sqflite_common: '>=2.5.0+2'
+  sqflite_common: '>2.5.0+2'
   tekartik_web_socket_io:
     git:
       url: https://github.com/tekartik/web_socket.dart
@@ -24,9 +24,9 @@ dependencies:
 
 
 dev_dependencies:
-  sqflite_common_ffi: '>=2.3.0+4'
+  sqflite_common_ffi: '>=2.3.1'
   test:
   process_run: '>=0.10.7'
-  dev_test:
+  dev_build:
 
 dependency_overrides:

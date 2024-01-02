@@ -1,5 +1,5 @@
-import 'package:dev_test/test.dart';
 import 'package:sqflite_common_porter/src/sql_parser.dart';
+import 'package:test/test.dart';
 
 String bookshelfSql = '''
 CREATE TABLE book (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT);

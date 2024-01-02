@@ -9,12 +9,11 @@ environment:
 dev_dependencies:
   path:
   pub_semver:
+  tekartik_build_utils:
+    git:
+      url: https://github.com/tekartik/build_utils.dart
+      ref: dart3a
+    version: '>=0.7.0'
   test:
   dev_build:
-  tekartik_lints:
-    git:
-      url: https://github.com/tekartik/common.dart
-      ref: dart3a
-      path: packages/lints
-    version: '>=0.1.0'
 

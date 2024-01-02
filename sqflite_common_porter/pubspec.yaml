@@ -14,10 +14,10 @@ dependencies:
       ref: dart3a
     version: '>=0.9.7+1'
   csv:
-  sqflite_common_ffi: '>=2.3.0+4'
+  sqflite_common_ffi: '>=2.3.1'
   sqflite_common:
 
 dev_dependencies:
   test:
   process_run: '>=0.10.3'
-  dev_test:
+  dev_build:

@@ -59,7 +59,7 @@ dev_dependencies:
       path: test_menu_flutter
     version: '>=0.2.4'
   flutter_launcher_icons: ">=0.6.1"
-  dev_test:
+  dev_build:
   tekartik_lints_flutter:
     git:
       url: https://github.com/tekartik/common_flutter.dart
