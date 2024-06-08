@@ -11,7 +11,7 @@ import 'package:tekartik_test_menu_flutter/test.dart';
 import 'src/server_main.dart';
 
 void main() {
-  mainMenu(() {
+  mainMenuFlutter(() {
     item('sqlite example app', () {
       example.main();
     });

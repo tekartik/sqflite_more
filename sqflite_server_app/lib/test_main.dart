@@ -7,7 +7,7 @@ import 'package:sqflite_server_app/src/test/server_main.dart' as server;
 import 'package:tekartik_test_menu_flutter/test.dart';
 
 void main() {
-  mainMenu(() {
+  mainMenuFlutter(() {
     dumpSetPrint(write);
     menu('run', () {
       item('go home', () {

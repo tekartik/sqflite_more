@@ -16,7 +16,7 @@ void main() {
     return path;
   }
 
-  mainMenu(() {
+  mainMenuFlutter(() {
     //devPrint('MAIN_');
     // Sqflite.devSetDebugModeOn(true);
 
