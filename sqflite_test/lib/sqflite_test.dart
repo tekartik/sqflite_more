@@ -162,7 +162,7 @@ class SqfliteServerTestContext extends SqfliteServerContext
       if (envUrl == null && envPort == null) {
         try {
           await runCmd(ProcessCmd(
-              whichSync('adb'), ['forward', 'tcp:$port', 'tcp:$port'])
+              whichSync('adb')!, ['forward', 'tcp:$port', 'tcp:$port'])
             ..runInShell = true);
         } catch (_) {}
       }
