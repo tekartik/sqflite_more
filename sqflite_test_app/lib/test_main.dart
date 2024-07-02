@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:sqflite_example/main.dart' as example;
 import 'package:sqflite_example/manual_test_page.dart';
+import 'package:sqflite_test_app/src/asset_main.dart';
 import 'package:sqflite_test_app/src/log_service_main.dart';
 import 'package:sqflite_test_app/src/perf_main.dart';
 import 'package:sqflite_test_app/src/porter_main.dart';
@@ -20,6 +21,7 @@ void main() {
       porterMain();
       logServiceMain();
       perfMain();
+      assetMain();
     });
 
     item('manual', () async {

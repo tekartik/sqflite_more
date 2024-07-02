@@ -13,6 +13,7 @@ Future main() async {
   platformInit();
   if (Platform.isWindows || Platform.isLinux) {
     sqfliteFfiInit();
+    databaseFactory = databaseFactoryFfi;
   }
   test.main();
 }
