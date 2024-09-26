@@ -37,4 +37,5 @@ jobs:
       - run: flutter upgrade
       - run: dart --version
       - run: dart pub get
+      - run: dart run tool/setup_env.dart
       - run: dart run tool/run_ci.dart
