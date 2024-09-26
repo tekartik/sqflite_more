@@ -48,16 +48,16 @@ dependencies:
   sqflite_common_ffi:
   sqflite_common:
   path:
-dev_dependencies:
-  process_run:
-  flutter_test:
-    sdk: flutter
   tekartik_test_menu_flutter:
     git:
       url: https://github.com/tekartik/test_menu_flutter
       ref: dart3a
       path: test_menu_flutter
-    version: '>=0.2.4'
+
+dev_dependencies:
+  process_run:
+  flutter_test:
+    sdk: flutter
   flutter_launcher_icons: ">=0.6.1"
   dev_build:
   tekartik_lints_flutter:

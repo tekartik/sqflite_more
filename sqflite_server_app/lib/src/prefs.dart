@@ -90,13 +90,13 @@ class Prefs {
   }
 
   Future setShowConsole(bool showConsole) async {
-    this.showConsole = showConsole != false;
+    this.showConsole = showConsole;
     var intValue = this.showConsole ? 1 : 0;
     await _setIntValue('showConsole', intValue);
   }
 
   Future setAutoStart(bool autoStart) async {
-    this.autoStart = autoStart == true;
+    this.autoStart = autoStart;
     var intValue = this.autoStart ? 1 : 0;
     await _setIntValue('autoStart', intValue);
   }

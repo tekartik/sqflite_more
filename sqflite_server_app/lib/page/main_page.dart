@@ -199,7 +199,7 @@ class _SqfliteServerHomePageState extends State<SqfliteServerHomePage> {
     try {
       await app.startServer(port,
           notifyCallback: (bool response, String method, Object? param) {
-        if (response == false) {
+        if (!response) {
           void logOperation(Map map) {
             var sql = (map['sql'] as String?)?.trim();
             if (sql != null) {
