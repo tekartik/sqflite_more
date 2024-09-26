@@ -7,13 +7,10 @@ environment:
   sdk: ^3.5.0
 
 dev_dependencies:
+  process_run: '>=1.2.0'
+  dev_build: '>=1.0.0'
   path:
   pub_semver:
-  tekartik_build_utils:
-    git:
-      url: https://github.com/tekartik/build_utils.dart
-      ref: dart3a
-    version: '>=0.7.0'
   test:
-  dev_build:
+
 
