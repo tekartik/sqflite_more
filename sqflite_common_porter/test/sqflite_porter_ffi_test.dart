@@ -1,5 +1,5 @@
 @TestOn('vm')
-library sqflite_common_porter.ffi_test;
+library;
 
 import 'dart:typed_data';
 
