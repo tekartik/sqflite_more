@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:sqflite_example/main.dart' as example;
-import 'package:sqflite_example/manual_test_page.dart';
+import 'package:sqflite_example_common/main.dart' as example;
+import 'package:sqflite_example_common/manual_test_page.dart';
 import 'package:sqflite_test_app/src/asset_main.dart';
 import 'package:sqflite_test_app/src/log_service_main.dart';
 import 'package:sqflite_test_app/src/perf_main.dart';
@@ -14,7 +14,7 @@ import 'src/server_main.dart';
 void main() {
   mainMenuFlutter(() {
     item('sqlite example app', () {
-      example.main();
+      example.mainExampleApp();
     });
     menu('more', () {
       serverMain();
