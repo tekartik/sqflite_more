@@ -12,3 +12,4 @@ build/
 
 # Linux
 .uuid
+pubspec_overrides.yaml
