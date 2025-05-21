@@ -47,6 +47,7 @@ dev_dependencies:
 
 # The following section is specific to Flutter.
 flutter:
+resolution: workspace
 
   # To add assets to your package, add an assets section, like this:
   # assets:
@@ -79,8 +80,5 @@ flutter:
   # For details regarding fonts in packages, see
   # https://flutter.io/custom-fonts/#from-packages
 
-dependency_overrides:
-  sqflite_common_server:
-    path: ../sqflite_common_server
 #  sqflite:
 #    path: ../../sqflite

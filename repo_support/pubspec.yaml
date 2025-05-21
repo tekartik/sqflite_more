@@ -17,5 +17,6 @@ dev_dependencies:
       url: https://github.com/tekartik/common.dart
       ref: dart3a
       path: packages/lints
+resolution: workspace
 
 

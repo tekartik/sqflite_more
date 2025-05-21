@@ -3,6 +3,8 @@
 .packages
 pubspec.lock
 build/
+.*
+ephemeral/
 
 # ide
 .idea/
