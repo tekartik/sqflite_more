@@ -16,8 +16,8 @@ const useNullResponseWorkaround = true;
 
 const nullResponseWorkaround = '<sqflite_null>';
 
-typedef SqfliteServerNotifyCallback = void Function(
-    bool response, String method, Object? params);
+typedef SqfliteServerNotifyCallback =
+    void Function(bool response, String method, Object? params);
 
 /// Web socket server
 class SqfliteServer {
@@ -26,7 +26,10 @@ class SqfliteServer {
   SqfliteInvokeHandler get invokeHandler => factory as SqfliteInvokeHandler;
 
   SqfliteServer._(
-      this._webSocketChannelServer, this._notifyCallback, this.factory) {
+    this._webSocketChannelServer,
+    this._notifyCallback,
+    this.factory,
+  ) {
     _webSocketChannelServer.stream.listen((WebSocketChannel<String> channel) {
       _channels.add(SqfliteServerChannel(this, channel));
     });
@@ -41,12 +44,13 @@ class SqfliteServer {
   final List<SqfliteServerChannel> _channels = [];
   final WebSocketChannelServer<String> _webSocketChannelServer;
 
-  static Future<SqfliteServer> serve(
-      {WebSocketChannelServerFactory? webSocketChannelServerFactory,
-      Object? address,
-      int? port,
-      SqfliteServerNotifyCallback? notifyCallback,
-      required DatabaseFactory factory}) async {
+  static Future<SqfliteServer> serve({
+    WebSocketChannelServerFactory? webSocketChannelServerFactory,
+    Object? address,
+    int? port,
+    SqfliteServerNotifyCallback? notifyCallback,
+    required DatabaseFactory factory,
+  }) async {
     webSocketChannelServerFactory ??= webSocketChannelServerFactoryIo;
     var webSocketChannelServer = await webSocketChannelServerFactory
         .serve<String>(address: address, port: port);
@@ -66,10 +70,11 @@ class SqfliteServerChannel {
   final _openDatabaseIds = <int?>[];
 
   SqfliteServerChannel(this._sqfliteServer, WebSocketChannel<String> channel)
-      : _rpcServer = json_rpc.Server(channel) {
+    : _rpcServer = json_rpc.Server(channel) {
     // Specific method for getting server info upon start
-    _rpcServer.registerMethod(methodGetServerInfo,
-        (json_rpc.Parameters parameters) {
+    _rpcServer.registerMethod(methodGetServerInfo, (
+      json_rpc.Parameters parameters,
+    ) {
       if (_notifyCallback != null) {
         _notifyCallback!(false, methodGetServerInfo, parameters.value);
       }
@@ -82,7 +87,7 @@ class SqfliteServerChannel {
         keyIsAndroid: Platform.isAndroid,
         keyIsMacOS: Platform.isMacOS,
         keyIsWindows: Platform.isWindows,
-        keyIsLinux: Platform.isLinux
+        keyIsLinux: Platform.isLinux,
       };
       if (_notifyCallback != null) {
         _notifyCallback!(true, methodGetServerInfo, result);
@@ -90,8 +95,9 @@ class SqfliteServerChannel {
       return result;
     });
     // Specific method for deleting a database
-    _rpcServer.registerMethod(methodSqfliteDeleteDatabase,
-        (json_rpc.Parameters parameters) async {
+    _rpcServer.registerMethod(methodSqfliteDeleteDatabase, (
+      json_rpc.Parameters parameters,
+    ) async {
       if (_notifyCallback != null) {
         _notifyCallback!(false, methodSqfliteDeleteDatabase, parameters.value);
       }
@@ -104,34 +110,39 @@ class SqfliteServerChannel {
       return path;
     });
     // Specific method for creating a directory
-    _rpcServer.registerMethod(methodCreateDirectory,
-        (json_rpc.Parameters parameters) async {
+    _rpcServer.registerMethod(methodCreateDirectory, (
+      json_rpc.Parameters parameters,
+    ) async {
       if (_notifyCallback != null) {
         _notifyCallback!(false, methodCreateDirectory, parameters.value);
       }
-      var path = await _sqfliteServer.sqfliteLocalContext
-          .createDirectory((parameters.value as Map)[keyPath] as String);
+      var path = await _sqfliteServer.sqfliteLocalContext.createDirectory(
+        (parameters.value as Map)[keyPath] as String,
+      );
       if (_notifyCallback != null) {
         _notifyCallback!(true, methodCreateDirectory, path);
       }
       return path;
     });
     // Specific method for deleting a directory
-    _rpcServer.registerMethod(methodDeleteDirectory,
-        (json_rpc.Parameters parameters) async {
+    _rpcServer.registerMethod(methodDeleteDirectory, (
+      json_rpc.Parameters parameters,
+    ) async {
       if (_notifyCallback != null) {
         _notifyCallback!(false, methodDeleteDirectory, parameters.value);
       }
-      var path = await _sqfliteServer.sqfliteLocalContext
-          .deleteDirectory((parameters.value as Map)[keyPath] as String);
+      var path = await _sqfliteServer.sqfliteLocalContext.deleteDirectory(
+        (parameters.value as Map)[keyPath] as String,
+      );
       if (_notifyCallback != null) {
         _notifyCallback!(true, methodDeleteDirectory, path);
       }
       return path;
     });
     // Specific method for writing a file
-    _rpcServer.registerMethod(methodWriteFile,
-        (json_rpc.Parameters parameters) async {
+    _rpcServer.registerMethod(methodWriteFile, (
+      json_rpc.Parameters parameters,
+    ) async {
       if (_notifyCallback != null) {
         _notifyCallback!(false, methodWriteFile, parameters.value);
       }
@@ -145,8 +156,9 @@ class SqfliteServerChannel {
       return path;
     });
     // Specific method for deleting a directory
-    _rpcServer.registerMethod(methodReadFile,
-        (json_rpc.Parameters parameters) async {
+    _rpcServer.registerMethod(methodReadFile, (
+      json_rpc.Parameters parameters,
+    ) async {
       if (_notifyCallback != null) {
         _notifyCallback!(false, methodReadFile, parameters.value);
       }
@@ -160,8 +172,9 @@ class SqfliteServerChannel {
       return content;
     });
     // Generic method
-    _rpcServer.registerMethod(methodSqflite,
-        (json_rpc.Parameters parameters) async {
+    _rpcServer.registerMethod(methodSqflite, (
+      json_rpc.Parameters parameters,
+    ) async {
       if (_notifyCallback != null) {
         _notifyCallback!(false, methodSqflite, parameters.value);
       }
@@ -175,8 +188,10 @@ class SqfliteServerChannel {
         sqfliteParam = fixParam(sqfliteMethod, sqfliteParam);
       }
 
-      var result = await _sqfliteServer.invokeHandler
-          .invokeMethod<Object?>(sqfliteMethod, sqfliteParam);
+      var result = await _sqfliteServer.invokeHandler.invokeMethod<Object?>(
+        sqfliteMethod,
+        sqfliteParam,
+      );
       if (_notifyCallback != null) {
         _notifyCallback!(true, methodSqflite, result);
       }
@@ -215,7 +230,9 @@ class SqfliteServerChannel {
       for (var databaseId in _openDatabaseIds) {
         try {
           await _sqfliteServer.invokeHandler.invokeMethod<Object?>(
-              methodCloseDatabase, {paramId: databaseId});
+            methodCloseDatabase,
+            {paramId: databaseId},
+          );
         } catch (e) {
           print('error cleaning up database $databaseId');
         }

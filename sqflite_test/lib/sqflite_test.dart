@@ -149,10 +149,16 @@ class SqfliteServerTestContext extends SqfliteServerContext
       if (port != null) {
         url = getSqfliteServerUrl(port: port);
       } else {
-        envPort = parseInt(String.fromEnvironment(sqfliteServerPortEnvKey,
-            defaultValue: sqfliteServerDefaultPort.toString()));
-        envUrl = String.fromEnvironment(sqfliteServerUrlEnvKey,
-            defaultValue: getSqfliteServerUrl(port: envPort));
+        envPort = parseInt(
+          String.fromEnvironment(
+            sqfliteServerPortEnvKey,
+            defaultValue: sqfliteServerDefaultPort.toString(),
+          ),
+        );
+        envUrl = String.fromEnvironment(
+          sqfliteServerUrlEnvKey,
+          defaultValue: getSqfliteServerUrl(port: envPort),
+        );
         url = envUrl!;
       }
 
@@ -161,9 +167,10 @@ class SqfliteServerTestContext extends SqfliteServerContext
       // Run the needed adb command if no env overrides
       if (envUrl == null && envPort == null) {
         try {
-          await runCmd(ProcessCmd(
-              whichSync('adb')!, ['forward', 'tcp:$port', 'tcp:$port'])
-            ..runInShell = true);
+          await runCmd(
+            ProcessCmd(whichSync('adb')!, ['forward', 'tcp:$port', 'tcp:$port'])
+              ..runInShell = true,
+          );
         } catch (_) {}
       }
 
@@ -252,7 +259,6 @@ Android:
   bool get supportsDeadLock => false;
 
   @override
-
   /// Default implementation is not strict, ffi one is
   bool get strict => false;
 }

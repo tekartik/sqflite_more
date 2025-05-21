@@ -18,7 +18,7 @@ void main() {
       var batch = db.batch();
       for (var obj in [
         {'name': 'name1'},
-        {'name': 'name1'}
+        {'name': 'name1'},
       ]) {
         batch.insert('Test', obj);
       }
@@ -38,13 +38,16 @@ void main() {
       CREATE TABLE test (
         name TEXT PRIMARY KEY
       )''');
-      var key1 = await db.insert('test', {'name': 'name 1'},
-          conflictAlgorithm: ConflictAlgorithm.ignore);
-      var key2 = await db.insert('test', {'name': 'name 2'},
-          conflictAlgorithm: ConflictAlgorithm.ignore);
+      var key1 = await db.insert('test', {
+        'name': 'name 1',
+      }, conflictAlgorithm: ConflictAlgorithm.ignore);
+      var key2 = await db.insert('test', {
+        'name': 'name 2',
+      }, conflictAlgorithm: ConflictAlgorithm.ignore);
       // Conflict
-      var key3 = await db.insert('test', {'name': 'name 1'},
-          conflictAlgorithm: ConflictAlgorithm.ignore);
+      var key3 = await db.insert('test', {
+        'name': 'name 1',
+      }, conflictAlgorithm: ConflictAlgorithm.ignore);
       expect([key1, key2, key3], [1, 2, 0]);
     } finally {
       await db.close();

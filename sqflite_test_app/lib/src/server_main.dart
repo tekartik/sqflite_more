@@ -8,7 +8,9 @@ void serverMain() {
     SqfliteServer? server;
     item('start', () async {
       server ??= await SqfliteServer.serve(
-          port: defaultPort, factory: databaseFactory);
+        port: defaultPort,
+        factory: databaseFactory,
+      );
     });
     item('stop', () async {
       await server?.close();

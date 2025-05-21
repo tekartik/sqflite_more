@@ -1,8 +1,10 @@
 import 'package:csv/csv.dart';
 
 /// Convert a map list to csv
-String? mapListToCsv(List<Map<String, Object?>>? mapList,
-    {ListToCsvConverter? converter}) {
+String? mapListToCsv(
+  List<Map<String, Object?>>? mapList, {
+  ListToCsvConverter? converter,
+}) {
   if (mapList == null) {
     return null;
   }

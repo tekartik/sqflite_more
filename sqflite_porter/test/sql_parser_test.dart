@@ -17,8 +17,11 @@ void main() {
     test('isStringWrapper', () {
       var stringWrapper = '\'"`';
       for (var codeUnit in stringWrapper.codeUnits) {
-        expect(isStringWrapper(codeUnit), isTrue,
-            reason: 'codeUnit: $codeUnit');
+        expect(
+          isStringWrapper(codeUnit),
+          isTrue,
+          reason: 'codeUnit: $codeUnit',
+        );
       }
       var noStringWrapper = 'ab10 ';
       for (var codeUnit in noStringWrapper.codeUnits) {
@@ -29,8 +32,11 @@ void main() {
     test('isSeparator', () {
       var separator = '(,#);';
       for (var codeUnit in separator.codeUnits) {
-        expect(isSeparator(codeUnit), isTrue,
-            reason: 'codeUnit: $codeUnit ${String.fromCharCode(codeUnit)}');
+        expect(
+          isSeparator(codeUnit),
+          isTrue,
+          reason: 'codeUnit: $codeUnit ${String.fromCharCode(codeUnit)}',
+        );
       }
       var noSeparator = 'ab10 \'"`';
       for (var codeUnit in noSeparator.codeUnits) {

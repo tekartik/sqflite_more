@@ -36,13 +36,19 @@ Future<Database> openEmptyDatabase(String dbName) async {
   return db;
 }
 
-Future<Database> importSqlDatabase(String dbName,
-    {String? sql, List<String>? sqlStatements}) async {
+Future<Database> importSqlDatabase(
+  String dbName, {
+  String? sql,
+  List<String>? sqlStatements,
+}) async {
   sqlStatements ??= parseStatements(sql);
   var path = await initEmptyDb(dbName);
-  var db = await openDatabase(path, version: 1,
-      onCreate: (Database db, int version) async {
-    await dbImportSql(db, sqlStatements!);
-  });
+  var db = await openDatabase(
+    path,
+    version: 1,
+    onCreate: (Database db, int version) async {
+      await dbImportSql(db, sqlStatements!);
+    },
+  );
   return db;
 }

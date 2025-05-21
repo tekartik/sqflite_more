@@ -12,11 +12,13 @@ void main() {
     setUpAll(() async {
       WebSocketChannelFactory factory = webSocketChannelFactoryMemory;
       var sqfliteServer = await SqfliteServer.serve(
-          webSocketChannelServerFactory: factory.server,
-          factory: databaseFactoryFfi);
+        webSocketChannelServerFactory: factory.server,
+        factory: databaseFactoryFfi,
+      );
       databaseFactory = await SqfliteServerDatabaseFactory.connect(
-          sqfliteServer.url,
-          webSocketChannelClientFactory: factory.client);
+        sqfliteServer.url,
+        webSocketChannelClientFactory: factory.client,
+      );
     });
 
     tearDownAll(() async {

@@ -9,8 +9,8 @@ void logServiceMain() {
       if (databaseFactory is! FactoryDelegate) {
         // ignore: deprecated_member_use
         await (databaseFactory as SqfliteDatabaseFactory)
-            // ignore: deprecated_member_use
-            .setLogLevel(sqfliteLogLevelVerbose);
+        // ignore: deprecated_member_use
+        .setLogLevel(sqfliteLogLevelVerbose);
 
         databaseFactory = FactoryDelegate(factory: databaseFactory);
       }
@@ -21,8 +21,10 @@ void logServiceMain() {
       }
     });
     test('open/close in memory single instance false', () async {
-      await databaseFactory.openDatabase(inMemoryDatabasePath,
-          options: OpenDatabaseOptions(singleInstance: false));
+      await databaseFactory.openDatabase(
+        inMemoryDatabasePath,
+        options: OpenDatabaseOptions(singleInstance: false),
+      );
     });
   });
 }

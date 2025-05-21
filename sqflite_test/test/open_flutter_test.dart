@@ -16,7 +16,8 @@ class TestAssetBundle extends CachingAssetBundle {
     //if (key == 'resources/test')
     print('## ${Directory.current}');
     return ByteData.view(
-        Uint8List.fromList(await File(join(key)).readAsBytes()).buffer);
+      Uint8List.fromList(await File(join(key)).readAsBytes()).buffer,
+    );
     // return null;
   }
 }
@@ -39,8 +40,10 @@ void run(SqfliteTestContext context) {
 
     // Copy from asset
     var data = await rootBundle.load(join('assets', 'example.db'));
-    List<int> bytes =
-        data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+    List<int> bytes = data.buffer.asUint8List(
+      data.offsetInBytes,
+      data.lengthInBytes,
+    );
     await context.writeFile(path, bytes);
 
     // open the database
@@ -66,16 +69,19 @@ void run(SqfliteTestContext context) {
         await db.execute('PRAGMA foreign_keys = ON');
       }
 
-      var db = await factory.openDatabase(path,
-          options: OpenDatabaseOptions(onConfigure: onConfigure));
+      var db = await factory.openDatabase(
+        path,
+        options: OpenDatabaseOptions(onConfigure: onConfigure),
+      );
       await db.close();
     }
 
     {
       Future onCreate(Database db, int version) async {
         // Database is created, delete the table
-        await db
-            .execute('CREATE TABLE Test (id INTEGER PRIMARY KEY, value TEXT)');
+        await db.execute(
+          'CREATE TABLE Test (id INTEGER PRIMARY KEY, value TEXT)',
+        );
       }
 
       Future onUpgrade(Database db, int oldVersion, int newVersion) async {
@@ -84,12 +90,15 @@ void run(SqfliteTestContext context) {
       }
 
       // Special callback used for onDowngrade here to recreate the database
-      var db = await factory.openDatabase(path,
-          options: OpenDatabaseOptions(
-              version: 1,
-              onCreate: onCreate,
-              onUpgrade: onUpgrade,
-              onDowngrade: onDatabaseDowngradeDelete));
+      var db = await factory.openDatabase(
+        path,
+        options: OpenDatabaseOptions(
+          version: 1,
+          onCreate: onCreate,
+          onUpgrade: onUpgrade,
+          onDowngrade: onDatabaseDowngradeDelete,
+        ),
+      );
       await db.close();
     }
 
@@ -99,10 +108,10 @@ void run(SqfliteTestContext context) {
         print('db version ${await db.getVersion()}');
       }
 
-      var db = await factory.openDatabase(path,
-          options: OpenDatabaseOptions(
-            onOpen: onOpen,
-          ));
+      var db = await factory.openDatabase(
+        path,
+        options: OpenDatabaseOptions(onOpen: onOpen),
+      );
       await db.close();
     }
   });
@@ -117,8 +126,10 @@ void run(SqfliteTestContext context) {
       // try opening (will work if it exists)
       Database? db;
       try {
-        db = await factory.openDatabase(path,
-            options: OpenDatabaseOptions(readOnly: true));
+        db = await factory.openDatabase(
+          path,
+          options: OpenDatabaseOptions(readOnly: true),
+        );
       } catch (e) {
         print('Error $e');
       }
@@ -129,13 +140,17 @@ void run(SqfliteTestContext context) {
 
         // Copy from asset
         var data = await rootBundle.load(join('assets', 'example.db'));
-        List<int> bytes =
-            data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+        List<int> bytes = data.buffer.asUint8List(
+          data.offsetInBytes,
+          data.lengthInBytes,
+        );
         await context.writeFile(path, bytes);
 
         // open the database
-        db = await factory.openDatabase(path,
-            options: OpenDatabaseOptions(readOnly: true));
+        db = await factory.openDatabase(
+          path,
+          options: OpenDatabaseOptions(readOnly: true),
+        );
       } else {
         print('Opening existing database');
       }

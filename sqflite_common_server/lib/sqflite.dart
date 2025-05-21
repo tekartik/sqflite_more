@@ -26,10 +26,16 @@ final sqfliteServerDefaultUrl = getSqfliteServerUrl();
 
 Future<SqfliteServerDatabaseFactory?> initSqfliteServerDatabaseFactory() async {
   SqfliteServerDatabaseFactory? databaseFactory;
-  var envPort = parseInt(String.fromEnvironment(sqfliteServerPortEnvKey,
-      defaultValue: sqfliteServerDefaultPort.toString()));
-  var envUrl = String.fromEnvironment(sqfliteServerUrlEnvKey,
-      defaultValue: getSqfliteServerUrl(port: envPort));
+  var envPort = parseInt(
+    String.fromEnvironment(
+      sqfliteServerPortEnvKey,
+      defaultValue: sqfliteServerDefaultPort.toString(),
+    ),
+  );
+  var envUrl = String.fromEnvironment(
+    sqfliteServerUrlEnvKey,
+    defaultValue: getSqfliteServerUrl(port: envPort),
+  );
 
   try {
     databaseFactory = await SqfliteServerDatabaseFactory.connect(envUrl);
@@ -79,11 +85,15 @@ class SqfliteServerContext implements SqfliteContext {
     return result;
   }
 
-  Future<SqfliteClient> connectClient(String url,
-      {WebSocketChannelClientFactory? webSocketChannelClientFactory}) async {
+  Future<SqfliteClient> connectClient(
+    String url, {
+    WebSocketChannelClientFactory? webSocketChannelClientFactory,
+  }) async {
     SqfliteClient sqfliteClient;
-    sqfliteClient = await SqfliteClient.connect(url,
-        webSocketChannelClientFactory: webSocketChannelClientFactory);
+    sqfliteClient = await SqfliteClient.connect(
+      url,
+      webSocketChannelClientFactory: webSocketChannelClientFactory,
+    );
 
     _client = sqfliteClient;
     _databaseFactory = SqfliteServerDatabaseFactory(this);
@@ -96,20 +106,28 @@ class SqfliteServerContext implements SqfliteContext {
   @override
   Future<String> createDirectory(String? path) async {
     return await _client!.sendRequest<String>(
-        methodCreateDirectory, <String, Object?>{keyPath: path});
+      methodCreateDirectory,
+      <String, Object?>{keyPath: path},
+    );
   }
 
   @override
   Future<String> deleteDirectory(String? path) async {
     return await _client!.sendRequest<String>(
-        methodDeleteDirectory, <String, Object?>{keyPath: path});
+      methodDeleteDirectory,
+      <String, Object?>{keyPath: path},
+    );
   }
 
-  static Future<SqfliteServerContext> connect(String url,
-      {WebSocketChannelClientFactory? webSocketChannelClientFactory}) async {
+  static Future<SqfliteServerContext> connect(
+    String url, {
+    WebSocketChannelClientFactory? webSocketChannelClientFactory,
+  }) async {
     var context = SqfliteServerContext();
-    await (context.connectClient(url,
-        webSocketChannelClientFactory: webSocketChannelClientFactory));
+    await (context.connectClient(
+      url,
+      webSocketChannelClientFactory: webSocketChannelClientFactory,
+    ));
     return context;
   }
 
@@ -139,14 +157,16 @@ class SqfliteServerContext implements SqfliteContext {
 
   @override
   Future<List<int>> readFile(String path) async {
-    return (await _client!.sendRequest<List>(
-            methodReadFile, <String, Object?>{keyPath: path}))
-        .cast<int>();
+    return (await _client!.sendRequest<List>(methodReadFile, <String, Object?>{
+      keyPath: path,
+    })).cast<int>();
   }
 
   @override
   Future<String> writeFile(String? path, List<int>? data) async {
     return await _client!.sendRequest<String>(
-        methodWriteFile, <String, Object?>{keyPath: path, keyContent: data});
+      methodWriteFile,
+      <String, Object?>{keyPath: path, keyContent: data},
+    );
   }
 }

@@ -17,10 +17,11 @@ Future<Uint8List> readAssetAsBytes(String name) async {
 /// Copy the asset database if needed and open it.
 ///
 /// It uses an external version file to keep track of the asset version.
-Future<Database> copyIfNeededAndOpenAssetDatabase(
-    {required String databasesPath,
-    required String versionNumFilename,
-    required String dbFilename}) async {
+Future<Database> copyIfNeededAndOpenAssetDatabase({
+  required String databasesPath,
+  required String versionNumFilename,
+  required String dbFilename,
+}) async {
   var dbPath = join(databasesPath, dbFilename);
 
   // First check the currently installed version
@@ -32,7 +33,8 @@ Future<Database> copyIfNeededAndOpenAssetDatabase(
 
   // Read the asset version
   var assetVersionNum = int.parse(
-      await rootBundle.loadString(url.join('assets', versionNumFilename)));
+    await rootBundle.loadString(url.join('assets', versionNumFilename)),
+  );
 
   // Compare them.
   print('existing/asset: $existingVersionNum/$assetVersionNum');
@@ -63,11 +65,12 @@ void assetMain() {
   menu('perf', () {
     item('copy if needed and open asset database', () async {
       var db = await copyIfNeededAndOpenAssetDatabase(
-          databasesPath: await getDatabasesPath(),
-          // The asset database filename.
-          dbFilename: 'my_asset_database.db',
-          // The version num.
-          versionNumFilename: 'db_version_num.txt');
+        databasesPath: await getDatabasesPath(),
+        // The asset database filename.
+        dbFilename: 'my_asset_database.db',
+        // The version num.
+        versionNumFilename: 'db_version_num.txt',
+      );
 
       write(await db.query('Value'));
       await db.close();

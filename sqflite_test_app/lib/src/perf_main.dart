@@ -8,31 +8,41 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart' as sqflite_ffi;
 import 'package:sqflite_test_app/src/import.dart';
 import 'package:sqflite_test_app/src/sqflite_import.dart';
 
-var sqfliteFactoryContext =
-    PerfFactoryContext(name: 'sqflite', factory: sqflite.databaseFactory);
+var sqfliteFactoryContext = PerfFactoryContext(
+  name: 'sqflite',
+  factory: sqflite.databaseFactory,
+);
 var sqfliteFfiFactoryContext = PerfFactoryContext(
-    name: 'sqflite_ffi', factory: sqflite_ffi.databaseFactoryFfi);
+  name: 'sqflite_ffi',
+  factory: sqflite_ffi.databaseFactoryFfi,
+);
 var sqfliteFfiNoIsolateFactoryContext = PerfFactoryContext(
-    name: 'sqflite_ffi (no isolate)',
-    factory: sqflite_ffi.databaseFactoryFfiNoIsolate);
+  name: 'sqflite_ffi (no isolate)',
+  factory: sqflite_ffi.databaseFactoryFfiNoIsolate,
+);
 
 var factoryContexts = [
   if (Platform.isAndroid || Platform.isIOS || Platform.isMacOS)
     sqfliteFactoryContext,
   sqfliteFfiFactoryContext,
-  sqfliteFfiNoIsolateFactoryContext
+  sqfliteFfiNoIsolateFactoryContext,
 ];
 
 var perfDbName = 'perf.db';
 
 var ioDbNameContext = PerfDbNameContext(name: 'io', path: perfDbName);
-var memoryDbNameContext =
-    PerfDbNameContext(name: 'memory', path: inMemoryDatabasePath);
+var memoryDbNameContext = PerfDbNameContext(
+  name: 'memory',
+  path: inMemoryDatabasePath,
+);
 var dbNameContexts = [ioDbNameContext, memoryDbNameContext];
 
 var perfContexts = dbNameContexts
-    .map((d) => factoryContexts
-        .map((f) => PerfContext(factoryContext: f, dbNameContext: d)))
+    .map(
+      (d) => factoryContexts.map(
+        (f) => PerfContext(factoryContext: f, dbNameContext: d),
+      ),
+    )
     .expand((element) => element);
 
 void perfMain() {
@@ -47,35 +57,47 @@ void perfMain() {
   });
 }
 
-Future<void> runBulkInsert(PerfContext perfContext, Directory directory,
-    {bool? noResult}) async {
-  var list = List.generate(
-      13000,
-      (index) => {
-            'name': 'some name $index',
-            'name2': 'some name $index',
-            'name3': 'some name $index',
-            'name4': 'some name $index'
-          }).toList();
+Future<void> runBulkInsert(
+  PerfContext perfContext,
+  Directory directory, {
+  bool? noResult,
+}) async {
+  var list =
+      List.generate(
+        13000,
+        (index) => {
+          'name': 'some name $index',
+          'name2': 'some name $index',
+          'name3': 'some name $index',
+          'name4': 'some name $index',
+        },
+      ).toList();
   write('$perfContext');
   var factory = perfContext.factory;
   var path = join(directory.path, perfContext.path);
   await factory.deleteDatabase(path);
-  var db = await factory.openDatabase(path,
-      options: OpenDatabaseOptions(
-          version: 1,
-          onCreate: (db, version) async {
-            await db.execute(
-                'CREATE TABLE Test(id INTEGER PRIMARY KEY, name TEXT, name2 TEXT, name3 TEXT, name4 TEXT)');
-          }));
+  var db = await factory.openDatabase(
+    path,
+    options: OpenDatabaseOptions(
+      version: 1,
+      onCreate: (db, version) async {
+        await db.execute(
+          'CREATE TABLE Test(id INTEGER PRIMARY KEY, name TEXT, name2 TEXT, name3 TEXT, name4 TEXT)',
+        );
+      },
+    ),
+  );
   try {
     var sw = Stopwatch()..start();
 
     await db.transaction((txn) async {
       var batch = txn.batch();
       for (var rowData in list) {
-        batch.insert('Test', rowData,
-            conflictAlgorithm: ConflictAlgorithm.replace);
+        batch.insert(
+          'Test',
+          rowData,
+          conflictAlgorithm: ConflictAlgorithm.replace,
+        );
       }
       await batch.commit(continueOnError: false, noResult: noResult);
     });

@@ -25,7 +25,7 @@ Future main() async {
     var result = await db.query('Product');
     expect(result, [
       {'id': 1, 'title': 'Product 1'},
-      {'id': 2, 'title': 'Product 2'}
+      {'id': 2, 'title': 'Product 2'},
     ]);
     await db.close();
   });

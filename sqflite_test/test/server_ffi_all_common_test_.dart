@@ -12,8 +12,9 @@ Future main() async {
 
   var server = await SqfliteServer.serve(factory: databaseFactoryFfi);
   var databaseFactory = await SqfliteServerDatabaseFactory.connect(server.url);
-  var ffiClientTestContext =
-      SqfliteLocalTestContext(databaseFactory: databaseFactory);
+  var ffiClientTestContext = SqfliteLocalTestContext(
+    databaseFactory: databaseFactory,
+  );
 
   tearDownAll(() async {
     await server.close();

@@ -35,7 +35,7 @@ void main() {
       var receivePort = ReceivePort();
       var param = <String, Object?>{
         'sendPort': receivePort.sendPort,
-        'path': path
+        'path': path,
       };
       await FlutterIsolate.spawn(simpleIsolate, param);
 
@@ -57,8 +57,10 @@ void main() {
 const isolateDbName = 'isolate.db';
 
 Future insert(Database db, int id) async {
-  await db.insert('Test', {'id': id, 'name': 'item $id'},
-      conflictAlgorithm: ConflictAlgorithm.replace);
+  await db.insert('Test', {
+    'id': id,
+    'name': 'item $id',
+  }, conflictAlgorithm: ConflictAlgorithm.replace);
 }
 
 // Somehow it seems to expect a string for now...
@@ -73,9 +75,13 @@ void simpleIsolate(Map<String, Object?> param) {
 
 Future<List<Map<String, Object?>>> simpleTest(String path) async {
   // Get the path
-  var db = await openDatabase(path, version: 1, onCreate: (db, version) {
-    db.execute('CREATE TABLE Test (id INTEGER PRIMARY KEY, name TEXT)');
-  });
+  var db = await openDatabase(
+    path,
+    version: 1,
+    onCreate: (db, version) {
+      db.execute('CREATE TABLE Test (id INTEGER PRIMARY KEY, name TEXT)');
+    },
+  );
   List<Map<String, Object?>> results;
   try {
     await insert(db, 1);

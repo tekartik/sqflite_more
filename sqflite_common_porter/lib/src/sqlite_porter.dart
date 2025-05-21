@@ -37,8 +37,9 @@ String? extractTableName(String? sqlTableStatement) {
 Future<List<String>> dbExportSql(Database db) async {
   var statements = <String>[];
   await db.transaction((Transaction txn) async {
-    var metaRows =
-        await txn.rawQuery('SELECT sql, type, name FROM sqlite_master');
+    var metaRows = await txn.rawQuery(
+      'SELECT sql, type, name FROM sqlite_master',
+    );
     // devPrint(metaRows);
     var tableRows = metaRows.where((row) => row['type'] == 'table');
     var otherRows = metaRows.where((row) => row['type'] != 'table');
@@ -120,8 +121,11 @@ class SqlImportOptions {
 /// Import a database from a list of statements.
 ///
 /// db must be an empty database.
-Future<void> dbImportSql(Database db, List<String> sqlStatements,
-    {SqlImportOptions? options}) async {
+Future<void> dbImportSql(
+  Database db,
+  List<String> sqlStatements, {
+  SqlImportOptions? options,
+}) async {
   var importBatchSize = options?.importBatchSize;
   late Batch batch;
   var batchSize = 0;
@@ -155,9 +159,12 @@ Future<void> dbImportSql(Database db, List<String> sqlStatements,
 /// Import a database and open it
 ///
 Future<Database> openDatabaseFromSqlImport(
-    DatabaseFactory factory, String path, List<String> sqlStatements,
-    {SqlImportOptions? options,
-    OpenDatabaseOptions? openDatabaseOptions}) async {
+  DatabaseFactory factory,
+  String path,
+  List<String> sqlStatements, {
+  SqlImportOptions? options,
+  OpenDatabaseOptions? openDatabaseOptions,
+}) async {
   await factory.deleteDatabase(path);
   var db = await factory.openDatabase(path, options: openDatabaseOptions);
   await dbImportSql(db, sqlStatements, options: options);

@@ -14,7 +14,8 @@ class TestAssetBundle extends CachingAssetBundle {
   Future<ByteData> load(String key) async {
     //if (key == 'resources/test')
     return ByteData.view(
-        Uint8List.fromList(await File(key).readAsBytes()).buffer);
+      Uint8List.fromList(await File(key).readAsBytes()).buffer,
+    );
     // return null;
   }
 }
@@ -71,8 +72,9 @@ Future main() async {
       try {
         Future<Database> initDb() async {
           var oldDB = await factory.openDatabase(path);
-          List count = await oldDB
-              .rawQuery("select 'name' from sqlite_master where name = 'Test'");
+          List count = await oldDB.rawQuery(
+            "select 'name' from sqlite_master where name = 'Test'",
+          );
           print(count.length); // 0
 
           // IMPORTANT! Close the database before deleting it
@@ -82,16 +84,21 @@ Future main() async {
           await factory.deleteDatabase(path);
           var data = await rootBundle.load(join('assets', 'example.db'));
 
-          List<int> bytes =
-              data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+          List<int> bytes = data.buffer.asUint8List(
+            data.offsetInBytes,
+            data.lengthInBytes,
+          );
           //print(bytes);
           expect(bytes.length, greaterThan(1000));
           // Writing the database
           await context.writeFile(path, bytes);
-          var db = await factory.openDatabase(path,
-              options: OpenDatabaseOptions(readOnly: true));
-          List count2 = await db
-              .rawQuery("select 'name' from sqlite_master where name = 'Test'");
+          var db = await factory.openDatabase(
+            path,
+            options: OpenDatabaseOptions(readOnly: true),
+          );
+          List count2 = await db.rawQuery(
+            "select 'name' from sqlite_master where name = 'Test'",
+          );
           print(count2);
 
           // Our database as a single table with a single element
@@ -124,8 +131,9 @@ Future main() async {
       var db = await factory.openDatabase(path);
       try {
         var table = 'test';
-        await db
-            .execute('CREATE TABLE $table (id INTEGER PRIMARY KEY, name TEXT)');
+        await db.execute(
+          'CREATE TABLE $table (id INTEGER PRIMARY KEY, name TEXT)',
+        );
         var id = await db.insert(table, <String, Object?>{'name': 'test'});
         var id2 = await db.insert(table, <String, Object?>{'name': 'test'});
 
@@ -144,8 +152,9 @@ Future main() async {
       var db = await factory.openDatabase(path);
       try {
         var table = 'test';
-        await db
-            .execute('CREATE TABLE $table (id INTEGER PRIMARY KEY, name TEXT)');
+        await db.execute(
+          'CREATE TABLE $table (id INTEGER PRIMARY KEY, name TEXT)',
+        );
         var id = await db.insert(table, <String, Object?>{'name': 'test'});
         var id2 = await db.insert(table, <String, Object?>{'name': 'test'});
 
@@ -192,7 +201,9 @@ Future main() async {
       try {
         // print('like %meta%');
         var result = await db.rawQuery(
-            'SELECT * FROM sqlite_master WHERE name LIKE ?', ['%meta%']);
+          'SELECT * FROM sqlite_master WHERE name LIKE ?',
+          ['%meta%'],
+        );
         // print(result);
         expect(result.length, 1);
         //await db
@@ -214,7 +225,9 @@ Future main() async {
         batch.execute('ALTER TABLE konular ADD COLUMN ks INTEGER');
         await batch.commit();
         var result = await db.rawQuery(
-            'SELECT * FROM sqlite_master WHERE name LIKE ?', ['konu%']);
+          'SELECT * FROM sqlite_master WHERE name LIKE ?',
+          ['konu%'],
+        );
         print(result);
         expect(result.length, 1);
         //await db
@@ -235,9 +248,9 @@ Future main() async {
     value REAL NOT NULL
   ); 
 ''');
-// Insert an int
+        // Insert an int
         batch.insert('test', {'id': 3, 'value': 2});
-// Insert 2 floats
+        // Insert 2 floats
         batch.insert('test', {'id': 1, 'value': 1.5});
         batch.insert('test', {'id': 2, 'value': 2.5});
         batch.query('test', orderBy: 'value ASC');
@@ -246,7 +259,7 @@ Future main() async {
         expect(result[1]['id'], 3);
         expect(result[2]['id'], 2);
         expect(result[0]['value'], 1.5);
-// It was inserted as an int, but it is still a double
+        // It was inserted as an int, but it is still a double
         expect(result[1]['value'], 2);
         expect(result[1]['value'], const TypeMatcher<double>());
         expect(result[2]['value'], 2.5);
@@ -295,21 +308,27 @@ Future main() async {
     test('Issue#310', () async {
       var db = await factory.openDatabase(inMemoryDatabasePath);
       await db.rawQuery(
-          'CREATE VIRTUAL TABLE mytable2 USING fts4(description text)');
+        'CREATE VIRTUAL TABLE mytable2 USING fts4(description text)',
+      );
       await db.rawQuery(
-          'CREATE VIRTUAL TABLE mytable2_terms USING fts4aux(mytable2)');
-      await db
-          .rawQuery('CREATE VIRTUAL TABLE mytable3 USING spellfix(word text)');
+        'CREATE VIRTUAL TABLE mytable2_terms USING fts4aux(mytable2)',
+      );
       await db.rawQuery(
-          "INSERT INTO mytable2 VALUES ('All the Carmichael numbers')");
+        'CREATE VIRTUAL TABLE mytable3 USING spellfix(word text)',
+      );
+      await db.rawQuery(
+        "INSERT INTO mytable2 VALUES ('All the Carmichael numbers')",
+      );
       await db.rawQuery("INSERT INTO mytable2 VALUES ('They are great')");
-      await db
-          .rawQuery("INSERT INTO mytable2 VALUES ('Here some other numbers')");
+      await db.rawQuery(
+        "INSERT INTO mytable2 VALUES ('Here some other numbers')",
+      );
 
       await db.rawQuery('CREATE VIRTUAL TABLE demo USING spellfix1;');
-//here error occured
+      //here error occured
       await db.rawQuery(
-          "INSERT INTO demo(word) SELECT term FROM mytable2_terms WHERE col='*';");
+        "INSERT INTO demo(word) SELECT term FROM mytable2_terms WHERE col='*';",
+      );
       await db.close();
     }, skip: true);
   }
@@ -386,13 +405,17 @@ Future issue146(SqfliteServerTestContext context) async {
   //context.devSetDebugModeOn(true);
   try {
     var path = await context.initDeleteDb('exp_issue_146.db');
-    database = await context.databaseFactory.openDatabase(path,
-        options: OpenDatabaseOptions(
-            version: 1,
-            onCreate: (Database db, int version) {
-              db.execute(
-                  'CREATE TABLE Test (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT)');
-            }));
+    database = await context.databaseFactory.openDatabase(
+      path,
+      options: OpenDatabaseOptions(
+        version: 1,
+        onCreate: (Database db, int version) {
+          db.execute(
+            'CREATE TABLE Test (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT)',
+          );
+        },
+      ),
+    );
 
     _teacherProvider = TeacherProvider();
     _studentProvider = StudentProvider();
@@ -414,7 +437,9 @@ class ClassroomProvider {
     return database!.transaction((txn) async {
       await _teacherProvider.txnInsert(txn, room.getTeacher()!);
       await _studentProvider.txnBulkInsert(
-          txn, room.getStudents()!); // nest transaction here
+        txn,
+        room.getStudents()!,
+      ); // nest transaction here
       // Insert room last to save the teacher and students ids
       room.id = await txn.insert(tableClassroom, room.toMap());
       return room;
@@ -437,7 +462,9 @@ class StudentProvider {
       database!.transaction((txn) => txnBulkInsert(txn, students));
 
   Future<List<Student>> txnBulkInsert(
-      Transaction txn, List<Student> students) async {
+    Transaction txn,
+    List<Student> students,
+  ) async {
     for (var student in students) {
       student.id = await txn.insert(tableStudent, student.toMap());
     }
@@ -455,15 +482,18 @@ class DbHelper {
 
   void _onCreate(Database db, int newVersion) async {
     await db.execute(
-        'CREATE TABLE MYTABLE(ID INTEGER PRIMARY KEY, userName TEXT NOT NULL)');
+      'CREATE TABLE MYTABLE(ID INTEGER PRIMARY KEY, userName TEXT NOT NULL)',
+    );
   }
 
   Future<Database> initDB() async {
     //Directory documentDirectory = await contextgetApplicationDocumentsDirectory();
     // var path =join(documentDirectory.path, 'appdb.db');
     var path = await context.initDeleteDb('issue159.db');
-    var newDB = await context.databaseFactory.openDatabase(path,
-        options: OpenDatabaseOptions(version: 1, onCreate: _onCreate));
+    var newDB = await context.databaseFactory.openDatabase(
+      path,
+      options: OpenDatabaseOptions(version: 1, onCreate: _onCreate),
+    );
     return newDB;
   }
 

@@ -32,7 +32,7 @@ class _SqfliteServerHomePageState extends State<SqfliteServerHomePage> {
   bool _startPending = false;
   int? port = sqfliteServerDefaultPort;
 
-// Create a text controller. We will use it to retrieve the current value
+  // Create a text controller. We will use it to retrieve the current value
   // of the TextField!
   final portInputController = TextEditingController();
 
@@ -68,103 +68,108 @@ class _SqfliteServerHomePageState extends State<SqfliteServerHomePage> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
     return Scaffold(
-        appBar: AppBar(
-          // Here we take the value from the MyHomePage object that was created by
-          // the App.build method, and use it to set our appbar title.
-          title: Text(widget.title!),
-        ),
-        body: FutureBuilder(
-            future: _loadPrefs(),
-            builder: (BuildContext context, AsyncSnapshot<Prefs?> snapshot) {
-              if (snapshot.data == null) {
-                return Container();
-              } else {
-                var widgets = <Widget>[
-                  Padding(
-                      padding: const EdgeInsets.only(top: 16.0),
-                      child: Text(
-                        app.sqfliteServerStarted
-                            ? 'SQFlite server listening on ${app.sqfliteServer!.port}'
-                            : (_startPending
-                                ? 'Starting listening on $port'
-                                : 'Press START to start SQFlite server'),
-                      )),
-                  Container(
-                      width: 240.0,
-                      padding: const EdgeInsets.only(bottom: 16.0),
-                      child: TextField(
-                        controller: portInputController,
-                        decoration: const InputDecoration(
-                            labelText: 'Port number (0 for any)'),
-                        keyboardType: TextInputType.number,
-                      )),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      ElevatedButton(
-                        onPressed: () async {
-                          if (!app.sqfliteServerStarted) {
-                            await startServer();
-                          } else {
-                            await stopServer();
-                          }
-                        },
-                        child:
-                            Text(app.sqfliteServerStarted ? 'STOP' : 'START'),
-                      ),
-                    ],
-                  )
-                ];
-                /*
+      appBar: AppBar(
+        // Here we take the value from the MyHomePage object that was created by
+        // the App.build method, and use it to set our appbar title.
+        title: Text(widget.title!),
+      ),
+      body: FutureBuilder(
+        future: _loadPrefs(),
+        builder: (BuildContext context, AsyncSnapshot<Prefs?> snapshot) {
+          if (snapshot.data == null) {
+            return Container();
+          } else {
+            var widgets = <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(top: 16.0),
+                child: Text(
+                  app.sqfliteServerStarted
+                      ? 'SQFlite server listening on ${app.sqfliteServer!.port}'
+                      : (_startPending
+                          ? 'Starting listening on $port'
+                          : 'Press START to start SQFlite server'),
+                ),
+              ),
+              Container(
+                width: 240.0,
+                padding: const EdgeInsets.only(bottom: 16.0),
+                child: TextField(
+                  controller: portInputController,
+                  decoration: const InputDecoration(
+                    labelText: 'Port number (0 for any)',
+                  ),
+                  keyboardType: TextInputType.number,
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  ElevatedButton(
+                    onPressed: () async {
+                      if (!app.sqfliteServerStarted) {
+                        await startServer();
+                      } else {
+                        await stopServer();
+                      }
+                    },
+                    child: Text(app.sqfliteServerStarted ? 'STOP' : 'START'),
+                  ),
+                ],
+              ),
+            ];
+            /*
             if (openError != null) {
               widgets.add(Text(openError));
             }
             */
-                if (app.prefs!.showConsole) {
-                  widgets.add(Expanded(
-                      child: ListView.builder(
-                          reverse: true,
-                          itemCount: logs.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 8.0, right: 8.0),
-                                child: Text(
-                                  logs[logs.length - index - 1]!,
-                                  style: const TextStyle(fontSize: 10.0),
-                                ));
-                          })));
-                }
-                widgets.add(const SizedBox(
-                  height: 8.0,
-                ));
-                startApp();
-                return Center(
-                  // Center is a layout widget. It takes a single child and positions it
-                  // in the middle of the parent.
-                  child: Column(
-                    // Column is also layout widget. It takes a list of children and
-                    // arranges them vertically. By default, it sizes itself to fit its
-                    // children horizontally, and tries to be as tall as its parent.
-                    //
-                    // Invoke 'debug paint' (press 'p' in the console where you ran
-                    // 'flutter run', or select 'Toggle Debug Paint' from the Flutter tool
-                    // window in IntelliJ) to see the wireframe for each widget.
-                    //
-                    // Column has various properties to control how it sizes itself and
-                    // how it positions its children. Here we use mainAxisAlignment to
-                    // center the children vertically; the main axis here is the vertical
-                    // axis because Columns are vertical (the cross axis would be
-                    // horizontal).
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: widgets,
+            if (app.prefs!.showConsole) {
+              widgets.add(
+                Expanded(
+                  child: ListView.builder(
+                    reverse: true,
+                    itemCount: logs.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Padding(
+                        padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                        child: Text(
+                          logs[logs.length - index - 1]!,
+                          style: const TextStyle(fontSize: 10.0),
+                        ),
+                      );
+                    },
                   ),
-                );
-              }
-            })
+                ),
+              );
+            }
+            widgets.add(const SizedBox(height: 8.0));
+            startApp();
+            return Center(
+              // Center is a layout widget. It takes a single child and positions it
+              // in the middle of the parent.
+              child: Column(
+                // Column is also layout widget. It takes a list of children and
+                // arranges them vertically. By default, it sizes itself to fit its
+                // children horizontally, and tries to be as tall as its parent.
+                //
+                // Invoke 'debug paint' (press 'p' in the console where you ran
+                // 'flutter run', or select 'Toggle Debug Paint' from the Flutter tool
+                // window in IntelliJ) to see the wireframe for each widget.
+                //
+                // Column has various properties to control how it sizes itself and
+                // how it positions its children. Here we use mainAxisAlignment to
+                // center the children vertically; the main axis here is the vertical
+                // axis because Columns are vertical (the cross axis would be
+                // horizontal).
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: widgets,
+              ),
+            );
+          }
+        },
+      ),
 
-        // This trailing comma makes auto-formatting nicer for build methods.
-        );
+      // This trailing comma makes auto-formatting nicer for build methods.
+    );
   }
 
   Future stopServer() async {
@@ -197,45 +202,47 @@ class _SqfliteServerHomePageState extends State<SqfliteServerHomePage> {
       _startPending = true;
     });
     try {
-      await app.startServer(port,
-          notifyCallback: (bool response, String method, Object? param) {
-        if (!response) {
-          void logOperation(Map map) {
-            var sql = (map['sql'] as String?)?.trim();
-            if (sql != null) {
-              var args = map['arguments'] as List?;
-              if (args != null && args.isNotEmpty) {
-                sql += ' $args';
+      await app.startServer(
+        port,
+        notifyCallback: (bool response, String method, Object? param) {
+          if (!response) {
+            void logOperation(Map map) {
+              var sql = (map['sql'] as String?)?.trim();
+              if (sql != null) {
+                var args = map['arguments'] as List?;
+                if (args != null && args.isNotEmpty) {
+                  sql += ' $args';
+                }
+                log(sql);
               }
-              log(sql);
             }
-          }
 
-          if (method == methodSqflite) {
-            var paramMap = param as Map;
-            var sqfliteMethod = paramMap['method'] as String?;
-            var sqfliteParam = paramMap['param'];
-            if (sqfliteMethod == methodOpenDatabase) {
-              log('open ${(sqfliteParam as Map)['path']}');
-            } else if (sqfliteMethod == methodBatch) {
-              var operations = (sqfliteParam as Map)['operations'] as List;
-              for (var operation in operations) {
-                var operationMap = operation as Map;
-                logOperation(operationMap);
+            if (method == methodSqflite) {
+              var paramMap = param as Map;
+              var sqfliteMethod = paramMap['method'] as String?;
+              var sqfliteParam = paramMap['param'];
+              if (sqfliteMethod == methodOpenDatabase) {
+                log('open ${(sqfliteParam as Map)['path']}');
+              } else if (sqfliteMethod == methodBatch) {
+                var operations = (sqfliteParam as Map)['operations'] as List;
+                for (var operation in operations) {
+                  var operationMap = operation as Map;
+                  logOperation(operationMap);
+                }
+              } else {
+                var methodParam = sqfliteParam as Map?;
+                if (methodParam != null) {
+                  logOperation(methodParam);
+                }
               }
-            } else {
-              var methodParam = sqfliteParam as Map?;
-              if (methodParam != null) {
-                logOperation(methodParam);
-              }
+            } else if (method == methodSqfliteDeleteDatabase) {
+              log('delete $param');
             }
-          } else if (method == methodSqfliteDeleteDatabase) {
-            log('delete $param');
           }
-        }
-        // print('$response $method $param');
-        // log('$response $method $param');
-      });
+          // print('$response $method $param');
+          // log('$response $method $param');
+        },
+      );
       // Save port in prefs upon success
       await app.prefs!.setPort(port);
       await app.prefs!.setAutoStart(true);
@@ -244,7 +251,9 @@ class _SqfliteServerHomePageState extends State<SqfliteServerHomePage> {
       log('Listening on port $port');
       log('WebSocket url: ${app.sqfliteServer!.url}');
       if (Platform.isAndroid) {
-        log('Make sure you have ran at least once: adb forward tcp:8501 tcp:8501');
+        log(
+          'Make sure you have ran at least once: adb forward tcp:8501 tcp:8501',
+        );
       }
     } catch (e, st) {
       setState(() {

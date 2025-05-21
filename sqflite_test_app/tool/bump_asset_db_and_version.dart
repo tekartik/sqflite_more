@@ -21,15 +21,21 @@ Future<void> main() async {
   }
   versionNum++;
 
-  var db = await databaseFactoryFfi.openDatabase(dbPath,
-      options: OpenDatabaseOptions(
-          version: 1,
-          onCreate: (db, version) async {
-            await db.execute(
-                'CREATE TABLE Value (id INTEGER PRIMARY KEY, value INTEGER)');
-          }));
-  await db.insert('Value', {'id': 1, 'value': versionNum},
-      conflictAlgorithm: ConflictAlgorithm.replace);
+  var db = await databaseFactoryFfi.openDatabase(
+    dbPath,
+    options: OpenDatabaseOptions(
+      version: 1,
+      onCreate: (db, version) async {
+        await db.execute(
+          'CREATE TABLE Value (id INTEGER PRIMARY KEY, value INTEGER)',
+        );
+      },
+    ),
+  );
+  await db.insert('Value', {
+    'id': 1,
+    'value': versionNum,
+  }, conflictAlgorithm: ConflictAlgorithm.replace);
   await db.close();
   await file.writeAsString('$versionNum');
 }

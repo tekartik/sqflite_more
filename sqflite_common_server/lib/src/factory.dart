@@ -12,10 +12,14 @@ class SqfliteServerDatabaseFactory extends SqfliteDatabaseFactoryBase {
 
   final SqfliteServerContext context;
 
-  static Future<SqfliteServerDatabaseFactory> connect(String url,
-      {WebSocketChannelClientFactory? webSocketChannelClientFactory}) async {
-    var sqfliteContext = await SqfliteServerContext.connect(url,
-        webSocketChannelClientFactory: webSocketChannelClientFactory);
+  static Future<SqfliteServerDatabaseFactory> connect(
+    String url, {
+    WebSocketChannelClientFactory? webSocketChannelClientFactory,
+  }) async {
+    var sqfliteContext = await SqfliteServerContext.connect(
+      url,
+      webSocketChannelClientFactory: webSocketChannelClientFactory,
+    );
 
     return SqfliteServerDatabaseFactory(sqfliteContext);
   }
@@ -33,7 +37,9 @@ class SqfliteServerDatabaseFactory extends SqfliteDatabaseFactoryBase {
   @override
   Future<void> deleteDatabase(String path) async {
     await context.sendRequest<String>(
-        methodSqfliteDeleteDatabase, <String, Object?>{keyPath: path});
+      methodSqfliteDeleteDatabase,
+      <String, Object?>{keyPath: path},
+    );
   }
 
   // overrident to use the proper path context

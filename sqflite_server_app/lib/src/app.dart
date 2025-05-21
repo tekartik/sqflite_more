@@ -16,11 +16,16 @@ class App {
 
   Version get version => _appVersion;
 
-  Future<SqfliteServer?> startServer(int? port,
-      {SqfliteServerNotifyCallback? notifyCallback}) async {
+  Future<SqfliteServer?> startServer(
+    int? port, {
+    SqfliteServerNotifyCallback? notifyCallback,
+  }) async {
     await _closeServer();
     _sqfliteServer = await SqfliteServer.serve(
-        port: port, notifyCallback: notifyCallback, factory: databaseFactory!);
+      port: port,
+      notifyCallback: notifyCallback,
+      factory: databaseFactory!,
+    );
     return _sqfliteServer;
   }
 

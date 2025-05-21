@@ -42,9 +42,7 @@ class ManualApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: ManualTestPage(),
-    );
+    return const MaterialApp(home: ManualTestPage());
   }
 }
 
@@ -63,8 +61,9 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     () async {
-      await Navigator.of(context).push<void>(
-          MaterialPageRoute(builder: (context) => const ManualApp()));
+      await Navigator.of(
+        context,
+      ).push<void>(MaterialPageRoute(builder: (context) => const ManualApp()));
       try {
         widget.doneCompleter?.complete();
       } catch (e) {

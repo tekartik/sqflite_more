@@ -11,13 +11,13 @@ publish_to: none
 version: 0.1.0
 
 environment:
-  sdk: ^3.5.0
+  sdk: ^3.7.0
 
 dependencies:
   flutter:
     sdk: flutter
-  sqflite_common_ffi:
-  sqflite: '>=2.3.0'
+  sqflite_common_ffi: ">=2.3.4"
+  sqflite: ">=2.4.0"
   sqflite_common_porter:
     git:
       url: https://github.com/tekartik/sqflite_more
@@ -47,12 +47,12 @@ dependencies:
       url: https://github.com/tekartik/app_flutter_utils.dart
       ref: dart3a
       path: app_roboto
-      version: '>=0.1.0'
+    version: '>=0.1.0'
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: '>=0.1.2'
-  path:
+  cupertino_icons: ">=1.0.8"
+  path: ">=1.9.0"
   sqlite3_flutter_libs:
   path_provider:
   sqflite_example_common:
@@ -64,9 +64,9 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  test:
-  process_run: '>=0.10.7'
-  dev_build:
+  test: ">=1.24.0"
+  process_run: ">=1.2.1+1"
+  dev_build: ">=1.1.2"
   tekartik_lints_flutter:
     git:
       url: https://github.com/tekartik/common_flutter.dart

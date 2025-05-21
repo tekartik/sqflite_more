@@ -8,12 +8,15 @@ import 'package:sqflite_common_porter/sqflite_porter.dart';
 import 'package:test/test.dart';
 
 Future<Database> openDatabaseInMemoryFromSqlImport(
-    DatabaseFactory factory, List<String> export) async {
-  var db =
-      await openDatabaseFromSqlImport(factory, inMemoryDatabasePath, export,
-          openDatabaseOptions: OpenDatabaseOptions(
-            singleInstance: false,
-          ));
+  DatabaseFactory factory,
+  List<String> export,
+) async {
+  var db = await openDatabaseFromSqlImport(
+    factory,
+    inMemoryDatabasePath,
+    export,
+    openDatabaseOptions: OpenDatabaseOptions(singleInstance: false),
+  );
   return db;
 }
 
@@ -37,7 +40,10 @@ void main() {
     var db = await factory.openDatabase(
       inMemoryDatabasePath,
       options: OpenDatabaseOptions(
-          version: 2, onCreate: (db, version) async {}, singleInstance: false),
+        version: 2,
+        onCreate: (db, version) async {},
+        singleInstance: false,
+      ),
     );
     var export = await dbExportSql(db);
     expect(export, ['PRAGMA user_version = 2']);
@@ -49,13 +55,17 @@ void main() {
     await db.close();
   });
   test('export simple', () async {
-    var db = await factory.openDatabase(inMemoryDatabasePath,
-        options: OpenDatabaseOptions(
-            version: 1,
-            onCreate: (db, version) async {
-              await db.execute(
-                  'CREATE TABLE Test (id INTEGER PRIMARY KEY, value TEXT)');
-            }));
+    var db = await factory.openDatabase(
+      inMemoryDatabasePath,
+      options: OpenDatabaseOptions(
+        version: 1,
+        onCreate: (db, version) async {
+          await db.execute(
+            'CREATE TABLE Test (id INTEGER PRIMARY KEY, value TEXT)',
+          );
+        },
+      ),
+    );
     // Insert some data
     await db.insert('Test', {'value': 'my_value'});
 
@@ -72,21 +82,24 @@ void main() {
     await dbImportSql(db, export);
     // Check content
     expect(await db.query('Test'), [
-      {'id': 1, 'value': 'my_value'}
+      {'id': 1, 'value': 'my_value'},
     ]);
 
     await db.close();
   });
   test('export view', () async {
-    var db = await factory.openDatabase(inMemoryDatabasePath,
-        options: OpenDatabaseOptions(
-            version: 1,
-            onCreate: (db, version) async {
-              await db.execute(
-                  'CREATE TABLE Test (id INTEGER PRIMARY KEY, value TEXT)');
-              await db
-                  .execute('CREATE VIEW TestView AS SELECT value FROM Test');
-            }));
+    var db = await factory.openDatabase(
+      inMemoryDatabasePath,
+      options: OpenDatabaseOptions(
+        version: 1,
+        onCreate: (db, version) async {
+          await db.execute(
+            'CREATE TABLE Test (id INTEGER PRIMARY KEY, value TEXT)',
+          );
+          await db.execute('CREATE VIEW TestView AS SELECT value FROM Test');
+        },
+      ),
+    );
     // Insert some data
     await db.insert('Test', {'value': 'my_value'});
 
@@ -103,29 +116,34 @@ void main() {
     db = await openDatabaseInMemoryFromSqlImport(factory, export);
     // Check content
     expect(await db.query('TestView'), [
-      {'value': 'my_value'}
+      {'value': 'my_value'},
     ]);
 
     await db.close();
   });
   test('export trigger', () async {
-    var db = await factory.openDatabase(inMemoryDatabasePath,
-        options: OpenDatabaseOptions(
-            version: 1,
-            onCreate: (db, version) async {
-              await db.execute(
-                  'CREATE TABLE Test (id INTEGER PRIMARY KEY, value TEXT)');
-              await db.execute('CREATE TABLE TestCopy (value TEXT)');
-              await db.execute(
-                  'CREATE TRIGGER Copy AFTER INSERT ON Test BEGIN INSERT INTO TestCopy(value) VALUES(NEW.value); END');
-            }));
+    var db = await factory.openDatabase(
+      inMemoryDatabasePath,
+      options: OpenDatabaseOptions(
+        version: 1,
+        onCreate: (db, version) async {
+          await db.execute(
+            'CREATE TABLE Test (id INTEGER PRIMARY KEY, value TEXT)',
+          );
+          await db.execute('CREATE TABLE TestCopy (value TEXT)');
+          await db.execute(
+            'CREATE TRIGGER Copy AFTER INSERT ON Test BEGIN INSERT INTO TestCopy(value) VALUES(NEW.value); END',
+          );
+        },
+      ),
+    );
     Future<void> checkContent() async {
       // Check content
       expect(await db.query('Test'), [
-        {'id': 1, 'value': 'my_value'}
+        {'id': 1, 'value': 'my_value'},
       ]);
       expect(await db.query('TestCopy'), [
-        {'value': 'my_value'}
+        {'value': 'my_value'},
       ]);
     }
 
@@ -151,19 +169,23 @@ void main() {
     await db.close();
   });
   test('all types simple', () async {
-    var db = await factory.openDatabase(inMemoryDatabasePath,
-        options: OpenDatabaseOptions(
-            version: 1,
-            onCreate: (db, version) async {
-              await db.execute(
-                  'CREATE TABLE Test (id INTEGER PRIMARY KEY, textValue TEXT, integerValue INTEGER, realValue REAL, blobValue BLOB)');
-            }));
+    var db = await factory.openDatabase(
+      inMemoryDatabasePath,
+      options: OpenDatabaseOptions(
+        version: 1,
+        onCreate: (db, version) async {
+          await db.execute(
+            'CREATE TABLE Test (id INTEGER PRIMARY KEY, textValue TEXT, integerValue INTEGER, realValue REAL, blobValue BLOB)',
+          );
+        },
+      ),
+    );
     // Insert some data
     await db.insert('Test', {
       'textValue': 'with_accent_éà',
       'integerValue': 1234,
       'realValue': 1.5,
-      'blobValue': Uint8List.fromList([1, 2, 3])
+      'blobValue': Uint8List.fromList([1, 2, 3]),
     });
 
     var export = await dbExportSql(db);
@@ -183,20 +205,24 @@ void main() {
         'textValue': 'with_accent_éà',
         'integerValue': 1234,
         'realValue': 1.5,
-        'blobValue': Uint8List.fromList([1, 2, 3])
-      }
+        'blobValue': Uint8List.fromList([1, 2, 3]),
+      },
     ]);
 
     await db.close();
   });
   test('export auto increment', () async {
-    var db = await factory.openDatabase(inMemoryDatabasePath,
-        options: OpenDatabaseOptions(
-            version: 1,
-            onCreate: (db, version) async {
-              await db.execute(
-                  'CREATE TABLE Test (id INTEGER PRIMARY KEY AUTOINCREMENT, value TEXT)');
-            }));
+    var db = await factory.openDatabase(
+      inMemoryDatabasePath,
+      options: OpenDatabaseOptions(
+        version: 1,
+        onCreate: (db, version) async {
+          await db.execute(
+            'CREATE TABLE Test (id INTEGER PRIMARY KEY AUTOINCREMENT, value TEXT)',
+          );
+        },
+      ),
+    );
     // Insert some data
     await db.insert('Test', {'value': 'my_value'});
 
@@ -214,19 +240,23 @@ void main() {
     db = await openDatabaseInMemoryFromSqlImport(factory, export);
     // Check content
     expect(await db.query('Test'), [
-      {'id': 1, 'value': 'my_value'}
+      {'id': 1, 'value': 'my_value'},
     ]);
 
     await db.close();
   });
   test('import in onCreate', () async {
-    var db = await factory.openDatabase(inMemoryDatabasePath,
-        options: OpenDatabaseOptions(
-            version: 1,
-            onCreate: (db, version) async {
-              await db.execute(
-                  'CREATE TABLE Test (id INTEGER PRIMARY KEY AUTOINCREMENT, value TEXT)');
-            }));
+    var db = await factory.openDatabase(
+      inMemoryDatabasePath,
+      options: OpenDatabaseOptions(
+        version: 1,
+        onCreate: (db, version) async {
+          await db.execute(
+            'CREATE TABLE Test (id INTEGER PRIMARY KEY AUTOINCREMENT, value TEXT)',
+          );
+        },
+      ),
+    );
     // Insert some data
     await db.insert('Test', {'value': 'my_value'});
 
@@ -234,17 +264,20 @@ void main() {
     await db.close();
 
     // Import during onCreate
-    db = await factory.openDatabase(inMemoryDatabasePath,
-        options: OpenDatabaseOptions(
-            singleInstance: false,
-            version: 1,
-            onCreate: (db, _) async {
-              await dbImportSql(db, export);
-            }));
+    db = await factory.openDatabase(
+      inMemoryDatabasePath,
+      options: OpenDatabaseOptions(
+        singleInstance: false,
+        version: 1,
+        onCreate: (db, _) async {
+          await dbImportSql(db, export);
+        },
+      ),
+    );
 
     // Check content
     expect(await db.query('Test'), [
-      {'id': 1, 'value': 'my_value'}
+      {'id': 1, 'value': 'my_value'},
     ]);
 
     await db.close();

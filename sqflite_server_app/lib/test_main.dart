@@ -31,28 +31,35 @@ void main() {
         try {
           var table = 'test';
           await db.execute(
-              'CREATE TABLE $table (column_1 INTEGER, column_2 TEXT, column_3 BLOB)');
+            'CREATE TABLE $table (column_1 INTEGER, column_2 TEXT, column_3 BLOB)',
+          );
           await db.execute(
-              'CREATE TABLE test_2 (id integer primary key autoincrement, column_2 TEXT)');
+            'CREATE TABLE test_2 (id integer primary key autoincrement, column_2 TEXT)',
+          );
           // inserted in a wrong order to check ASC/DESC
 
           await db.execute('CREATE VIEW my_view AS SELECT * from $table');
-          await db
-              .execute("CREATE INDEX [${table}_index] ON '$table' (column_2)");
           await db.execute(
-              'CREATE TRIGGER my_trigger AFTER INSERT ON test BEGIN INSERT INTO test_2(column_2) VALUES (new.column_2); END');
+            "CREATE INDEX [${table}_index] ON '$table' (column_2)",
+          );
+          await db.execute(
+            'CREATE TRIGGER my_trigger AFTER INSERT ON test BEGIN INSERT INTO test_2(column_2) VALUES (new.column_2); END',
+          );
 
           await db.execute(
-              'INSERT INTO $table (column_1, column_2, column_3) VALUES (11, ?, ?)',
-              <Object?>[
-                'Some \' test \n',
-                [1, 2, 3, 4]
-              ]);
+            'INSERT INTO $table (column_1, column_2, column_3) VALUES (11, ?, ?)',
+            <Object?>[
+              'Some \' test \n',
+              [1, 2, 3, 4],
+            ],
+          );
           var statements = await dbExportSql(db);
           var sql = statements.join('\n');
           write(sql);
           // print('#### $sql');
-          expect(sql, '''
+          expect(
+            sql,
+            '''
 CREATE TABLE test (column_1 INTEGER, column_2 TEXT, column_3 BLOB);
 INSERT INTO test VALUES (11,'Some '' test 
 ',x'01020304');
@@ -63,7 +70,8 @@ DELETE FROM sqlite_sequence;
 INSERT INTO sqlite_sequence VALUES ('test_2',1);
 CREATE VIEW my_view AS SELECT * from test;
 CREATE INDEX [test_index] ON 'test' (column_2);
-CREATE TRIGGER my_trigger AFTER INSERT ON test BEGIN INSERT INTO test_2(column_2) VALUES (new.column_2); END;''');
+CREATE TRIGGER my_trigger AFTER INSERT ON test BEGIN INSERT INTO test_2(column_2) VALUES (new.column_2); END;''',
+          );
 
           // print('#### $sql');
           await db.close();
@@ -87,8 +95,10 @@ INSERT INTO book(title) VALUES ('Harry Potter');
     group('meta', () {
       test('table_definitions', () async {
         //Sqflite.devSetDebugModeOn(true);
-        var db = await importSqlDatabase('book_table_definitions.db',
-            sql: bookshelfSql);
+        var db = await importSqlDatabase(
+          'book_table_definitions.db',
+          sql: bookshelfSql,
+        );
         try {
           await dumpTableDefinitions(db);
           // print(await db.query('sqlite_master'));} finally {
@@ -99,8 +109,10 @@ INSERT INTO book(title) VALUES ('Harry Potter');
 
       test('table', () async {
         //Sqflite.devSetDebugModeOn(true);
-        var db =
-            await importSqlDatabase('book_dump_table.db', sql: bookshelfSql);
+        var db = await importSqlDatabase(
+          'book_dump_table.db',
+          sql: bookshelfSql,
+        );
         try {
           await dumpTable(db, 'book');
         } finally {
@@ -110,8 +122,10 @@ INSERT INTO book(title) VALUES ('Harry Potter');
 
       test('tables', () async {
         //Sqflite.devSetDebugModeOn(true);
-        var db =
-            await importSqlDatabase('book_dump_tables.db', sql: bookshelfSql);
+        var db = await importSqlDatabase(
+          'book_dump_tables.db',
+          sql: bookshelfSql,
+        );
         try {
           await dumpTables(db);
         } finally {

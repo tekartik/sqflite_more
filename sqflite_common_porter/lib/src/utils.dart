@@ -27,7 +27,9 @@ Future<String> initDeleteDb(DatabaseFactory factory, String dbName) async {
 }
 
 Future<Database> openEmptyDatabase(
-    DatabaseFactory factory, String dbName) async {
+  DatabaseFactory factory,
+  String dbName,
+) async {
   var path = await initDeleteDb(factory, dbName);
   var db = await factory.openDatabase(path);
   return db;
@@ -76,15 +78,22 @@ Future dumpTables(Database db, {PrintFunction? print}) async {
   }
 }
 
-Future<Database> importSqlDatabase(DatabaseFactory factory, String dbName,
-    {String? sql, List<String>? sqlStatements}) async {
+Future<Database> importSqlDatabase(
+  DatabaseFactory factory,
+  String dbName, {
+  String? sql,
+  List<String>? sqlStatements,
+}) async {
   sqlStatements ??= parseStatements(sql);
   var path = await initDeleteDb(factory, dbName);
-  var db = await factory.openDatabase(path,
-      options: OpenDatabaseOptions(
-          version: 1,
-          onCreate: (Database db, int version) async {
-            await dbImportSql(db, sqlStatements!);
-          }));
+  var db = await factory.openDatabase(
+    path,
+    options: OpenDatabaseOptions(
+      version: 1,
+      onCreate: (Database db, int version) async {
+        await dbImportSql(db, sqlStatements!);
+      },
+    ),
+  );
   return db;
 }

@@ -42,14 +42,16 @@ class SqfliteClient {
       if (version < serverInfoMinVersion) {
         throw 'SQFlite server version $version not supported, >=$serverInfoMinVersion expected';
       }
-      serverInfo = ServerInfo()
-        ..supportsWithoutRowId =
-            parseBool(rawServerInfo[keySupportsWithoutRowId])
-        ..isIOS = parseBool(rawServerInfo[keyIsIOS])
-        ..isAndroid = parseBool(rawServerInfo[keyIsAndroid])
-        ..isMacOS = parseBool(rawServerInfo[keyIsMacOS])
-        ..isLinux = parseBool(rawServerInfo[keyIsLinux])
-        ..isWindows = parseBool(rawServerInfo[keyIsWindows]);
+      serverInfo =
+          ServerInfo()
+            ..supportsWithoutRowId = parseBool(
+              rawServerInfo[keySupportsWithoutRowId],
+            )
+            ..isIOS = parseBool(rawServerInfo[keyIsIOS])
+            ..isAndroid = parseBool(rawServerInfo[keyIsAndroid])
+            ..isMacOS = parseBool(rawServerInfo[keyIsMacOS])
+            ..isLinux = parseBool(rawServerInfo[keyIsLinux])
+            ..isWindows = parseBool(rawServerInfo[keyIsWindows]);
     } catch (e) {
       await rpcClient.close();
       rethrow;

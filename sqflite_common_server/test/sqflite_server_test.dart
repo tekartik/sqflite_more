@@ -11,7 +11,7 @@ void main() {
     test('fixParam', () {
       var param = fixParam('insert', {
         'arguments': [
-          [1, 2, 3]
+          [1, 2, 3],
         ],
       });
       expect(param['arguments']![0], const TypeMatcher<Uint8List>());
@@ -21,28 +21,31 @@ void main() {
             'method': 'insert',
             'sql': 'INSERT INTO test (blob) VALUES (?)',
             'arguments': [
-              [1, 2, 3]
-            ]
-          }
+              [1, 2, 3],
+            ],
+          },
         ],
-        'id': 1
+        'id': 1,
       });
       expect(
-          (((param2['operations'] as List)[0] as Map)['arguments'] as List)[0],
-          const TypeMatcher<Uint8List>());
+        (((param2['operations'] as List)[0] as Map)['arguments'] as List)[0],
+        const TypeMatcher<Uint8List>(),
+      );
     });
     test('init', () async {
       WebSocketChannelFactory factory = webSocketChannelFactoryMemory;
       var sqfliteServer = await SqfliteServer.serve(
-          webSocketChannelServerFactory: factory.server,
-          factory: databaseFactoryFfi);
+        webSocketChannelServerFactory: factory.server,
+        factory: databaseFactoryFfi,
+      );
       var sqfliteClient = await SqfliteClient.connect(
         sqfliteServer.url,
         webSocketChannelClientFactory: factory.client,
       );
 
-      var result = await sqfliteClient
-          .invoke<Map>('openDatabase', {'path': inMemoryDatabasePath});
+      var result = await sqfliteClient.invoke<Map>('openDatabase', {
+        'path': inMemoryDatabasePath,
+      });
       expect(result['id'], const TypeMatcher<int>());
 
       expect(sqfliteClient, isNotNull);

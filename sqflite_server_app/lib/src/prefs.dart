@@ -6,8 +6,8 @@ import 'package:tekartik_common_utils/common_utils_import.dart';
 
 class Prefs {
   Prefs({required DatabaseFactory? databaseFactory, String? dbName})
-      : _databaseFactory = databaseFactory ?? sqflite.databaseFactory,
-        dbName = dbName ?? defaultDbName;
+    : _databaseFactory = databaseFactory ?? sqflite.databaseFactory,
+      dbName = dbName ?? defaultDbName;
 
   static const defaultDbName = 'sqlflite_server_app_prefs.db';
   final DatabaseFactory _databaseFactory;
@@ -27,13 +27,17 @@ class Prefs {
         if (_db == null) {
           var databasePath = await _databaseFactory.getDatabasesPath();
           var dbPath = join(databasePath, dbName);
-          _db = await _databaseFactory.openDatabase(dbPath,
-              options: OpenDatabaseOptions(
-                  version: 1,
-                  onCreate: (Database db, int version) async {
-                    await db.execute(
-                        'CREATE TABLE Pref (name TEXT PRIMARY KEY, textValue TEXT, intValue INTEGER)');
-                  }));
+          _db = await _databaseFactory.openDatabase(
+            dbPath,
+            options: OpenDatabaseOptions(
+              version: 1,
+              onCreate: (Database db, int version) async {
+                await db.execute(
+                  'CREATE TABLE Pref (name TEXT PRIMARY KEY, textValue TEXT, intValue INTEGER)',
+                );
+              },
+            ),
+          );
         }
         return _db;
       });
@@ -43,8 +47,10 @@ class Prefs {
 
   Future<List<Map<String, Object?>>> load() async {
     var db = await (this.db as FutureOr<Database>);
-    var list =
-        await db.query('Pref', columns: ['name', 'textValue', 'intValue']);
+    var list = await db.query(
+      'Pref',
+      columns: ['name', 'textValue', 'intValue'],
+    );
     //devPrint(list);
     for (var item in list) {
       var prefName = item['name'] as String?;
@@ -68,7 +74,7 @@ class Prefs {
     return <String, Object?>{
       'port': port,
       'showConsole': showConsole,
-      'autoStart': autoStart
+      'autoStart': autoStart,
     }.toString();
   }
 
@@ -103,7 +109,8 @@ class Prefs {
 
   Future _setIntValue(String name, int? intValue) async {
     await _db!.execute(
-        'INSERT OR REPLACE INTO Pref(name, intValue) VALUES (?, ?)',
-        <Object?>[name, intValue]);
+      'INSERT OR REPLACE INTO Pref(name, intValue) VALUES (?, ?)',
+      <Object?>[name, intValue],
+    );
   }
 }

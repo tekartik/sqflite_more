@@ -3,8 +3,10 @@ import 'dart:io';
 /// Add sqflite dependencies in a brut force way
 String pubspecStringAddSqflite(String content) {
   if (!content.contains('sqflite')) {
-    return content.replaceAllMapped(RegExp(r'^dependencies:$', multiLine: true),
-        (match) => 'dependencies:\n  sqflite:');
+    return content.replaceAllMapped(
+      RegExp(r'^dependencies:$', multiLine: true),
+      (match) => 'dependencies:\n  sqflite:',
+    );
   }
   return content;
 }

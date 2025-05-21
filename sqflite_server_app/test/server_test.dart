@@ -35,8 +35,10 @@ void main() {
     test('load and set', () async {
       // Always test if the factory is available before each test
       if (databaseFactory != null) {
-        var prefs =
-            Prefs(databaseFactory: databaseFactory, dbName: 'prefs_test.db');
+        var prefs = Prefs(
+          databaseFactory: databaseFactory,
+          dbName: 'prefs_test.db',
+        );
         await prefs.delete();
 
         expect(prefs.port, sqfliteServerDefaultPort);
@@ -58,8 +60,10 @@ void main() {
         await prefs.load();
         check(prefs);
 
-        prefs =
-            Prefs(databaseFactory: databaseFactory, dbName: 'prefs_test.db');
+        prefs = Prefs(
+          databaseFactory: databaseFactory,
+          dbName: 'prefs_test.db',
+        );
         await prefs.load();
         check(prefs);
       }
