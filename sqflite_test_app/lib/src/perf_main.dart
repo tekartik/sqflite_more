@@ -62,16 +62,15 @@ Future<void> runBulkInsert(
   Directory directory, {
   bool? noResult,
 }) async {
-  var list =
-      List.generate(
-        13000,
-        (index) => {
-          'name': 'some name $index',
-          'name2': 'some name $index',
-          'name3': 'some name $index',
-          'name4': 'some name $index',
-        },
-      ).toList();
+  var list = List.generate(
+    13000,
+    (index) => {
+      'name': 'some name $index',
+      'name2': 'some name $index',
+      'name3': 'some name $index',
+      'name4': 'some name $index',
+    },
+  ).toList();
   write('$perfContext');
   var factory = perfContext.factory;
   var path = join(directory.path, perfContext.path);

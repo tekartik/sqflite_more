@@ -86,8 +86,8 @@ class _SqfliteServerHomePageState extends State<SqfliteServerHomePage> {
                   app.sqfliteServerStarted
                       ? 'SQFlite server listening on ${app.sqfliteServer!.port}'
                       : (_startPending
-                          ? 'Starting listening on $port'
-                          : 'Press START to start SQFlite server'),
+                            ? 'Starting listening on $port'
+                            : 'Press START to start SQFlite server'),
                 ),
               ),
               Container(

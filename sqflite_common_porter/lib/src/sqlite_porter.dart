@@ -81,8 +81,9 @@ Future<List<String>> dbExportSql(Database db) async {
       }
     }
 
-    var sqliteSequenceTableFound =
-        tableRows.where((row) => row['name'] == 'sqlite_sequence').isNotEmpty;
+    var sqliteSequenceTableFound = tableRows
+        .where((row) => row['name'] == 'sqlite_sequence')
+        .isNotEmpty;
 
     if (sqliteSequenceTableFound) {
       // Handle system table sqlite_sequence
