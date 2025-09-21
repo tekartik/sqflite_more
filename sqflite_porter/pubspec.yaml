@@ -14,19 +14,16 @@ dependencies:
   tekartik_common_utils:
     git:
       url: https://github.com/tekartik/common_utils.dart
-      ref: dart3a
     version: '>=0.9.7+1'
   sqflite_test:
     git:
       url: https://github.com/tekartik/sqflite_more
-      ref: dart3a
       path: sqflite_test
     version: '>=0.1.0'
   csv:
   sqflite_common_porter:
     git:
       url: https://github.com/tekartik/sqflite_more
-      ref: dart3a
       path: sqflite_common_porter
     version: '>=0.2.0'
 
@@ -39,7 +36,6 @@ dev_dependencies:
   tekartik_lints_flutter:
     git:
       url: https://github.com/tekartik/common_flutter.dart
-      ref: dart3a
       path: packages/lints_flutter
     version: '>=0.1.0'
 # For information on the generic Dart part of this file, see the

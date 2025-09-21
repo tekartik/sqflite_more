@@ -11,7 +11,6 @@ dependencies:
   tekartik_common_utils:
     git:
       url: https://github.com/tekartik/common_utils.dart
-      ref: dart3a
     version: '>=0.9.7+1'
   csv:
   sqflite_common_ffi: ">=2.3.4"

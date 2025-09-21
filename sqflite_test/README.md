@@ -10,7 +10,6 @@ dependencies:
   sqflite_test:
     git:
       url: https://github.com/tekartik/sqflite_more
-      ref: dart3a
       path: sqflite_test
     version: '>=0.2.0'
 ```
