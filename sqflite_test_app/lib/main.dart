@@ -57,10 +57,7 @@ class FactoryDelegate with SqfliteDatabaseFactoryMixin {
 
   @override
   Future<T> invokeMethod<T>(String method, [arguments]) async {
-    var map = <String, Object?>{
-      'method': method,
-      if (arguments != null) 'arguments': arguments,
-    };
+    var map = <String, Object?>{'method': method, 'arguments': ?arguments};
     // For now assume sqfliteLogLevelService (bit field)
     var shouldLogLevelService = _sqfliteLogLevel == sqfliteLogLevelVerbose;
     if (shouldLogLevelService) {
