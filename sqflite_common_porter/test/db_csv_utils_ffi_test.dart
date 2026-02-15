@@ -3,9 +3,15 @@ import 'dart:convert';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:sqflite_common_porter/src/utils.dart';
 import 'package:sqflite_common_porter/utils/csv_utils.dart';
+import 'package:tekartik_app_csv/app_csv.dart';
 import 'package:test/test.dart';
 
-import 'csv_utils_test.dart';
+void expectCsv(String value, String expected) {
+  expect(
+    const LineSplitter().convert(value),
+    const LineSplitter().convert(expected),
+  );
+}
 
 final String tableTodo = 'todo';
 final String columnId = '_id';
@@ -35,7 +41,7 @@ INSERT INTO Test(name, value, num, binary) VALUES('other name', 1234, 456.789, x
       await batch.commit();
 
       var result = await db.query('Test');
-      var csv = mapListToCsv(result)!;
+      var csv = mapListToCsv(result);
       expectCsv(csv, '''
 id,name,value,num,binary
 1,some name,1234,456.789,"[1, 2, 3]"
