@@ -14,7 +14,7 @@ dependencies:
     version: '>=0.9.7+1'
   csv:
   sqflite_common_ffi: ">=2.3.4"
-  sqflite_common:
+  sqflite_common: ">=2.5.8"
   tekartik_app_csv:
     git:
       url: https://github.com/tekartik/app_common_utils.dart
