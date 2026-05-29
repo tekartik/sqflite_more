@@ -40,9 +40,11 @@ Future<SqfliteServerDatabaseFactory?> initSqfliteServerDatabaseFactory() async {
   try {
     databaseFactory = await SqfliteServerDatabaseFactory.connect(envUrl);
   } catch (e) {
+    // ignore: avoid_print
     print(e);
   }
   if (databaseFactory == null) {
+    // ignore: avoid_print
     print('''
 sqflite server not running on $envUrl
 Check that the sqflite_server_app is running on the proper port

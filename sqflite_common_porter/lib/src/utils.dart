@@ -20,6 +20,7 @@ Future<String> initDeleteDb(DatabaseFactory factory, String dbName) async {
     try {
       await Directory(dirname(path)).create(recursive: true);
     } catch (e) {
+      // ignore: avoid_print
       print(e);
     }
   }

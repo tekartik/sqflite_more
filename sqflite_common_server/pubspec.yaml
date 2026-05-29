@@ -4,10 +4,10 @@ version: 0.3.3
 publish_to: none
 
 environment:
-  sdk: ^3.10.0
+  sdk: ^3.12.0
 
 dependencies:
-  path: ">=1.9.0"
+  path: ">=1.9.1"
   sqflite_common: ">=2.5.8"
   tekartik_web_socket_io:
     git:
@@ -23,9 +23,9 @@ dependencies:
 
 dev_dependencies:
   sqflite_common_ffi: ">=2.3.4"
-  test: ">=1.24.0"
+  test: ">=1.31.0"
   process_run: ">=1.2.1+1"
-  dev_build: ">=1.1.2"
+  dev_build: ">=1.1.7+3"
 
 dependency_overrides:
 resolution: workspace

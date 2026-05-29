@@ -36,11 +36,13 @@ class SqfliteClient {
       var rawServerInfo =
           await rpcClient.sendRequest(methodGetServerInfo) as Map;
       if (rawServerInfo[keyName] != serverInfoName) {
-        throw 'invalid name in $rawServerInfo';
+        throw StateError('invalid name in $rawServerInfo');
       }
       var version = Version.parse(rawServerInfo[keyVersion] as String);
       if (version < serverInfoMinVersion) {
-        throw 'SQFlite server version $version not supported, >=$serverInfoMinVersion expected';
+        throw StateError(
+          'SQFlite server version $version not supported, >=$serverInfoMinVersion expected',
+        );
       }
       serverInfo = ServerInfo()
         ..supportsWithoutRowId = parseBool(

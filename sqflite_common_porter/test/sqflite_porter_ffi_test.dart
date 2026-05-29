@@ -47,7 +47,6 @@ void main() {
     );
     var export = await dbExportSql(db);
     expect(export, ['PRAGMA user_version = 2']);
-    print(export);
     await db.close();
 
     db = await openDatabaseInMemoryFromSqlImport(factory, export);

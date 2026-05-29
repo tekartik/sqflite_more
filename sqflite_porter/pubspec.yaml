@@ -4,13 +4,13 @@ version: 0.2.0+1
 publish_to: none
 
 environment:
-  sdk: ^3.10.0
+  sdk: ^3.12.0
 
 dependencies:
   flutter:
     sdk: flutter
   sqflite: ">=2.4.0"
-  path: ">=1.9.0"
+  path: ">=1.9.1"
   tekartik_common_utils:
     git:
       url: https://github.com/tekartik/common_utils.dart
@@ -30,9 +30,9 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  test: ">=1.24.0"
+  test: ">=1.31.0"
   process_run: ">=1.2.1+1"
-  dev_build: ">=1.1.2"
+  dev_build: ">=1.1.7+3"
   tekartik_lints_flutter:
     git:
       url: https://github.com/tekartik/common_flutter.dart

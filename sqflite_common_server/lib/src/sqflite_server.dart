@@ -204,7 +204,7 @@ class SqfliteServerChannel {
           // Old
           _openDatabaseIds.add(result);
         } else {
-          throw 'invalid open result $result';
+          throw StateError('invalid open result $result');
         }
       } else if (sqfliteMethod == methodCloseDatabase) {
         _openDatabaseIds.remove((sqfliteParam as Map)[paramId] as int?);
@@ -234,6 +234,7 @@ class SqfliteServerChannel {
             {paramId: databaseId},
           );
         } catch (e) {
+          // ignore: avoid_print
           print('error cleaning up database $databaseId');
         }
       }

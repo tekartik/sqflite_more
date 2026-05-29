@@ -4,10 +4,10 @@ version: 0.3.0
 publish_to: none
 
 environment:
-  sdk: ^3.10.0
+  sdk: ^3.12.0
 
 dependencies:
-  path: ">=1.9.0"
+  path: ">=1.9.1"
   tekartik_common_utils:
     git:
       url: https://github.com/tekartik/common_utils.dart
@@ -21,7 +21,7 @@ dependencies:
       path: app_csv
 
 dev_dependencies:
-  test: ">=1.24.0"
+  test: ">=1.31.0"
   process_run: ">=1.2.1+1"
-  dev_build: ">=1.1.2"
+  dev_build: ">=1.1.7+3"
 resolution: workspace

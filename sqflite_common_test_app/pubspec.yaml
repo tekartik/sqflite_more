@@ -5,17 +5,17 @@ homepage: https://github.com/tekartik/sqflite_more/tree/master/sqflite_common_te
 publish_to: none
 
 environment:
-  sdk: ^3.10.0
+  sdk: ^3.12.0
 
 dependencies:
   sqflite_common_ffi: ">=2.4.0+3"
   sqflite_common: ">=2.5.8"
-  path: ">=1.9.0"
+  path: ">=1.9.1"
 
 dev_dependencies:
   process_run: ">=1.2.1+1"
-  test: ">=1.24.0"
-  dev_build: ">=1.1.2"
+  test: ">=1.31.0"
+  dev_build: ">=1.1.7+3"
   tekartik_lints_flutter:
     git:
       url: https://github.com/tekartik/common_flutter.dart

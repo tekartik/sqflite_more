@@ -4,7 +4,7 @@ version: 0.2.4
 publish_to: none
 
 environment:
-  sdk: ^3.10.0
+  sdk: ^3.12.0
 
 dependencies:
   flutter:
@@ -28,12 +28,12 @@ dependencies:
     git:
       url: https://github.com/tekartik/common_utils.dart
     version: '>=0.3.0'
-  test: ">=1.24.0"
-  path: ">=1.9.0"
+  test: ">=1.31.0"
+  path: ">=1.9.1"
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  dev_build: ">=1.1.2"
+  dev_build: ">=1.1.7+3"
   tekartik_lints_flutter:
     git:
       url: https://github.com/tekartik/common_flutter.dart
