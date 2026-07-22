@@ -158,7 +158,6 @@ Future<void> dbImportSql(
 }
 
 /// Import a database and open it
-///
 Future<Database> openDatabaseFromSqlImport(
   DatabaseFactory factory,
   String path,
