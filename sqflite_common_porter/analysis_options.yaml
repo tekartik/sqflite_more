@@ -1,2 +1,11 @@
 # tekartik analysis_options extension to pedantic
+analyzer:
+  exclude:
+    - build/**
+    - android/**
+    - ios/**
+    - web/**
+    - windows/**
+    - macos/**
+    - linux/**
 include: package:tekartik_lints/strict.yaml
