@@ -30,7 +30,7 @@ dependencies:
       path: test_menu_flutter
     version: '>=0.2.5'
   flutter_isolate:
-  sqflite: ">=2.4.0"
+  sqflite: ">=2.4.3"
 dev_dependencies:
   tekartik_lints_flutter:
     git:

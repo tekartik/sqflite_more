@@ -11,7 +11,7 @@ publish_to: none
 version: 0.1.0
 
 environment:
-  sdk: ^3.12.0
+  sdk: ^3.13.0
 
 dependencies:
   flutter:
@@ -40,21 +40,25 @@ dependencies:
       url: https://github.com/tekartik/sqflite_more
       path: sqflite_test
     version: '>=0.2.0'
-  sqflite: ">=2.4.0"
-  sqflite_common_ffi: ">=2.3.4"
-  sqflite_common: ">=2.5.8"
+  sqflite: ">=2.4.3"
+  sqflite_common_ffi: ">=2.4.1"
+  sqflite_common: ">=2.5.9"
   path: ">=1.9.1"
   tekartik_test_menu_flutter:
     git:
       url: https://github.com/tekartik/test_menu_flutter
       path: test_menu_flutter
 
+  material_ui: ">=1.5.0"
+  tekartik_common_utils:
+    git:
+      url: https://github.com/tekartik/common_utils.dart
+  dev_build: ">=1.1.8+3"
 dev_dependencies:
-  process_run: ">=1.2.1+1"
+  process_run: ">=1.3.4"
   flutter_test:
     sdk: flutter
   flutter_launcher_icons: ">=0.6.1"
-  dev_build: ">=1.1.7+3"
   tekartik_lints_flutter:
     git:
       url: https://github.com/tekartik/common_flutter.dart

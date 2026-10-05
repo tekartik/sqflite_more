@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:sqflite_porter/sqflite_porter.dart';
 import 'package:sqflite_porter/src/utils.dart'; // ignore: implementation_imports
 import 'package:sqflite_server_app/main.dart';

@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:sqflite_example_common/main.dart' as example;
 import 'package:sqflite_example_common/manual_test_page.dart';
 import 'package:sqflite_test_app/src/asset_main.dart';
