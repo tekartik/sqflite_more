@@ -32,7 +32,7 @@ reference code: views and triggers are exported but only lightly tested.
   ```
   For a Flutter app depending on `sqflite` rather than `sqflite_common`, use
   the `sqflite_porter` package (same repo, `path: sqflite_porter`) instead: it
-  re-exports the same three functions.
+  re-exports `dbExportSql` and `dbImportSql` from this package.
 * One import for everything: `package:sqflite_common_porter/sqflite_porter.dart`
   exports exactly `dbExportSql`, `dbImportSql` and `openDatabaseFromSqlImport`.
   It does **not** re-export `sqflite_common`, so add
@@ -47,6 +47,10 @@ reference code: views and triggers are exported but only lightly tested.
   `BLOB`s become `x'0a1b'` hex literals, `null` becomes `NULL`. System tables
   (`sqlite_*`, `android_metadata`) are skipped, except `sqlite_sequence`
   whose content is re-emitted after a `DELETE FROM sqlite_sequence`.
+* Table names are written as in their `CREATE TABLE` statement (`"group"`,
+  `"my table"`), or double quoted when that form cannot be reused. Virtual
+  tables (rtree, fts) do not round-trip: their shadow tables are exported as
+  plain tables and the import fails.
 * `Future<void> dbImportSql(Database db, List<String> sqlStatements, {SqlImportOptions? options})`
   replays the statements through a `Batch`. **The database must be empty**:
   importing into a database that already has the tables fails on

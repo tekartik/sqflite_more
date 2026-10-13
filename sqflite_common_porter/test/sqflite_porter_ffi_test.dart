@@ -281,4 +281,52 @@ void main() {
 
     await db.close();
   });
+  group('table names', () {
+    // Table name in the create statement and its expected name in the export
+    var names = {
+      '"group"': '"group"',
+      '"my table"': '"my table"',
+      '`back`': '`back`',
+      '[my table2]': '"my table2"',
+    };
+    names.forEach((name, sqlName) {
+      test('export import $name', () async {
+        var db = await factory.openDatabase(
+          inMemoryDatabasePath,
+          options: OpenDatabaseOptions(singleInstance: false),
+        );
+        await db.execute(
+          'CREATE TABLE $name (id INTEGER PRIMARY KEY, value TEXT)',
+        );
+        await db.execute("INSERT INTO $name (value) VALUES ('v1')");
+        var export = await dbExportSql(db);
+        expect(export, [
+          'CREATE TABLE $name (id INTEGER PRIMARY KEY, value TEXT)',
+          'INSERT INTO $sqlName VALUES (1,\'v1\')',
+        ]);
+        await db.close();
+
+        db = await openDatabaseInMemoryFromSqlImport(factory, export);
+        expect(await db.rawQuery('SELECT * FROM $name'), [
+          {'id': 1, 'value': 'v1'},
+        ]);
+        await db.close();
+      });
+    });
+  });
+  test('export virtual table once', () async {
+    var db = await factory.openDatabase(
+      inMemoryDatabasePath,
+      options: OpenDatabaseOptions(singleInstance: false),
+    );
+    await db.execute(
+      'CREATE TABLE Test (id INTEGER PRIMARY KEY AUTOINCREMENT, value TEXT)',
+    );
+    await db.execute('CREATE VIRTUAL TABLE r USING rtree(id, minX, maxX)');
+    var export = await dbExportSql(db);
+    expect(export.where((sql) => sql.startsWith('CREATE VIRTUAL TABLE')), [
+      'CREATE VIRTUAL TABLE r USING rtree(id, minX, maxX)',
+    ]);
+    await db.close();
+  });
 }

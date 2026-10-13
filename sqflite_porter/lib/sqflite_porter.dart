@@ -1,4 +1,4 @@
 library;
 
-export 'package:sqflite_porter/src/sqlite_porter.dart'
+export 'package:sqflite_common_porter/sqflite_porter.dart'
     show dbExportSql, dbImportSql;

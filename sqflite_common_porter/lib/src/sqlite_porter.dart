@@ -33,6 +33,16 @@ String? extractTableName(String? sqlTableStatement) {
   return null;
 }
 
+/// The name of [table] as written in its create statement [sql] (quoted the
+/// same way), or [table] quoted.
+String _sqlTableName(String table, String sql) {
+  var token = extractTableName(sql);
+  if (token != null && unescapeText(token) == table) {
+    return token;
+  }
+  return '"${table.replaceAll('"', '""')}"';
+}
+
 /// Export a database as list of string
 Future<List<String>> dbExportSql(Database db) async {
   var statements = <String>[];
@@ -44,6 +54,7 @@ Future<List<String>> dbExportSql(Database db) async {
     var tableRows = metaRows.where((row) => row['type'] == 'table');
     var otherRows = metaRows.where((row) => row['type'] != 'table');
 
+    /// [table] is the sql name of the table (quoted if needed)
     Future exportTable(String table) async {
       var contentRows = await txn.rawQuery('SELECT * from $table');
       for (var contentRow in contentRows) {
@@ -69,7 +80,7 @@ Future<List<String>> dbExportSql(Database db) async {
       var table = tableRow['name'] as String?;
       if (table != null && !isSystemTable(unescapeText(table)) && sql != null) {
         statements.add(fixStatement(sql));
-        await exportTable(table);
+        await exportTable(_sqlTableName(table, sql));
       }
     }
 
@@ -89,16 +100,6 @@ Future<List<String>> dbExportSql(Database db) async {
       // Handle system table sqlite_sequence
       statements.add('DELETE FROM sqlite_sequence');
       await exportTable('sqlite_sequence');
-
-      // handle views and trigger
-      for (var tableRow in tableRows) {
-        var sql = tableRow.values.first as String?;
-        var table = extractTableName(sql);
-        if (table == null) {
-          // We know this is not a table
-          statements.add(fixStatement(sql!));
-        }
-      }
     }
 
     // The version!

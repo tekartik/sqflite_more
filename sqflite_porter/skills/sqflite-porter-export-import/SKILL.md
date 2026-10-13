@@ -31,26 +31,26 @@ version and adds `openDatabaseFromSqlImport`.
       version: '>=0.2.0'
   ```
 * Import `package:sqflite_porter/sqflite_porter.dart`. It exports exactly two
-  functions, `dbExportSql` and `dbImportSql`, and nothing else: add
+  functions, `dbExportSql` and `dbImportSql`, re-exported from
+  `sqflite_common_porter` (same implementation), and nothing else: add
   `package:sqflite/sqflite.dart` for `Database`, `openDatabase`,
   `getDatabasesPath`.
 * `Future<List<String>> dbExportSql(Database db)` runs inside one transaction
   and returns the `CREATE TABLE` statements, one
-  `INSERT INTO <table> VALUES (...);` per row, then
-  `DELETE FROM sqlite_sequence;` plus the `sqlite_sequence` rows, then the
-  `CREATE VIEW` / `CREATE TRIGGER` statements. Every statement ends with `;`.
-* The database **version is not exported** (unlike `sqflite_common_porter`):
-  reopen the restored database with the same `version` in `openDatabase`, or
-  the `onCreate`/`onUpgrade` callbacks will fire on an already populated
-  database.
-* `dbExportSql` queries `sqlite_sequence` unconditionally, so it throws on a
-  database that has no `AUTOINCREMENT` column (that system table only exists
-  once something used `AUTOINCREMENT`). This is fixed in
-  `sqflite_common_porter`; work around it by adding one `AUTOINCREMENT`
-  table, or migrate.
-* `Future dbImportSql(Database db, List<String> sqlStatements)` executes the
-  statements through a single `Batch` committed with `noResult: true`. There
-  is no batch-size option, so a very large export is committed in one go.
+  `INSERT INTO <table> VALUES (...)` per row, the `CREATE VIEW` /
+  `CREATE TRIGGER` statements, then `DELETE FROM sqlite_sequence` plus the
+  `sqlite_sequence` rows when that table exists, and
+  `PRAGMA user_version = <n>` when the version is not 0. Statements carry no
+  trailing `;`.
+* The database version is exported, so the import restores it: reopening
+  with `openDatabase(version: n)` does not run `onCreate` again. Older
+  `sqflite_porter` versions (own copy of the code) ended statements with `;`,
+  did not export the version and threw on a database without an
+  `AUTOINCREMENT` table; a dump from either version still imports.
+* `Future<void> dbImportSql(Database db, List<String> sqlStatements, {SqlImportOptions? options})`
+  executes the statements through a `Batch` committed with `noResult: true`
+  (`options` takes a `SqlImportOptions` batch size, which is not exported:
+  leave it null).
 * **The target database must be empty**: replaying `CREATE TABLE` on an
   existing schema fails. Either delete the file first
   (`deleteDatabase(path)`) or import from `onCreate`.
@@ -60,10 +60,7 @@ version and adds `openDatabaseFromSqlImport`.
 * System tables (`sqlite_*` other than `sqlite_sequence`, `android_metadata`)
   are skipped, so an Android export can be imported on iOS.
 * Migration to `sqflite_common_porter`: swap the dependency and the import,
-  keep the same `dbExportSql` / `dbImportSql` calls, and note that the new
-  statements have no trailing `;` and gain a final
-  `PRAGMA user_version = <n>`; a dump produced by one package still imports
-  fine with the other.
+  keep the same `dbExportSql` / `dbImportSql` calls (same output).
 * Tests use `flutter_test` and need a real device/emulator (or
   `sqflite_common_ffi` + `databaseFactoryFfi` on the host) because `sqflite`
   is a plugin.

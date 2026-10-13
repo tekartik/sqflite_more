@@ -6,8 +6,9 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:sqflite_porter/src/sql_parser.dart';
-import 'package:sqflite_porter/src/sqlite_porter.dart';
+// ignore: implementation_imports
+import 'package:sqflite_common_porter/src/sql_parser.dart';
+import 'package:sqflite_porter/sqflite_porter.dart';
 export 'package:sqflite_common_porter/src/utils.dart';
 
 Future<String> initEmptyDb(String dbName) async {
