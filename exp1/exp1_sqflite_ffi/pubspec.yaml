@@ -1,0 +1,31 @@
+name: sqflite_exp1_sqflite_ffi
+description: Exp1 app using sqflite_ffi (Android, iOS, macOS, Linux, Windows).
+publish_to: none
+version: 0.1.0
+
+environment:
+  sdk: ^3.13.0
+  flutter: ">=3.47.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  sqflite_exp1_common:
+    path: ../exp1_common
+  sqflite_ffi: ">=0.1.1"
+  path_provider: ">=2.1.6"
+  path: ">=1.9.1"
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  tekartik_lints_flutter:
+    git:
+      url: https://github.com/tekartik/common_flutter.dart
+      path: packages/lints_flutter
+    version: '>=0.1.0'
+
+flutter:
+  uses-material-design: true
+
+resolution: workspace

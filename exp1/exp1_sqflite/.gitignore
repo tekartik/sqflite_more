@@ -1,0 +1,14 @@
+# Platform folders are generated (flutter create, see ../README.md)
+/android/
+/ios/
+/linux/
+/macos/
+/web/
+/windows/
+/build/
+.dart_tool/
+.metadata
+.flutter-plugins
+.flutter-plugins-dependencies
+*.iml
+.idea/

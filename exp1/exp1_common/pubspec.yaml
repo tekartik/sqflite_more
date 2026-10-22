@@ -1,0 +1,31 @@
+name: sqflite_exp1_common
+description: Common code of the sqflite exp1 apps, a todo lists and tasks demo database (tables, views, helpers), its UI and the scenario tool hooks.
+publish_to: none
+version: 0.1.0
+
+environment:
+  sdk: ^3.13.0
+  flutter: ">=3.47.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  # Driver extension, only enabled with --dart-define=EXP1_DRIVER=true (scenario tool).
+  flutter_driver:
+    sdk: flutter
+  material_ui: ">=1.5.0"
+  cupertino_icons: ">=1.0.9"
+  sqflite_common: ">=2.5.14"
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  sqflite_common_ffi: ">=2.4.4"
+  path: ">=1.9.1"
+  tekartik_lints_flutter:
+    git:
+      url: https://github.com/tekartik/common_flutter.dart
+      path: packages/lints_flutter
+    version: '>=0.1.0'
+
+resolution: workspace

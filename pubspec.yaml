@@ -13,3 +13,9 @@ workspace:
   - sqflite_test
   - sqflite_test_app
   - various/sqflite_isolate_test_app
+  - exp1/exp1_common
+  - exp1/exp1_sqflite
+  - exp1/exp1_sqflite_ffi
+  - exp1/exp1_web
+  - exp1/exp1_app
+  - exp1/exp1_support

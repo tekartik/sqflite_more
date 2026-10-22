@@ -1,0 +1,29 @@
+name: sqflite_exp1_support
+description: Scenario tool for the sqflite exp1 apps, driving them through `flutter run --machine` (hot restart, restart) and flutter_driver (widget ids).
+publish_to: none
+version: 0.1.0
+
+environment:
+  sdk: ^3.13.0
+
+dependencies:
+  # Host side only (pure Dart), the apps enable the extension.
+  flutter_driver:
+    sdk: flutter
+  # Only the pure Dart library exp1_shared.dart is imported.
+  sqflite_exp1_common:
+    path: ../exp1_common
+  vm_service: ">=15.0.0"
+  args: ">=2.6.0"
+  dev_build: ">=1.1.9"
+  path: ">=1.9.1"
+
+dev_dependencies:
+  test: ">=1.31.0"
+  tekartik_lints_flutter:
+    git:
+      url: https://github.com/tekartik/common_flutter.dart
+      path: packages/lints_flutter
+    version: '>=0.1.0'
+
+resolution: workspace
