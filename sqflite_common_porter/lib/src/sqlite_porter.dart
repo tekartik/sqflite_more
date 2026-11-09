@@ -43,7 +43,15 @@ String _sqlTableName(String table, String sql) {
   return '"${table.replaceAll('"', '""')}"';
 }
 
-/// Export a database as list of string
+/// Export [db] as a list of SQL statements, without trailing `;`.
+///
+/// In order: each table (`CREATE TABLE` then one `INSERT INTO <table> VALUES`
+/// per row), the other schema items (indexes, views, triggers), the
+/// `sqlite_sequence` content and `PRAGMA user_version = <n>` when the version
+/// is not 0. System tables are skipped, generated columns get no value.
+/// Virtual tables (fts, rtree) do not round trip.
+///
+/// Replay the result with [dbImportSql] or [openDatabaseFromSqlImport].
 Future<List<String>> dbExportSql(Database db) async {
   var statements = <String>[];
   await db.transaction((Transaction txn) async {
@@ -54,14 +62,39 @@ Future<List<String>> dbExportSql(Database db) async {
     var tableRows = metaRows.where((row) => row['type'] == 'table');
     var otherRows = metaRows.where((row) => row['type'] != 'table');
 
+    /// The columns to read from [table] (sql name): `*`, or the non generated
+    /// columns when the table has generated ones, since
+    /// `INSERT INTO <table> VALUES` only takes values for those.
+    Future<String> exportColumns(String table) async {
+      // hidden: 0 normal, 1 hidden (virtual table), 2 and 3 generated.
+      // An unknown pragma (SQLite < 3.26) returns no row.
+      var columns = await txn.rawQuery('PRAGMA table_xinfo($table)');
+      bool isGenerated(Map<String, Object?> column) =>
+          column['hidden'] == 2 || column['hidden'] == 3;
+      if (!columns.any(isGenerated)) {
+        return '*';
+      }
+      return columns
+          .where((column) => column['hidden'] == 0)
+          .map((column) {
+            var name = column['name'] as String;
+            return '"${name.replaceAll('"', '""')}"';
+          })
+          .join(', ');
+    }
+
     /// [table] is the sql name of the table (quoted if needed)
     Future exportTable(String table) async {
-      var contentRows = await txn.rawQuery('SELECT * from $table');
+      var columns = await exportColumns(table);
+      var contentRows = await txn.rawQuery('SELECT $columns from $table');
       for (var contentRow in contentRows) {
         var values = <String>[];
         for (var value in contentRow.values) {
           if (value == null) {
             values.add('NULL');
+          } else if (value is double && value.isInfinite) {
+            // Infinity is not a SQL literal, 9e999 is read as infinity.
+            values.add(value.isNegative ? '-9e999' : '9e999');
           } else if (value is num) {
             values.add(value.toString());
           } else if (value is List<int>) {
@@ -120,9 +153,11 @@ class SqlImportOptions {
   SqlImportOptions(this.importBatchSize);
 }
 
-/// Import a database from a list of statements.
+/// Import [sqlStatements] (a [dbExportSql] result) in [db] through a [Batch].
 ///
-/// db must be an empty database.
+/// [db] must be empty (no table): an existing table makes the import fail.
+/// It can be called in `onCreate`. [options] can split the import in several
+/// batches (`SqlImportOptions`, not exported by `sqflite_porter.dart`).
 Future<void> dbImportSql(
   Database db,
   List<String> sqlStatements, {
@@ -158,7 +193,12 @@ Future<void> dbImportSql(
   await commitBatch();
 }
 
-/// Import a database and open it
+/// Delete the database at [path], open it with [openDatabaseOptions] and
+/// import [sqlStatements] (see [dbImportSql]), returning the open database.
+///
+/// For `inMemoryDatabasePath` pass `OpenDatabaseOptions(singleInstance:
+/// false)` to get a new database. Do not give a `version`/`onCreate`: the
+/// statements restore the version.
 Future<Database> openDatabaseFromSqlImport(
   DatabaseFactory factory,
   String path,

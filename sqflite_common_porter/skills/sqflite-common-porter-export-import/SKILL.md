@@ -28,7 +28,7 @@ reference code: views and triggers are exported but only lightly tested.
       git:
         url: https://github.com/tekartik/sqflite_more
         path: sqflite_common_porter
-      version: '>=0.2.0'
+      version: '>=0.3.0'
   ```
   For a Flutter app depending on `sqflite` rather than `sqflite_common`, use
   the `sqflite_porter` package (same repo, `path: sqflite_porter`) instead: it
@@ -40,11 +40,16 @@ reference code: views and triggers are exported but only lightly tested.
   for `Database`, `DatabaseFactory`, `OpenDatabaseOptions`.
 * `Future<List<String>> dbExportSql(Database db)` reads `sqlite_master` in a
   single transaction and returns, in order: the `CREATE TABLE` statements,
-  one `INSERT INTO <table> VALUES (...)` per row, the `CREATE VIEW` /
-  `CREATE TRIGGER` statements, and `PRAGMA user_version = <n>` when the
-  version is not 0. An empty database exports to an empty list.
+  each followed by one `INSERT INTO <table> VALUES (...)` per row, then the
+  `CREATE INDEX` / `CREATE VIEW` / `CREATE TRIGGER` statements (after the
+  rows, so triggers do not fire during the import), the `sqlite_sequence`
+  content and `PRAGMA user_version = <n>` when the version is not 0. An empty
+  database exports to an empty list.
 * Statements carry no trailing `;`. Text is escaped by doubling quotes,
-  `BLOB`s become `x'0a1b'` hex literals, `null` becomes `NULL`. System tables
+  `BLOB`s become `x'0a1b'` hex literals, `null` becomes `NULL`, an infinite
+  `REAL` becomes `9e999` / `-9e999`. Generated columns get no value (they are
+  computed again on import), nor the `rowid` of a table without an
+  `INTEGER PRIMARY KEY` (renumbered on import). System tables
   (`sqlite_*`, `android_metadata`) are skipped, except `sqlite_sequence`
   whose content is re-emitted after a `DELETE FROM sqlite_sequence`.
 * Table names are written as in their `CREATE TABLE` statement (`"group"`,
@@ -70,12 +75,12 @@ reference code: views and triggers are exported but only lightly tested.
 * Importing inside `onCreate` is supported and is the idiomatic way to seed a
   versioned database: the database is empty there, and the trailing
   `PRAGMA user_version` is harmless since sqflite sets the version itself.
-* Round-tripping is not byte-exact for column order in views/triggers created
-  before their table; check an export of your real schema once before relying
-  on it in production.
+* Check an export of your real schema once (export, import, compare) before
+  relying on it in production.
 * CSV side helper: `package:sqflite_common_porter/utils/csv_utils.dart`
   re-exports `mapListToCsv(List<Map> mapList, {columns, nullValue})` and
-  `csvToMapList(String csv)` from `tekartik_app_csv`. `mapListToCsv` takes
+  `csvToMapList(String csv)` from `tekartik_app_csv` (its values are strings,
+  the delimiter is detected). `mapListToCsv` takes
   the result of `db.query(...)` directly; `BLOB` columns are rendered as
   `[1, 2, 3]` lists, so export blobs with `dbExportSql`, not with CSV.
 * Tests: `dart test` with `sqflite_common_ffi`'s `databaseFactoryFfi` after

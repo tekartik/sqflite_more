@@ -128,5 +128,20 @@ S;
       var statements = parseStatements(sql);
       expect(statements, ['S;', "'';"]);
     });
+
+    test('parseStatements trigger', () {
+      var trigger =
+          'CREATE TRIGGER t AFTER INSERT ON a BEGIN INSERT INTO b VALUES (1); '
+          'INSERT INTO b VALUES (2); END;';
+      var statements = parseStatements(
+        'CREATE TABLE a (v TEXT);\n$trigger\nSELECT 1;',
+      );
+      expect(statements, ['CREATE TABLE a (v TEXT);', trigger, 'SELECT 1;']);
+    });
+
+    test('parseStatements trigger without end', () {
+      var sql = 'CREATE TRIGGER t AFTER INSERT ON a BEGIN SELECT 1;';
+      expect(parseStatements(sql), [sql]);
+    });
   });
 }

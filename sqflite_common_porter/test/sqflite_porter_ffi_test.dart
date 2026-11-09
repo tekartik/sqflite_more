@@ -329,4 +329,56 @@ void main() {
     ]);
     await db.close();
   });
+  test('export generated columns', () async {
+    var db = await factory.openDatabase(
+      inMemoryDatabasePath,
+      options: OpenDatabaseOptions(singleInstance: false),
+    );
+    await db.execute(
+      'CREATE TABLE "my test" (a INTEGER, c INTEGER GENERATED ALWAYS AS (a * 2) STORED, b TEXT, d TEXT AS (b || \'!\'))',
+    );
+    await db.execute('CREATE TABLE Other (id INTEGER PRIMARY KEY, value TEXT)');
+    await db.execute('INSERT INTO "my test" (a, b) VALUES (1, \'x\')');
+    await db.insert('Other', {'value': 'v'});
+    var export = await dbExportSql(db);
+    // Only the non generated columns get a value, other tables unchanged.
+    expect(export, [
+      'CREATE TABLE "my test" (a INTEGER, c INTEGER GENERATED ALWAYS AS (a * 2) STORED, b TEXT, d TEXT AS (b || \'!\'))',
+      'INSERT INTO "my test" VALUES (1,\'x\')',
+      'CREATE TABLE Other (id INTEGER PRIMARY KEY, value TEXT)',
+      'INSERT INTO Other VALUES (1,\'v\')',
+    ]);
+    await db.close();
+
+    db = await openDatabaseInMemoryFromSqlImport(factory, export);
+    expect(await db.rawQuery('SELECT * FROM "my test"'), [
+      {'a': 1, 'c': 2, 'b': 'x', 'd': 'x!'},
+    ]);
+    await db.close();
+  });
+  test('export infinite values', () async {
+    var db = await factory.openDatabase(
+      inMemoryDatabasePath,
+      options: OpenDatabaseOptions(singleInstance: false),
+    );
+    await db.execute('CREATE TABLE Test (id INTEGER PRIMARY KEY, value REAL)');
+    for (var value in [double.infinity, double.negativeInfinity, 1.5]) {
+      await db.insert('Test', {'value': value});
+    }
+    var export = await dbExportSql(db);
+    expect(export.skip(1), [
+      'INSERT INTO Test VALUES (1,9e999)',
+      'INSERT INTO Test VALUES (2,-9e999)',
+      'INSERT INTO Test VALUES (3,1.5)',
+    ]);
+    await db.close();
+
+    db = await openDatabaseInMemoryFromSqlImport(factory, export);
+    expect(await db.query('Test'), [
+      {'id': 1, 'value': double.infinity},
+      {'id': 2, 'value': double.negativeInfinity},
+      {'id': 3, 'value': 1.5},
+    ]);
+    await db.close();
+  });
 }

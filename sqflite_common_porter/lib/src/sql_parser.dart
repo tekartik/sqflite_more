@@ -173,29 +173,19 @@ class SqlParser {
   String getNextStatement({bool? skip, SqlParserIndex? index}) {
     skipWhitespaces(skip: skip, index: index);
     index ??= SqlParserIndex()..position = position;
-    var startPosition = index.position;
-    var sb = StringBuffer();
-    String? currentTriggerStatement;
+    var startPosition = index.position!;
+    bool? isTrigger;
     String? previousToken;
     while (true) {
       var token = getNextToken(skip: skip, index: index);
       if (token == ';' || token == null) {
-        sb.write(sql!.substring(startPosition!, index.position));
-
-        var statement = sb.toString();
-
-        var statementParser = SqlParser(statement);
-        if (currentTriggerStatement != null) {
-          currentTriggerStatement += statement;
-        } else if (statementParser.parseTokens(['create', 'trigger'])) {
-          currentTriggerStatement = statement;
-        }
-
-        if (currentTriggerStatement != null) {
-          if (previousToken!.toLowerCase() == 'end') {
-            return currentTriggerStatement;
-          }
-        } else {
+        // The whole text since the statement start (a trigger body included).
+        var statement = sql!.substring(startPosition, index.position);
+        isTrigger ??= SqlParser(statement).parseTokens(['create', 'trigger']);
+        // A trigger body holds `;`, the trigger ends with `END;`.
+        if (!isTrigger ||
+            token == null ||
+            previousToken?.toLowerCase() == 'end') {
           return statement;
         }
       }
