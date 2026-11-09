@@ -49,7 +49,10 @@ flutter run -d linux
 ```
 
 The scenario tool does this for you (`flutter create` the first time, then
-the web setup).
+the web setup). It runs the web setup only when `web/sqflite_sw.js` is
+missing: after upgrading `sqflite_common_ffi_web` or `sqflite_common_ffi`, run
+`dart run sqflite_common_ffi_web:setup --force` in `exp1_web` and `exp1_app`
+to test the new worker.
 
 The lists page menu has two dev actions: *Reset demo database* and *Hold a
 write transaction*. The second inserts a task in a transaction that never
