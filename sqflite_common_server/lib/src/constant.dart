@@ -44,4 +44,9 @@ const keyIsMacOS = 'isMacOS';
 const keyIsLinux = 'isLinux';
 const keyIsWindows = 'isWindows';
 
+// error data (besides json_rpc 'full' and 'stack'), from the
+// SqfliteDatabaseException of the served factory
+const keyTransactionClosed = 'transactionClosed';
+const keyResultCode = 'resultCode';
+
 const sqfliteServerDefaultPort = 8501;

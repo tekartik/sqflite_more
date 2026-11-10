@@ -1,3 +1,17 @@
+/// Client of a sqflite server: `SqfliteServerDatabaseFactory`, a regular
+/// sqflite `DatabaseFactory` whose calls run on a `SqfliteServer`.
+///
+/// ```dart
+/// var factory = await SqfliteServerDatabaseFactory.connect(
+///   'ws://localhost:8501',
+/// );
+/// var db = await factory.openDatabase('test.db');
+/// // ...
+/// await db.close();
+/// await factory.close();
+/// ```
+library;
+
 import 'package:path/path.dart' as path;
 import 'package:sqflite_common/sqlite_api.dart';
 import 'package:sqflite_common_server/sqflite_context.dart';
@@ -24,6 +38,12 @@ int? parseSqfliteServerUrlPort(String url, {int? defaultValue}) {
 
 final sqfliteServerDefaultUrl = getSqfliteServerUrl();
 
+/// Connects to the server of the compile-time declarations
+/// `SQFLITE_SERVER_URL` or `SQFLITE_SERVER_PORT` (`--dart-define`, not the
+/// process environment), `ws://localhost:8501` by default.
+///
+/// Returns null, after printing a hint, when no server answers: skip the
+/// tests then.
 Future<SqfliteServerDatabaseFactory?> initSqfliteServerDatabaseFactory() async {
   SqfliteServerDatabaseFactory? databaseFactory;
   var envPort = parseInt(

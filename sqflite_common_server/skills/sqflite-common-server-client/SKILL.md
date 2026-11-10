@@ -41,8 +41,8 @@ plugin on a device or emulator.
 * `SqfliteServerDatabaseFactory.connect(String url, {WebSocketChannelClientFactory? webSocketChannelClientFactory})`
   is the direct way in: `url` is the server's `ws://host:port`
   (`getSqfliteServerUrl(port: 8501)` builds the localhost one). It throws if
-  nothing is listening or if the server protocol version does not match.
-  Always `await factory.close()` when done.
+  nothing is listening or if the server protocol version is older than the
+  client one. Always `await factory.close()` when done.
 * `initSqfliteServerDatabaseFactory()` is the test-friendly variant: it reads
   the url from the compile-time declarations `SQFLITE_SERVER_URL` /
   `SQFLITE_SERVER_PORT` (set with `-D`/`--dart-define`, **not** from the
@@ -51,9 +51,14 @@ plugin on a device or emulator.
   running. Guard your tests with `skip: factory == null` or an `if`, as the
   package's own tests do.
 * The factory is a `DatabaseFactory`: `openDatabase(path, options: OpenDatabaseOptions(...))`,
-  `deleteDatabase(path)`, `getDatabasesPath()`. Paths are resolved on the
-  **server**: a relative path lands in the device's databases directory;
-  absolute host paths are meaningless there.
+  `deleteDatabase(path)`, `getDatabasesPath()`, `databaseExists(path)`,
+  `readDatabaseBytes(path)` / `writeDatabaseBytes(path, bytes)`. Paths are
+  resolved in the **server** databases path (the one the served
+  implementation returns): a relative path lands in the device's databases
+  directory; absolute host paths are meaningless there.
+* The shared `sqflite_common_test` suite runs on this factory (served ffi,
+  `test/sqflite_server_shared_test.dart`): transactions, batches, cursors,
+  open callbacks, single instance behave as with a local factory.
 * `SqfliteServerContext` (and the lazy global `sqfliteServerContext`)
   implements `SqfliteContext` from
   `package:sqflite_common_server/sqflite_context.dart`: `databaseFactory`,
@@ -73,9 +78,14 @@ plugin on a device or emulator.
   (`'openDatabase'`, `'query'`, ...), `client.close()`. Prefer the factory;
   use the client only for the file/directory helpers or for debugging.
 * Blob values survive the round trip: the client converts the JSON lists back
-  to `Uint8List` in query and batch results.
-* Errors from the server come back as `SqfliteDatabaseException`, so
-  `try`/`catch` in existing sqflite code keeps working.
+  to `Uint8List` in query, batch query and `readDatabaseBytes` results.
+* A non finite REAL (`Infinity`, `-Infinity`, `NaN`) cannot cross the JSON
+  protocol: the call never completes and the connection stops answering.
+  Avoid them (or store them as text) when the code runs on this factory.
+* Errors from the server come back as `SqfliteDatabaseException`, with the
+  result code and `transactionClosed` (SQLite rolled back the transaction,
+  e.g. `ConflictAlgorithm.rollback`), so `try`/`catch` and transactions in
+  existing sqflite code keep working.
 * In unit tests without a real socket, pass
   `webSocketChannelFactoryMemory.client` (from
   `package:tekartik_web_socket_io/web_socket_io.dart`) as
@@ -201,3 +211,4 @@ Future<void> main() async {
 * Reading `sqfliteServerContext.isAndroid` before connecting a client.
 * Forgetting `adb forward` when the server runs on an Android device.
 * Leaking the connection: `close()` the factory, context or client.
+* Reading or writing `Infinity` / `NaN` REAL values: the call hangs.

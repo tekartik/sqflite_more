@@ -57,20 +57,29 @@ the client side.
   log traffic in its UI; keep it cheap, it runs on every sqflite operation.
 * One `SqfliteServerChannel` is created per connected client and it tracks the
   databases that client opened: when the connection drops, those databases are
-  closed automatically. `server.close()` closes the web socket server, not the
-  factory.
-* Paths are resolved server side: a relative path is joined with the server's
-  `getDatabasesPath()`, `inMemoryDatabasePath` is passed through. Clients also
-  get `sqfliteCreateDirectory` / `sqfliteDeleteDirectory` /
-  `sqfliteWriteFile` / `sqfliteReadFile` helpers rooted the same way, so a
-  client can prepare fixture files on the device.
+  closed automatically. `server.close()` stops the server and closes the
+  connected clients (their databases are then closed, not awaited); the
+  factory stays usable.
+* Paths: a client resolves a relative path in the databases path the served
+  implementation returns (the `getDatabasesPath` protocol call),
+  `inMemoryDatabasePath` and `file::memory:` stay in memory. Clients also get
+  `sqfliteCreateDirectory` / `sqfliteDeleteDirectory` / `sqfliteWriteFile` /
+  `sqfliteReadFile` helpers, rooted in the served factory's
+  `getDatabasesPath()`, so a client can prepare fixture files on the device.
+  Both are the same folder unless `setDatabasesPath()` was called on the
+  served factory: don't.
+* Errors are sent with the result code and `transactionClosed`, so the
+  clients' transactions behave as with a local factory; a non finite REAL
+  (`Infinity`, `NaN`) cannot be sent (JSON): the call never completes.
 * Android device: forward the port before connecting from the host, e.g.
   `adb forward tcp:8501 tcp:8501`.
+* Serve from Android, iOS, macOS or Linux: the client resolves paths with
+  posix rules, a Windows server gets mangled paths (`C:\...\databases/C:\...`).
 * There is no authentication and no TLS. Serve on localhost / a forwarded
   port on a development machine only, never on a public interface.
 * The client checks the protocol version (`sqflite_server` 0.5.0) at connect
-  time and throws a `StateError` on mismatch: keep both sides on the same
-  `sqflite_common_server` version.
+  time and throws a `StateError` when the server is older: keep both sides on
+  the same `sqflite_common_server` version.
 
 ## Examples
 
@@ -166,9 +175,12 @@ Future<SqfliteServer> startDeviceServer(DatabaseFactory factory) async {
 * Passing a `DatabaseFactory` that is not a sqflite implementation (it must
   also be a `SqfliteInvokeHandler`).
 * Forgetting `sqfliteFfiInit()` before `databaseFactoryFfi`.
-* Using the io server factory in a unit test instead of
-  `webSocketChannelFactoryMemory.server`, and then mixing it with a client
-  connected through the io factory.
-* Expecting `server.close()` to also close the databases opened by clients
-  that are still connected.
+* Mixing web socket factories: a server served with
+  `webSocketChannelFactoryMemory.server` is only reachable with
+  `webSocketChannelFactoryMemory.client`, an io server with the io client
+  (the default).
+* Expecting the databases of the connected clients to be closed when
+  `await server.close()` returns: they are closed right after.
+* Calling `setDatabasesPath()` on the served factory: the clients do not see
+  it, the file helpers do.
 * Exposing the server beyond localhost: there is no auth.

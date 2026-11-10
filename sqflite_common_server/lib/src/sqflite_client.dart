@@ -75,8 +75,38 @@ class SqfliteClient {
       return result as T;
     } on json_rpc.RpcException catch (e) {
       // devPrint('ERROR ${e.runtimeType} $e ${e.message} ${e.data}');
-      throw SqfliteDatabaseException(e.message, e.data);
+      var data = e.data;
+      bool? transactionClosed;
+      int? resultCode;
+      if (data is Map) {
+        var closed = data[keyTransactionClosed];
+        if (closed is bool) {
+          transactionClosed = closed;
+        }
+        var code = data[keyResultCode];
+        if (code is int) {
+          resultCode = code;
+        }
+      }
+      // transactionClosed tells sqflite_common that SQLite rolled back the
+      // transaction: it must not be used anymore.
+      throw SqfliteDatabaseException(
+        e.message,
+        data,
+        transactionClosed: transactionClosed,
+        resultCode: resultCode,
+      );
     }
+  }
+
+  /// Bytes crossing JSON come back as a list of int.
+  static Uint8List? _bytesOrNull(Object? value) {
+    if (value is Uint8List) {
+      return value;
+    } else if (value is List) {
+      return Uint8List.fromList(value.cast<int>());
+    }
+    return null;
   }
 
   static void fixResult<T>(T result) {
@@ -135,7 +165,20 @@ class SqfliteClient {
     if (method == methodBatch) {
       if (result is List) {
         for (var line in result) {
-          fixResult<Object?>(line);
+          // Each line is {'result': ...} or {'error': ...}
+          if (line is Map && line.containsKey(paramResult)) {
+            fixResult<Object?>(line[paramResult]);
+          } else {
+            fixResult<Object?>(line);
+          }
+        }
+      }
+    } else if (method == methodReadDatabaseBytes) {
+      // {'bytes': ...}
+      if (result is Map) {
+        var bytes = _bytesOrNull(result[paramBytes]);
+        if (bytes != null) {
+          result[paramBytes] = bytes;
         }
       }
     } else {

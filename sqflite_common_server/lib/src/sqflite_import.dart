@@ -1,5 +1,11 @@
 // To be imported
-export 'package:sqflite_common/src/mixin/constant.dart' show paramId;
+export 'package:sqflite_common/src/mixin/constant.dart'
+    show
+        paramId,
+        paramBytes,
+        paramResult,
+        methodReadDatabaseBytes,
+        methodWriteDatabaseBytes;
 export 'package:sqflite_common/src/mixin/dev_utils.dart'
     show
         // ignore: deprecated_member_use
@@ -22,4 +28,6 @@ export 'package:sqflite_common/src/mixin/import_mixin.dart'
         buildDatabaseFactory,
         SqfliteInvokeHandler,
         SqfliteDatabaseException,
-        SqfliteDatabaseFactoryBase;
+        SqfliteDatabaseFactory,
+        SqfliteDatabaseFactoryBase,
+        SqfliteDatabaseFactoryMixin;

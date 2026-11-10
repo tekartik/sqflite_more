@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:json_rpc_2/error_code.dart' as json_rpc_error_code;
 import 'package:json_rpc_2/json_rpc_2.dart' as json_rpc;
 import 'package:path/path.dart' as path;
 import 'package:path/path.dart';
@@ -19,7 +20,11 @@ const nullResponseWorkaround = '<sqflite_null>';
 typedef SqfliteServerNotifyCallback =
     void Function(bool response, String method, Object? params);
 
-/// Web socket server
+/// Web socket server serving a sqflite [DatabaseFactory] to
+/// `SqfliteServerDatabaseFactory` clients.
+///
+/// Each client gets its own channel; the databases a client leaves open are
+/// closed when it disconnects.
 class SqfliteServer {
   final DatabaseFactory factory;
 
@@ -44,6 +49,13 @@ class SqfliteServer {
   final List<SqfliteServerChannel> _channels = [];
   final WebSocketChannelServer<String> _webSocketChannelServer;
 
+  /// Serves [factory], a sqflite implementation factory (the sqflite plugin
+  /// `databaseFactory`, `databaseFactoryFfi`...: it must also be a
+  /// `SqfliteInvokeHandler`).
+  ///
+  /// [webSocketChannelServerFactory] defaults to the io one (real web socket,
+  /// on [port], a free port when null; [address] defaults to any IPv6).
+  /// [notifyCallback] is called for each request and each response.
   static Future<SqfliteServer> serve({
     WebSocketChannelServerFactory? webSocketChannelServerFactory,
     Object? address,
@@ -57,10 +69,14 @@ class SqfliteServer {
     return SqfliteServer._(webSocketChannelServer, notifyCallback, factory);
   }
 
+  /// Stops the server and closes the connected clients (their open databases
+  /// are then closed, not awaited). The served factory stays usable.
   Future close() => _webSocketChannelServer.close();
 
+  /// The url to give to the clients (`ws://localhost:<port>`).
   String get url => _webSocketChannelServer.url;
 
+  /// The port served.
   int get port => _webSocketChannelServer.port;
 }
 
@@ -188,10 +204,7 @@ class SqfliteServerChannel {
         sqfliteParam = fixParam(sqfliteMethod, sqfliteParam);
       }
 
-      var result = await _sqfliteServer.invokeHandler.invokeMethod<Object?>(
-        sqfliteMethod,
-        sqfliteParam,
-      );
+      var result = await _invokeSqflite(sqfliteMethod, sqfliteParam);
       if (_notifyCallback != null) {
         _notifyCallback!(true, methodSqflite, result);
       }
@@ -246,6 +259,36 @@ class SqfliteServerChannel {
 
   SqfliteServerNotifyCallback? get _notifyCallback =>
       _sqfliteServer._notifyCallback;
+
+  /// Calls the served factory.
+  ///
+  /// Its errors are wrapped by the factory (the plugin one turns a
+  /// `PlatformException` into a [SqfliteDatabaseException]) and sent with the
+  /// fields sqflite_common needs on the client: [keyTransactionClosed] (SQLite
+  /// rolled back the transaction) and [keyResultCode].
+  Future<Object?> _invokeSqflite(String method, Object? param) async {
+    var factory = _sqfliteServer.factory;
+    Future<Object?> invoke() =>
+        _sqfliteServer.invokeHandler.invokeMethod<Object?>(method, param);
+    try {
+      if (factory is SqfliteDatabaseFactory) {
+        return await factory.wrapDatabaseException(invoke);
+      }
+      return await invoke();
+    } on SqfliteDatabaseException catch (e, st) {
+      // Same message and data as the json_rpc default error, plus our keys.
+      throw json_rpc.RpcException(
+        json_rpc_error_code.SERVER_ERROR,
+        '$e',
+        data: <String, Object?>{
+          'full': '$e',
+          'stack': '$st',
+          keyTransactionClosed: e.transactionClosed,
+          keyResultCode: e.getResultCode(),
+        },
+      );
+    }
+  }
 }
 
 class SqfliteLocalContext implements SqfliteContext {
@@ -379,6 +422,15 @@ T fixParam<T>(String? method, T param) {
               fixParam(method, operation);
             }
           }
+        }
+      }
+      break;
+    // {'path': ..., 'bytes': [1, 2, 3]}
+    case methodWriteDatabaseBytes:
+      if (param is Map) {
+        var bytes = param[paramBytes];
+        if (bytes is List && (bytes is! Uint8List)) {
+          param[paramBytes] = Uint8List.fromList(bytes.cast<int>());
         }
       }
       break;

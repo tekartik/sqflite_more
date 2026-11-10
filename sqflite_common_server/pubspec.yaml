@@ -23,6 +23,11 @@ dependencies:
 
 dev_dependencies:
   sqflite_common_ffi: ">=2.4.1"
+  sqflite_common_test:
+    git:
+      url: https://github.com/tekartik/sqflite
+      path: sqflite_common_test
+    version: '>=0.5.0'
   test: ">=1.31.0"
   process_run: ">=1.3.4"
   dev_build: ">=1.1.8+2"
