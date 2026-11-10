@@ -47,9 +47,13 @@ host. It also re-exports `sqflite_common_test` and ships a no-op
   context.
 * Running against a device:
   1. start the `sqflite_server_app` (`sqflite_more/sqflite_server_app`,
-     `flutter run`) on the device/emulator and start its server from the menu;
+     `flutter run`) on the device/emulator and press START (or turn its auto
+     start on);
   2. Android only: `adb forward tcp:8501 tcp:8501` — `connectClientPort()`
-     already attempts this itself when no url/port override is given;
+     (so `connect()` and `testMain`) runs it itself, `adb` from the `PATH`,
+     unless `SQFLITE_SERVER_URL` / `SQFLITE_SERVER_PORT` is declared (then
+     forward the port yourself); with an explicit `port:` it forwards that
+     port. sqflite_test before 0.2.4 never ran it in the default flow;
   3. `flutter test` on the host.
 * Override the target with the compile-time declarations
   `SQFLITE_SERVER_URL` / `SQFLITE_SERVER_PORT` (`sqfliteServerUrlEnvKey` /
@@ -57,14 +61,23 @@ host. It also re-exports `sqflite_common_test` and ships a no-op
   environment variables. The default is `ws://localhost:8501`.
 * `SqfliteServerTestContext`: `connect()` (static, returns `null` and prints a
   hint when unreachable), `connectClientPort({int? port})` (connects to an
-  explicit port, or to the default/overridden url), `close()`, `url`,
-  `envUrl`, `envPort`, plus the whole `SqfliteTestContext` surface:
+  explicit port, or to the default/overridden url; returns the client already
+  connected, if any), `close()` (closes and forgets the client: a closed
+  context connects again), `url`, `envUrl`, `envPort` (set only by a call
+  without `port:`, to the declaration or its default), plus the whole
+  `SqfliteTestContext` surface:
   `databaseFactory`, `initDeleteDb(dbName)`, `createDirectory(path)`,
   `deleteDirectory(path)`, `writeFile(path, data)`, `isInMemoryPath(path)`,
   `pathContext`, `isAndroid` / `isIOS` / `isMacOS` / `isLinux` / `isWindows`.
 * Capability flags to guard tests with: `supportsWithoutRowId` and
   `supportsDeadLock` are `false` and `strict` is `false` on the server
   context (the native implementation is lenient), unlike the ffi one.
+  `isPlugin` is `false` too, even when the server serves the plugin: the
+  plugin only checks of the shared suite do not run through it.
+* `pathContext` is the host's (`SqfliteTestContextMixin`), not the server's:
+  on a Windows host with an Android/iOS server, `initDeleteDb` joins the
+  device path with a backslash (it still opens, under another file name).
+  Build device paths with `package:path`'s `posix` there.
 * Run the whole shared suite with `run(context)` (or `sqfliteTestGroup`) from
   `package:sqflite_common_test/all_test.dart`: it covers batches,
   transactions, types, exceptions, open/close, WAL and more, and it only
@@ -73,7 +86,8 @@ host. It also re-exports `sqflite_common_test` and ships a no-op
   over `databaseFactoryFfi` (after `sqfliteFfiInit()`), or serve ffi locally
   with `SqfliteServer.serve(factory: databaseFactoryFfi)` from
   `package:sqflite_common_server/sqflite_server.dart` and connect a
-  `SqfliteServerDatabaseFactory` to it: same suite, no `adb`.
+  `SqfliteServerDatabaseFactory` to it, or a `SqfliteServerTestContext` with
+  `connectClientPort(port: server.port)`: same suite, no device.
 * Always `TestWidgetsFlutterBinding.ensureInitialized()` first in a
   `flutter test` file that touches the plugin or ffi.
 * Convention in this repo: test files that require a running server are named
@@ -220,9 +234,10 @@ void main() {
   `package:test/test.dart` in the same file (`test`/`expect` clash).
 * Expecting `SQFLITE_SERVER_URL` to be read from the shell environment: it is
   a `--dart-define` compile-time declaration.
-* Forgetting `adb forward tcp:8501 tcp:8501` on Android, or forgetting to
-  start the server from the `sqflite_server_app` menu (it does not start by
-  itself the first time).
+* On Android, `adb` not in the `PATH` of the test, or a declared
+  `SQFLITE_SERVER_URL` / `SQFLITE_SERVER_PORT`: no automatic
+  `adb forward`, run it yourself. Or forgetting to start the server from the
+  `sqflite_server_app` menu (it does not start by itself the first time).
 * Calling `SqfliteServerTestContext.connect()` and using the result without a
   null check: use `testMain` instead, which skips cleanly.
 * Depending on `sqflite_test` from `dependencies` instead of

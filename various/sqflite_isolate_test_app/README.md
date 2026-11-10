@@ -1,16 +1,23 @@
 # sqflite_isolate_test_app
 
-Testing with isolate
+Test menu app using sqflite from another isolate with
+[flutter_isolate](https://pub.dev/packages/flutter_isolate) (Android, iOS):
+create rows in the main isolate or in a `FlutterIsolate`, then read them.
 
-## Getting Started
+Not published.
 
-This project is a starting point for a Flutter application.
+## State
 
-A few resources to get you started if this is your first Flutter project:
+It does not build with the current Flutter:
 
-- [Lab: Write your first Flutter app](https://flutter.io/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.io/docs/cookbook)
+* the `android/` and `ios/` folders date from 2019 (the Android one applies
+  the Flutter Gradle plugin the old way, which Flutter now refuses);
+* flutter_isolate 2.1.0, its latest version, does not compile on Android any
+  more (`io.flutter.view.FlutterRunArguments` was removed from Flutter).
 
-For help getting started with Flutter, view our 
-[online documentation](https://flutter.io/docs), which offers tutorials, 
-samples, guidance on mobile development, and a full API reference.
+Using sqflite from a background isolate (`Isolate.run`, `compute`) with
+`BackgroundIsolateBinaryMessenger.ensureInitialized(RootIsolateToken)` is
+tested by the plugin test page of the sqflite repository's
+`sqflite_test_app`; see sqflite's
+[isolates](https://github.com/tekartik/sqflite/blob/master/sqflite/doc/usage_recommendations.md#isolates)
+recommendations.

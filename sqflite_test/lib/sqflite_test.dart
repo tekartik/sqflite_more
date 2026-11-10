@@ -1,5 +1,11 @@
 // ignore_for_file: avoid_print
 
+/// Runs the shared sqflite tests (`sqflite_common_test`) and your own tests
+/// from a `flutter test` on the host against a sqflite server: the
+/// `sqflite_server_app` on a device ([SqfliteServerTestContext], [testMain]).
+///
+/// Re-exports `package:sqflite_common_test/sqflite_test.dart`
+/// ([SqfliteTestContext], [SqfliteLocalTestContext]...).
 library;
 
 import 'dart:async';
@@ -135,21 +141,51 @@ class SqfliteLocalTestContext
 
  */
 
+/// A [SqfliteTestContext] whose databases live in a remote sqflite server:
+/// the `sqflite_server_app` on a device, emulator or simulator, or a
+/// `SqfliteServer` of `sqflite_common_server` started by the test.
+///
+/// Get one with [testMain] or [connect] (default url), or create one and call
+/// [connectClientPort]. Its [databaseFactory] runs every call on the server.
+///
+/// Paths: [pathContext] is the context of the host running the test (from
+/// [SqfliteTestContextMixin]), right for a posix server on a posix host.
 class SqfliteServerTestContext extends SqfliteServerContext
     with SqfliteTestContextMixin
     implements SqfliteTestContext {
+  /// The `SQFLITE_SERVER_URL` declaration, or the default url; set by
+  /// [connectClientPort] when called without a port.
   String? envUrl;
+
+  /// The `SQFLITE_SERVER_PORT` declaration, or 8501; set by
+  /// [connectClientPort] when called without a port.
   int? envPort;
+
+  /// The url of the server, set by [connectClientPort].
   late String url;
 
   @override
   bool get supportsWithoutRowId => false;
 
+  /// Connects to the server on [port], or to the url/port of the
+  /// `SQFLITE_SERVER_URL` / `SQFLITE_SERVER_PORT` compile-time declarations
+  /// (`--dart-define`), `ws://localhost:8501` by default.
+  ///
+  /// Unless one of these declarations is given, it first tries
+  /// `adb forward tcp:<port> tcp:<port>` (Android device or emulator).
+  ///
+  /// Returns null, after printing a hint, when no server answers.
   Future<SqfliteClient?> connectClientPort({int? port}) async {
     if (client == null) {
+      // envUrl and envPort always get a value (their default when not
+      // declared): test the declarations themselves.
+      var envOverride = false;
       if (port != null) {
         url = getSqfliteServerUrl(port: port);
       } else {
+        envOverride =
+            const bool.hasEnvironment(sqfliteServerUrlEnvKey) ||
+            const bool.hasEnvironment(sqfliteServerPortEnvKey);
         envPort = parseInt(
           String.fromEnvironment(
             sqfliteServerPortEnvKey,
@@ -166,7 +202,7 @@ class SqfliteServerTestContext extends SqfliteServerContext
       port ??= parseSqfliteServerUrlPort(url, defaultValue: 0);
 
       // Run the needed adb command if no env overrides
-      if (envUrl == null && envPort == null) {
+      if (!envOverride) {
         try {
           await runCmd(
             ProcessCmd(whichSync('adb')!, ['forward', 'tcp:$port', 'tcp:$port'])
@@ -204,6 +240,10 @@ $sqfliteServerPortEnvKey: ${envPort ?? ''}
     return client;
   }
 
+  /// Creates a context and connects it with [connectClientPort] (default
+  /// url, `adb forward` first).
+  ///
+  /// Returns null, after printing a hint, when no server answers.
   static Future<SqfliteServerTestContext?> connect() async {
     var context = SqfliteServerTestContext();
     var sqfliteClient = await context.connectClientPort();
@@ -224,10 +264,8 @@ Android:
     return null;
   }
 
-  @override
-  Future close() async {
-    await client?.close();
-  }
+  // close(): the base one closes the client and forgets it, so that
+  // connectClientPort() connects again.
 
   @override
   Future<T> sendRequest<T>(String method, Object? param) async {
@@ -264,7 +302,23 @@ Android:
   bool get strict => false;
 }
 
-/// Main entry point for with Sqflite context using server
+/// Main entry point of a test file running on the sqflite server.
+///
+/// Connects with [SqfliteServerTestContext.connect], then calls [run] to
+/// declare the tests and closes the context after them. When no server
+/// answers, it declares a single skipped test instead: the file passes on a
+/// machine with no device.
+///
+/// ```dart
+/// Future main() {
+///   TestWidgetsFlutterBinding.ensureInitialized();
+///   return testMain(run);
+/// }
+///
+/// void run(SqfliteTestContext context) {
+///   all.run(context); // package:sqflite_common_test/all_test.dart
+/// }
+/// ```
 Future testMain(void Function(SqfliteServerTestContext context) run) async {
   var context = await SqfliteServerTestContext.connect();
   if (context == null) {

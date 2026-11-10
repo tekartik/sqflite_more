@@ -37,10 +37,13 @@ void main() {
         'sendPort': receivePort.sendPort,
         'path': path,
       };
-      await FlutterIsolate.spawn(simpleIsolate, param);
-
-      var results = json.decode(await (receivePort.first as FutureOr<String>));
-      write(results);
+      var isolate = await FlutterIsolate.spawn(simpleIsolate, param);
+      try {
+        write(await readIsolateResults(receivePort));
+      } finally {
+        // A FlutterIsolate keeps running until killed.
+        isolate.kill();
+      }
     });
     item('Read data', () async {
       var db = await openReadOnlyDatabase(isolateDbName);
@@ -63,7 +66,15 @@ Future insert(Database db, int id) async {
   }, conflictAlgorithm: ConflictAlgorithm.replace);
 }
 
+/// Reads the results sent by [simpleIsolate] (a JSON string) on [receivePort].
+Future<Object?> readIsolateResults(ReceivePort receivePort) async {
+  // receivePort.first is a Future<dynamic>: cast its value, not the future.
+  return json.decode((await receivePort.first) as String);
+}
+
 // Somehow it seems to expect a string for now...
+// The entry point of a FlutterIsolate must be kept in release builds.
+@pragma('vm:entry-point')
 void simpleIsolate(Map<String, Object?> param) {
   var path = param['path'] as String;
   var sendPort = param['sendPort'] as SendPort?;

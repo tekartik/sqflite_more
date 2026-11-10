@@ -3,6 +3,10 @@ import 'dart:typed_data';
 
 import 'package:sqflite/sqlite_api.dart';
 
+/// A [DatabaseFactory] for a test that never touches a database.
+///
+/// [databaseExists] returns false, [deleteDatabase] does nothing, every other
+/// method throws [UnimplementedError].
 class DatabaseFactoryMock implements DatabaseFactory {
   @override
   Future<bool> databaseExists(String path) async {
@@ -38,4 +42,5 @@ class DatabaseFactoryMock implements DatabaseFactory {
   }
 }
 
+/// The [DatabaseFactoryMock] instance.
 final databaseFactoryMock = DatabaseFactoryMock();

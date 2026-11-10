@@ -1,3 +1,6 @@
-## [0.0.1] - TODO: Add release date.
+## 0.2.4
 
-* TODO: Describe initial release.
+* `connectClientPort()` (and so `testMain`) runs `adb forward` again when no
+  `SQFLITE_SERVER_URL` / `SQFLITE_SERVER_PORT` is declared (never run since
+  the null safety migration).
+* `close()` forgets the client: a closed context connects again.
