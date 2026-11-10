@@ -36,12 +36,13 @@ version and adds `openDatabaseFromSqlImport`.
   `package:sqflite/sqflite.dart` for `Database`, `openDatabase`,
   `getDatabasesPath`.
 * `Future<List<String>> dbExportSql(Database db)` runs inside one transaction
-  and returns the `CREATE TABLE` statements, one
-  `INSERT INTO <table> VALUES (...)` per row, the `CREATE VIEW` /
-  `CREATE TRIGGER` statements, then `DELETE FROM sqlite_sequence` plus the
-  `sqlite_sequence` rows when that table exists, and
-  `PRAGMA user_version = <n>` when the version is not 0. Statements carry no
-  trailing `;`.
+  and returns, table by table, the `CREATE TABLE` statement and one
+  `INSERT INTO <table> VALUES (...)` per row (generated columns get no
+  value), then the `CREATE INDEX` / `CREATE VIEW` / `CREATE TRIGGER`
+  statements, then `DELETE FROM sqlite_sequence` plus the `sqlite_sequence`
+  rows when that table exists, and `PRAGMA user_version = <n>` when the
+  version is not 0. Statements carry no trailing `;`. Virtual tables (fts,
+  rtree) do not round trip.
 * The database version is exported, so the import restores it: reopening
   with `openDatabase(version: n)` does not run `onCreate` again. Older
   `sqflite_porter` versions (own copy of the code) ended statements with `;`,
@@ -61,9 +62,9 @@ version and adds `openDatabaseFromSqlImport`.
   are skipped, so an Android export can be imported on iOS.
 * Migration to `sqflite_common_porter`: swap the dependency and the import,
   keep the same `dbExportSql` / `dbImportSql` calls (same output).
-* Tests use `flutter_test` and need a real device/emulator (or
-  `sqflite_common_ffi` + `databaseFactoryFfi` on the host) because `sqflite`
-  is a plugin.
+* The exported functions take any sqflite `Database`, so a host test can
+  use `sqflite_common_ffi` (`sqfliteFfiInit()`, `databaseFactoryFfi`) instead
+  of a device; the `sqflite` plugin itself needs a device or emulator.
 
 ## Examples
 
@@ -87,12 +88,13 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_porter/sqflite_porter.dart';
 
-/// [export] is a previous [dbExportSql] result.
-/// The version is not part of the export: pass the one the app expects.
+/// [export] is a previous [dbExportSql] result, it restores the version of
+/// the exported database.
 Future<Database> restoreDatabase(
   String dbName,
   List<String> export, {
   required int version,
+  OnDatabaseVersionChangeFn? onUpgrade,
 }) async {
   var path = join(await getDatabasesPath(), dbName);
   // The import needs an empty database.
@@ -101,8 +103,9 @@ Future<Database> restoreDatabase(
   await dbImportSql(db, export);
   await db.close();
 
-  // Reopen with the expected version so onCreate does not run again.
-  return await openDatabase(path, version: version);
+  // Same version as the export: neither onCreate nor onUpgrade runs; an
+  // older export is migrated by onUpgrade.
+  return await openDatabase(path, version: version, onUpgrade: onUpgrade);
 }
 ```
 
@@ -117,7 +120,8 @@ Future<Database> openSeeded(String path, List<String> seedExport) async {
     path,
     version: 1,
     onCreate: (db, version) async {
-      // Empty database here: safe to replay the statements.
+      // Empty database here: safe to replay the statements. sqflite sets
+      // the version (1) after onCreate, replacing the exported one.
       await dbImportSql(db, seedExport);
     },
   );
@@ -127,9 +131,11 @@ Future<Database> openSeeded(String path, List<String> seedExport) async {
 ## Common mistakes
 
 * Using this package in new code instead of `sqflite_common_porter`.
-* Expecting the database version to survive the round trip: it does not.
-* Calling `dbExportSql` on a database with no `AUTOINCREMENT` table and
-  hitting a missing `sqlite_sequence` error.
+* Importing in `onCreate` and expecting the exported version: sqflite sets
+  the `openDatabase` version after `onCreate`. Import into a database opened
+  without version (`restoreDatabase` above) to keep it.
 * Importing into a database that already has the tables.
+* Joining the statements with `;` (or new lines) to store them: a trigger
+  contains `;`, a `CREATE TABLE` keeps its new lines; store the list (JSON).
 * Assuming `sqflite_porter.dart` re-exports `sqflite`: it exports only
   `dbExportSql` and `dbImportSql`.

@@ -75,8 +75,9 @@ Future<void> main() async {
 | `openDatabaseFromSqlImport(factory, path, statements)` | delete `path`, open it and import, in one call |
 | `mapListToCsv`, `csvToMapList` | CSV helpers (`package:sqflite_common_porter/utils/csv_utils.dart`, from `tekartik_app_csv`) |
 
-The statements are plain strings, store them as JSON or one per line (a
-trigger contains `;`, do not join them with `;`).
+The statements are plain strings, store the list as JSON: do not join them
+with `;` (a trigger contains `;`) nor with new lines (a `CREATE TABLE` keeps
+the new lines it was written with).
 
 ## Common pitfalls
 
