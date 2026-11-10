@@ -8,18 +8,27 @@ import 'package:tekartik_app_platform/app_platform.dart';
 
 void main() => run();
 
-DatabaseFactory? databaseFactory;
+/// The factory served, also holding the prefs: sqflite_common_ffi on Windows
+/// and Linux, the sqflite plugin elsewhere.
+///
+/// Set on first use (a lazy top-level variable), so that the test menu
+/// (lib/test_main.dart, which does not call [run]) has it too.
+DatabaseFactory? databaseFactory = _initDatabaseFactory();
+
+DatabaseFactory _initDatabaseFactory() {
+  if (Platform.isWindows || Platform.isLinux) {
+    sqfliteFfiInit();
+    // No default factory there (the sqflite plugin has no Windows and Linux
+    // implementation): the sqflite_porter helpers of the test menu use it.
+    sqflite.databaseFactory = databaseFactoryFfi;
+    return databaseFactoryFfi;
+  }
+  return sqflite.databaseFactory;
+}
 
 void run() {
   WidgetsFlutterBinding.ensureInitialized();
   platformInit();
-  if (Platform.isWindows || Platform.isLinux) {
-    sqfliteFfiInit();
-    databaseFactory = databaseFactoryFfi;
-  } else {
-    databaseFactory = sqflite.databaseFactory;
-  }
-
   runApp(const SqfliteServerApp());
 }
 
