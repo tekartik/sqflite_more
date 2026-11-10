@@ -36,6 +36,9 @@ class FlutterRunMachine {
   final bool verbose;
 
   late final Process _process;
+
+  /// The input of `flutter run`.
+  late final ShellLinesController _input;
   final _started = Completer<void>();
   final _debugPort = Completer<void>();
   final _exited = Completer<int>();
@@ -83,20 +86,38 @@ class FlutterRunMachine {
     var flutter = flutterExecutablePath ?? 'flutter';
     var args = ['run', '--machine', '-d', deviceId, ...arguments];
     _log('${shellArgument(flutter)} ${shellArguments(args)}');
-    _process = await Process.start(
-      flutter,
-      args,
-      workingDirectory: appDir,
-      runInShell: Platform.isWindows,
+    var started = Completer<Process>();
+    var output = ShellLinesController(encoding: utf8);
+    var errors = ShellLinesController(encoding: utf8);
+    _input = ShellLinesController(encoding: utf8);
+    unawaited(
+      Shell(
+            workingDirectory: appDir,
+            stdin: _input.binaryStream,
+            stdout: output.sink,
+            stderr: errors.sink,
+            verbose: false,
+            throwOnError: false,
+          )
+          .runExecutableArguments(flutter, args, onProcess: started.complete)
+          .then<void>(
+            (_) {},
+            onError: (Object error, StackTrace stackTrace) {
+              // It could not start.
+              if (!started.isCompleted) {
+                started.completeError(error, stackTrace);
+              }
+            },
+          )
+          .whenComplete(() {
+            output.close();
+            errors.close();
+            _input.close();
+          }),
     );
-    _process.stdout
-        .transform(utf8.decoder)
-        .transform(const LineSplitter())
-        .listen(_onLine);
-    _process.stderr
-        .transform(utf8.decoder)
-        .transform(const LineSplitter())
-        .listen((line) => _log('stderr: $line'));
+    _process = await started.future;
+    output.stream.listen(_onLine);
+    errors.stream.listen((line) => _log('stderr: $line'));
     unawaited(
       _process.exitCode.then((code) {
         _exited.complete(code);
@@ -161,7 +182,7 @@ class FlutterRunMachine {
   Future<Object?> _request(String method, Map<String, Object?> params) {
     var id = _nextId++;
     var completer = _pending[id] = Completer<Object?>();
-    _process.stdin.writeln(
+    _input.writeln(
       jsonEncode([
         {'id': id, 'method': method, 'params': params},
       ]),
