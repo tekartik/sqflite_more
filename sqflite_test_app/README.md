@@ -30,5 +30,8 @@ Desktop build use ffi [as described here](https://github.com/tekartik/sqflite_mo
 ```bash
 # Android: the running emulator (or device), or the AVD launched then stopped
 dart run tool/sqflite_suite_run.dart [--avd <name>] [--keep] [-N <name>]
+# iOS: the booted simulator, or the latest iPhone booted (DeviceHub) then
+# shut down
+dart run tool/sqflite_suite_run.dart -t ios [--simulator "iPhone 17"] [--keep] [--no-window]
 dart run tool/sqflite_suite_run.dart -t macos
 ```
