@@ -1,0 +1,39 @@
+name: sqflite_ffi_test_app
+description: Runs the shared sqflite_common_test suite with sqflite_common_ffi only (no plugin), on Android, Linux and the web.
+publish_to: none
+version: 0.1.0
+
+environment:
+  sdk: ^3.13.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  sqflite_common_ffi: ">=2.4.7"
+  sqflite_common_ffi_web: ">=1.2.2"
+  path_provider: ">=2.1.6"
+  path: ">=1.9.1"
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  integration_test:
+    sdk: flutter
+  test: ">=1.31.0"
+  sqflite_common_test:
+    git:
+      url: https://github.com/tekartik/sqflite
+      path: sqflite_common_test
+    version: '>=0.5.0'
+  sqflite_support:
+    path: ../sqflite_support
+  tekartik_lints_flutter:
+    git:
+      url: https://github.com/tekartik/common_flutter.dart
+      path: packages/lints_flutter
+    version: '>=0.1.0'
+
+flutter:
+  uses-material-design: true
+
+resolution: workspace
