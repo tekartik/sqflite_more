@@ -7,18 +7,20 @@ environment:
   sdk: ^3.12.0
 
 dependencies:
+  test: ">=1.31.0"
   process_run: ">=1.4.4"
   path: ">=1.9.1"
   args: ">=2.6.0"
-  tekartik_android_utils:
+  # device_test.dart: android emulators, iOS simulators, flutter test -r json
+  tekartik_flutter_build:
     git:
-      url: https://github.com/tekartik/android_utils.dart
-    version: '>=0.6.8'
+      url: https://github.com/tekartik/app_build.dart
+      path: packages/flutter_build
+    version: '>=0.2.6'
   tekartik_lints:
     git:
       url: https://github.com/tekartik/common.dart
       path: packages/lints
     version: '>=0.1.0'
 dev_dependencies:
-  test: ">=1.31.0"
 resolution: workspace

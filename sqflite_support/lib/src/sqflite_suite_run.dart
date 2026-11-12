@@ -4,11 +4,7 @@ import 'dart:io';
 import 'package:args/args.dart';
 import 'package:path/path.dart';
 import 'package:process_run/shell.dart';
-import 'package:tekartik_android_utils/build_utils.dart';
-import 'package:tekartik_android_utils/emulator_utils.dart';
-
-import 'ios_simulator_utils.dart';
-import 'test_json_reporter.dart';
+import 'package:tekartik_flutter_build/device_test.dart';
 
 /// Where a test app runs its suite.
 enum SqfliteSuiteTarget {
@@ -29,7 +25,22 @@ enum SqfliteSuiteTarget {
   windows,
 
   /// Chrome, headless.
-  web,
+  web;
+
+  /// Its flutter device target, `null` for the web.
+  FlutterDeviceTarget? get deviceTarget =>
+      this == web ? null : FlutterDeviceTarget.values.byName(name);
+
+  /// The targets supported on this host, in run order: android, ios (on
+  /// macOS), the host desktop ([FlutterDeviceTarget.hostTargets]).
+  static List<SqfliteSuiteTarget> get hostDeviceTargets => [
+    for (var target in FlutterDeviceTarget.hostTargets)
+      values.byName(target.name),
+  ];
+
+  /// The desktop target of the host.
+  static SqfliteSuiteTarget get host =>
+      values.byName(FlutterDeviceTarget.host.name);
 }
 
 /// A test app and its suite runners.
@@ -49,6 +60,10 @@ class SqfliteSuiteApp {
   /// The targets supported, the first one is the default.
   final List<SqfliteSuiteTarget> targets;
 
+  /// The console test runner run with `flutter run -t` (the tests print
+  /// their results in the console), relative to [path], `null` when none.
+  final String? testRunner;
+
   /// Added to `flutter create --platforms <target> .` when a platform
   /// folder is created (`--org com.tekartik --empty`...).
   final List<String> flutterCreateArguments;
@@ -59,6 +74,7 @@ class SqfliteSuiteApp {
     required this.targets,
     this.deviceTest,
     this.webTest,
+    this.testRunner,
     this.flutterCreateArguments = const [],
   });
 
@@ -131,6 +147,15 @@ class SqfliteSuiteRunOptions {
     this.verbose = false,
   });
 
+  /// The device options of android and ios.
+  FlutterTargetDeviceOptions get deviceOptions => FlutterTargetDeviceOptions(
+    serial: serial,
+    avd: avd,
+    simulator: simulator,
+    keep: keep,
+    noWindow: noWindow,
+  );
+
   /// The same options on [target].
   SqfliteSuiteRunOptions withTarget(SqfliteSuiteTarget target) =>
       SqfliteSuiteRunOptions(
@@ -146,96 +171,17 @@ class SqfliteSuiteRunOptions {
       );
 }
 
-/// Runs the command of [arguments] in [path], parsing its json reporter
-/// output as it comes: failures (and test prints when [verbose]) are
-/// printed, the other lines (a build output) are printed as is.
-Future<(TestJsonSummary, int)> _runJsonTests(
-  String path,
-  List<String> arguments, {
-  required bool verbose,
-}) async {
-  var parser = TestJsonReporterParser();
-  var output = ShellLinesController();
-  var subscription = output.stream.listen((line) {
-    if (TestJsonReporterParser.isJsonEvent(line)) {
-      var done = parser.addLine(line);
-      if (done != null && done.isFailure) {
-        stdout.writeln('FAIL ${done.name}');
-        var error = done.error;
-        if (error != null) {
-          stdout.writeln('  ${error.split('\n').first}');
-        }
-      } else if (verbose && line.contains('"type":"print"')) {
-        stdout.writeln(line);
-      }
-    } else if (line.trim().isNotEmpty) {
-      stdout.writeln(line);
-    }
-  });
-  var shell = Shell(
-    workingDirectory: path,
-    stdout: output.sink,
-    verbose: false,
-    commandVerbose: true,
-    throwOnError: false,
-  );
-  int exitCode;
-  try {
-    var result = await shell.runExecutableArguments(
-      arguments.first,
-      arguments.sublist(1),
-    );
-    exitCode = result.exitCode;
-  } on ShellException catch (e) {
-    stderr.writeln(e.message);
-    exitCode = e.result?.exitCode ?? 1;
-  } finally {
-    output.close();
-    await subscription.cancel();
-  }
-  return (parser.summary, exitCode);
-}
-
 /// Creates the platform folder of [target] in the folder of [app] when
 /// missing (`flutter create --platforms <target> .` and its
-/// [SqfliteSuiteApp.flutterCreateArguments]).
-///
-/// The `.metadata` is kept, the counter sample test added when the app has
-/// none is removed.
+/// [SqfliteSuiteApp.flutterCreateArguments], see
+/// [flutterCreatePlatformsIfMissing]).
 Future<void> ensureSqfliteSuitePlatform(
   SqfliteSuiteApp app,
   SqfliteSuiteTarget target,
 ) async {
-  var path = app.path;
-  if (Directory(join(path, target.name)).existsSync()) {
-    return;
-  }
-  // flutter create rewrites the (tracked) .metadata: keep it.
-  var metadata = File(join(path, '.metadata'));
-  var metadataContent = metadata.existsSync()
-      ? metadata.readAsStringSync()
-      : null;
-  // flutter create adds a counter sample test when the app has none: drop it.
-  var testDir = Directory(join(path, 'test'));
-  var testDirExisted = testDir.existsSync();
-  var widgetTest = File(join(testDir.path, 'widget_test.dart'));
-  var widgetTestExisted = widgetTest.existsSync();
-  await Shell(workingDirectory: path).runExecutableArguments('flutter', [
-    'create',
-    '--platforms',
+  await flutterCreatePlatformsIfMissing(app.path, [
     target.name,
-    ...app.flutterCreateArguments,
-    '.',
-  ]);
-  if (metadataContent != null) {
-    metadata.writeAsStringSync(metadataContent);
-  }
-  if (!widgetTestExisted && widgetTest.existsSync()) {
-    widgetTest.deleteSync();
-    if (!testDirExisted && testDir.listSync().isEmpty) {
-      testDir.deleteSync();
-    }
-  }
+  ], arguments: app.flutterCreateArguments);
 }
 
 /// The `--plain-name` arguments of [options].
@@ -243,69 +189,29 @@ List<String> _plainNameArguments(SqfliteSuiteRunOptions options) => [
   if (options.plainName != null) ...['--plain-name', options.plainName!],
 ];
 
-/// [summary] marked as not done when the command failed ([exitCode]) without
-/// a json `done` event.
-TestJsonSummary _checkDone(TestJsonSummary summary, int exitCode) {
-  if (exitCode != 0 && summary.done == null) {
-    return TestJsonSummary(
-      passed: summary.passed,
-      failed: summary.failed,
-      skipped: summary.skipped,
-      failures: summary.failures,
-      done: false,
-    );
-  }
-  return summary;
-}
-
-/// Runs [action] with the flutter device id of the target of [options]:
+/// Runs [action] with the flutter device id of the target of [options]
+/// (not the web), found or launched by [withFlutterTargetDevice]; a device
+/// launched is stopped after [action] unless kept.
 ///
-/// - android: the device found or launched by `withAndroidDevice`
-///   (tekartik_android_utils), its serial; an emulator launched is stopped
-///   after [action] unless kept.
-/// - ios: the simulator found or booted by [withIosSimulator], its UDID; a
-///   simulator booted is shut down after [action] unless kept.
-/// - linux, macos, windows: the target name.
-///
-/// Throws an [ArgumentError] on the web (not a flutter device), a
-/// [StateError] when no android device or iOS simulator can be used.
+/// Throws a [FlutterTargetDeviceException] when no android device or iOS
+/// simulator can be chosen.
 Future<T> withSqfliteSuiteDevice<T>(
   SqfliteSuiteRunOptions options,
   Future<T> Function(String deviceId) action,
-) async {
-  switch (options.target) {
-    case SqfliteSuiteTarget.android:
-      await initAndroidBuildEnvironment();
-      return await withAndroidDevice(
-        (device) {
-          stdout.writeln('Device $device');
-          return action(device.serial);
-        },
-        serial: options.serial,
-        avd: options.avd,
-        keep: options.keep,
-        noWindow: options.noWindow,
-        onLaunching: (serial) => stdout.writeln('Launching $serial...'),
-      );
-    case SqfliteSuiteTarget.ios:
-      return await withIosSimulator(
-        (simulator) {
-          stdout.writeln('Simulator $simulator');
-          return action(simulator.udid);
-        },
-        simulator: options.simulator,
-        keep: options.keep,
-        noWindow: options.noWindow,
-        onLaunching: (simulator) =>
-            stdout.writeln('Booting ${simulator.name}...'),
-      );
-    case SqfliteSuiteTarget.linux:
-    case SqfliteSuiteTarget.macos:
-    case SqfliteSuiteTarget.windows:
-      return await action(options.target.name);
-    case SqfliteSuiteTarget.web:
-      throw ArgumentError('web is not a flutter device');
+) {
+  var target = options.target.deviceTarget;
+  if (target == null) {
+    throw ArgumentError('web is not a flutter device');
   }
+  return withFlutterTargetDevice(
+    target,
+    (device) {
+      stdout.writeln('Device $device');
+      return action(device.id);
+    },
+    options: options.deviceOptions,
+    onLaunching: (id) => stdout.writeln('Launching $id...'),
+  );
 }
 
 /// Runs the device test of [app] on the flutter device [deviceId] (of the
@@ -317,17 +223,14 @@ Future<TestJsonSummary> runSqfliteSuiteOnDevice(
   String deviceId,
 ) async {
   await ensureSqfliteSuitePlatform(app, options.target);
-  var (summary, exitCode) = await _runJsonTests(app.path, [
-    'flutter',
-    'test',
-    app.deviceTest!,
-    '-d',
-    deviceId,
-    '-r',
-    'json',
-    ..._plainNameArguments(options),
-  ], verbose: options.verbose);
-  return _checkDone(summary, exitCode);
+  var result = await runFlutterDeviceTest(
+    app.path,
+    deviceId: deviceId,
+    test: app.deviceTest!,
+    plainName: options.plainName,
+    verbose: options.verbose,
+  );
+  return result.summary;
 }
 
 /// Runs the suite of [app] on the target of [options] and returns its
@@ -353,18 +256,22 @@ Future<TestJsonSummary> runSqfliteSuite(
     await Shell(workingDirectory: app.path).run(
       'dart run sqflite_common_ffi_web:setup --dir ${shellArgument(dirname(webTest))}',
     );
-    var (summary, exitCode) = await _runJsonTests(app.path, [
+    var result = await runTestJsonCommand(
       'dart',
-      'test',
-      '-p',
-      'chrome',
-      if (options.compiler != null) ...['--compiler', options.compiler!],
-      '-r',
-      'json',
-      ..._plainNameArguments(options),
-      webTest,
-    ], verbose: options.verbose);
-    return _checkDone(summary, exitCode);
+      [
+        'test',
+        '-p',
+        'chrome',
+        if (options.compiler != null) ...['--compiler', options.compiler!],
+        '-r',
+        'json',
+        ..._plainNameArguments(options),
+        webTest,
+      ],
+      workingDirectory: app.path,
+      verbose: options.verbose,
+    );
+    return result.summary;
   }
   // Platform folder first, not to keep a launched device waiting.
   await ensureSqfliteSuitePlatform(app, target);
@@ -480,9 +387,9 @@ Future<List<SqfliteSuiteResult>> runSqfliteSuites(
           );
         }
       });
-    } on StateError catch (e) {
+    } on FlutterTargetDeviceException catch (e) {
       // No android device or iOS simulator to use.
-      stderr.writeln(e.message);
+      stderr.writeln(_deviceExceptionText(e));
       for (var app in targetApps.where((app) => !done.contains(app))) {
         add(
           SqfliteSuiteResult(
@@ -581,9 +488,9 @@ Future<void> sqfliteSuiteRunMain(List<String> args, SqfliteSuiteApp app) async {
   TestJsonSummary summary;
   try {
     summary = await runSqfliteSuite(app, options);
-  } on StateError catch (e) {
+  } on FlutterTargetDeviceException catch (e) {
     // No android device or iOS simulator to use.
-    stderr.writeln(e.message);
+    stderr.writeln(_deviceExceptionText(e));
     exitCode = 1;
     return;
   }
@@ -598,3 +505,10 @@ Future<void> sqfliteSuiteRunMain(List<String> args, SqfliteSuiteApp app) async {
     exitCode = 1;
   }
 }
+
+/// The message of [e] and its candidates.
+String _deviceExceptionText(FlutterTargetDeviceException e) => [
+  e.message,
+  if (e.candidates.isNotEmpty)
+    'Candidates: ${e.candidates.map((c) => '${c.id} (${c.name})').join(', ')}',
+].join('\n');

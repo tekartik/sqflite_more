@@ -4,6 +4,7 @@
 /// reporter output.
 library;
 
-export 'src/ios_simulator_utils.dart';
+export 'package:tekartik_flutter_build/device_test.dart'
+    show TestJsonSummary, TestJsonFailure, FlutterTargetDeviceException;
+
 export 'src/sqflite_suite_run.dart';
-export 'src/test_json_reporter.dart';

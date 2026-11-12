@@ -11,47 +11,15 @@ import 'dart:io';
 
 import 'package:args/args.dart';
 import 'package:path/path.dart';
+import 'package:sqflite_support/sqflite_repo_test.dart';
 import 'package:sqflite_support/sqflite_suite_run.dart';
 
 /// The host desktop target.
-SqfliteSuiteTarget get hostTarget => Platform.isMacOS
-    ? SqfliteSuiteTarget.macos
-    : Platform.isWindows
-    ? SqfliteSuiteTarget.windows
-    : SqfliteSuiteTarget.linux;
+SqfliteSuiteTarget get hostTarget => SqfliteSuiteTarget.host;
 
 /// The targets runnable from this host, in run order.
-List<SqfliteSuiteTarget> get hostTargets => [
-  SqfliteSuiteTarget.android,
-  if (Platform.isMacOS) SqfliteSuiteTarget.ios,
-  hostTarget,
-];
-
-/// The test apps of the sqflite repo at [sqfliteDir], by short name.
-Map<String, SqfliteSuiteApp> sqfliteRepoTestApps(String sqfliteDir) {
-  SqfliteSuiteApp app(String name, List<SqfliteSuiteTarget> targets) =>
-      SqfliteSuiteApp(
-        path: join(sqfliteDir, 'packages_flutter', name),
-        targets: targets,
-        deviceTest: 'integration_test',
-        // As their own flutter create (sqflite_support flutter_device.dart).
-        flutterCreateArguments: ['--org', 'com.tekartik', '--empty'],
-      );
-  return {
-    'ffi': app('sqflite_ffi_test_app', [
-      SqfliteSuiteTarget.android,
-      SqfliteSuiteTarget.ios,
-      SqfliteSuiteTarget.linux,
-      SqfliteSuiteTarget.macos,
-      SqfliteSuiteTarget.windows,
-    ]),
-    'plugin': app('sqflite_plugin_test_app', [
-      SqfliteSuiteTarget.android,
-      SqfliteSuiteTarget.ios,
-      SqfliteSuiteTarget.macos,
-    ]),
-  };
-}
+List<SqfliteSuiteTarget> get hostTargets =>
+    SqfliteSuiteTarget.hostDeviceTargets;
 
 Future<void> main(List<String> args) async {
   // sqflite_more/sqflite_support/tool/<script>: sqflite is next to
