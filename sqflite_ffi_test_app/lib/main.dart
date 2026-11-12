@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// The app is a host for the test runners (integration_test, test_web), see
 /// the README.
